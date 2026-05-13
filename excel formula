@@ -28,6 +28,7 @@ IF(C3=VLOOKUP(E3,CHOOSE({1,2},HR_Active_Users!E$2:E$5000,HR_Active_Users!C$2:C$5
    )
 )
 
+REMOVED: =TRIM(UPPER(SUBSTITUTE(A2, "  ", "")))&","&TRIM(UPPER(SUBSTITUTE(B2, "  ", "")))
 
 =TRIM(CLEAN(SUBSTITUTE(UPPER(A2&B2)," ","")))
 
