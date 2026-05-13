@@ -4,3 +4,14 @@ IF(C3=VLOOKUP(E3,CHOOSE({1,2},HR_Active_Users!E$2:E$5000,HR_Active_Users!C$2:C$5
 ),
 "NAME NOT FOUND ON TAB2 (HR_Active_Users TAB)"
 )
+
+
+
+
+=IF(C3="",
+   "Missing ZIP in AD",
+   IF(C3=HR_Active_Users!C3,
+      "ZIP MATCH FOUND",
+      "ZIP MISMATCH"
+   )
+)
