@@ -68,3 +68,17 @@ zip
 
 Need to update Tab1-AD 'position' and 'zip' using Tab2 - HR
 Then I want to use Tab1-AD and compare the 'PostalCode' to either 'position' or 'zip' whichever is found or put 'Not found'
+
+=IF(C3="",
+   "Missing ZIP in AD",
+   IF(AND(F3="Not Found",G3="Not Found"),
+      "Not Found in HR",
+      IF(C3=G3,
+         "ZIP MATCH FOUND - " & G3,
+         IF(C3=F3,
+            "POSITION MATCH FOUND - " & F3,
+            "NO MATCH - HR ZIP: " & G3 & " | HR POS: " & F3
+         )
+      )
+   )
+)
