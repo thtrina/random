@@ -48,3 +48,23 @@ UPPER(TRIM(CLEAN(SUBSTITUTE(SUBSTITUTE(B2,CHAR(160),"")," ",""))))
       )
    )
 )
+
+
+Tab1 - AD
+SamAccountName
+LastName
+FirstName
+Name - Primary
+PostalCode
+position
+zip
+
+Tab2 - HR
+LastName
+FirstName
+Name - Primary
+position
+zip
+
+Need to update Tab1-AD 'position' and 'zip' using Tab2 - HR
+Then I want to use Tab1-AD and compare the 'PostalCode' to either 'position' or 'zip' whichever is found or put 'Not found'
