@@ -1,1 +1,15 @@
 
+{
+  "type": "substring",
+  "name": "Zip 5 Digit",
+  "attributes": {
+    "input": {
+      "type": "identityAttribute",
+      "attributes": {
+        "name": "zipcode"
+      }
+    },
+    "begin": 0,
+    "end": 5
+  }
+}
