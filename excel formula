@@ -84,11 +84,11 @@ Then I want to use Tab1-AD and compare the 'PostalCode' to either 'position' or 
 )
 
 cleaner version:
-=IF(C3="","Missing ZIP in AD",
-   IF(HR_Active_Users!C3="","Missing ZIP in HR",
-      IF(VALUE(C3)=VALUE(HR_Active_Users!C3),
+=IF(C2="","Missing ZIP in AD",
+   IF(HR_Active_Users!C2="","Missing ZIP in HR",
+      IF(VALUE(C3)=VALUE(HR_Active_Users!C2),
          "MATCH",
-         "MISMATCH (HR: " & HR_Active_Users!C3 & ")"
+         "MISMATCH (HR: " & HR_Active_Users!C2 & ")"
       )
    )
 )
