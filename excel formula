@@ -92,3 +92,17 @@ cleaner version:
       )
    )
 )
+
+------- to fix data not showing correct for some cells
+=IF(C3="",
+   "Missing ZIP in AD",
+   IF(HR_Active_Users!C3="",
+      "Missing ZIP in HR",
+      IF(
+         VALUE(TRIM(CLEAN(SUBSTITUTE(C3,CHAR(160),"")))) =
+         VALUE(TRIM(CLEAN(SUBSTITUTE(HR_Active_Users!C3,CHAR(160),"")))),
+         "MATCH",
+         "MISMATCH (HR: " & HR_Active_Users!C3 & ")"
+      )
+   )
+)
