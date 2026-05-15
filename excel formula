@@ -88,7 +88,7 @@ cleaner version:
    IF(HR_Active!C2="","Missing ZIP in HR",
       IF(VALUE(C2)=VALUE(HR_Active!C2),
          "MATCH",
-         "MISMATCH (HR: " & HR_Active!C2 & ")"
+         "NO (HR_zip: " & HR_Active!C2 & ")"
       )
    )
 )
