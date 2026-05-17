@@ -109,6 +109,8 @@ cleaner version:
 
 
 
+---Works ----
+
 import java.io.*;
 import java.util.*;
 
@@ -131,7 +133,7 @@ class User {
     }
 
     String key() {
-        return lastName + "|" + firstName;
+        return lastName + "," + firstName;
     }
 }
 
@@ -142,35 +144,40 @@ public class CompareADHR {
         Map<String, User> hrMap = new HashMap<>();
 
         // 🔹 Load HR file
-        BufferedReader hrReader = new BufferedReader(new FileReader("HR.csv"));
+        BufferedReader hrReader = new BufferedReader(new FileReader("C:\\Users\\58785\\IIQ\\InProgress\\HR.csv"));
         String line;
         hrReader.readLine(); // skip header
 
         while ((line = hrReader.readLine()) != null) {
             String[] cols = line.split(",");
-            User user = new User(cols[0], cols[1], cols[4], cols[3]);
+            User user = new User(cols[0], cols[1], cols[2], cols[3]);
             hrMap.put(user.key(), user);
+           // System.out.println("hrReader: " + line);
         }
 
         hrReader.close();
 
         // 🔹 Load AD file
-        BufferedReader adReader = new BufferedReader(new FileReader("AD.csv"));
+        BufferedReader adReader = new BufferedReader(new FileReader("C:\\Users\\58785\\IIQ\\InProgress\\PostalCode_ftbco.csv"));
         adReader.readLine(); // skip header
 
         while ((line = adReader.readLine()) != null) {
+            //System.out.println("adReader_Raw: " + line);
+
             String[] cols = line.split(",");
 
-            String last = cols[1];
-            String first = cols[2];
-            String postalCode = cols[4];
+            //System.out.println("COLS: " + cols.length + " -> " + Arrays.toString(cols));
+
+            String last = cols[0];
+            String first = cols[1];
+            String postalCode = cols[2];
 
             User adUser = new User(last, first, postalCode, "");
 
-            User hrUser = hrMap.get(adUser.key());
+            User hrUser = hrMap.get(adUser.key());            
 
             if (hrUser == null) {
-                System.out.println(adUser.key() + " → NOT FOUND IN HR");
+                System.out.println(adUser.key() + " → NOT FOUND IN HR" + " " + hrUser);
                 continue;
             }
 
