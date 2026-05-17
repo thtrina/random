@@ -226,3 +226,36 @@ A,LOVE ? ZIP MATCH (05401)
 A,PETER ? ZIP MATCH (34578)
 AAVULA,UPSHAW ? ZIP MATCH (12777)
 ABAT,ANN ? ZIP MATCH (32185)
+
+
+String result;
+
+if (hrUser == null) {
+    result = "NOT FOUND IN HR";
+
+    writer.write(adUser.lastName + "," + adUser.firstName + "," +
+        adUser.zip + ",,," + result + "\n");
+
+    continue;
+}
+
+if (adUser.zip.isEmpty()) {
+    result = "Missing ZIP in AD";
+} else if (hrUser.zip.isEmpty() && hrUser.position.isEmpty()) {
+    result = "Missing ZIP and POSITION in HR";
+} else if (adUser.zip.equals(hrUser.zip)) {
+    result = "ZIP MATCH";
+} else if (adUser.zip.equals(hrUser.position)) {
+    result = "POSITION MATCH";
+} else {
+    result = "NO MATCH";
+}
+
+writer.write(
+    adUser.lastName + "," +
+    adUser.firstName + "," +
+    adUser.zip + "," +
+    hrUser.zip + "," +
+    hrUser.position + "," +
+    result + "\n"
+);
