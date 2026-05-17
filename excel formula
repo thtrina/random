@@ -106,3 +106,85 @@ cleaner version:
       )
    )
 )
+
+
+
+import java.io.*;
+import java.util.*;
+
+class User {
+    String lastName;
+    String firstName;
+    String zip;
+    String position;
+
+    User(String lastName, String firstName, String zip, String position) {
+        this.lastName = clean(lastName);
+        this.firstName = clean(firstName);
+        this.zip = clean(zip);
+        this.position = clean(position);
+    }
+
+    static String clean(String value) {
+        if (value == null) return "";
+        return value.trim().replaceAll("[^0-9A-Za-z]", "");
+    }
+
+    String key() {
+        return lastName + "|" + firstName;
+    }
+}
+
+public class CompareADHR {
+
+    public static void main(String[] args) throws Exception {
+
+        Map<String, User> hrMap = new HashMap<>();
+
+        // 🔹 Load HR file
+        BufferedReader hrReader = new BufferedReader(new FileReader("HR.csv"));
+        String line;
+        hrReader.readLine(); // skip header
+
+        while ((line = hrReader.readLine()) != null) {
+            String[] cols = line.split(",");
+            User user = new User(cols[0], cols[1], cols[4], cols[3]);
+            hrMap.put(user.key(), user);
+        }
+
+        hrReader.close();
+
+        // 🔹 Load AD file
+        BufferedReader adReader = new BufferedReader(new FileReader("AD.csv"));
+        adReader.readLine(); // skip header
+
+        while ((line = adReader.readLine()) != null) {
+            String[] cols = line.split(",");
+
+            String last = cols[1];
+            String first = cols[2];
+            String postalCode = cols[4];
+
+            User adUser = new User(last, first, postalCode, "");
+
+            User hrUser = hrMap.get(adUser.key());
+
+            if (hrUser == null) {
+                System.out.println(adUser.key() + " → NOT FOUND IN HR");
+                continue;
+            }
+
+            if (adUser.zip.isEmpty()) {
+                System.out.println(adUser.key() + " → Missing ZIP in AD");
+            } else if (hrUser.zip.isEmpty()) {
+                System.out.println(adUser.key() + " → Missing ZIP in HR");
+            } else if (adUser.zip.equals(hrUser.zip)) {
+                System.out.println(adUser.key() + " → MATCH (" + hrUser.zip + ")");
+            } else {
+                System.out.println(adUser.key() + " → MISMATCH (HR: " + hrUser.zip + ")");
+            }
+        }
+
+        adReader.close();
+    }
+}
