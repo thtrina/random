@@ -195,3 +195,18 @@ public class CompareADHR {
         adReader.close();
     }
 }
+
+--------------- made a change to print zip if found or position if found:
+if (adUser.zip.isEmpty()) {
+    System.out.println(adUser.key() + " → Missing ZIP in AD");
+} else if (hrUser.zip.isEmpty() && hrUser.position.isEmpty()) {
+    System.out.println(adUser.key() + " → Missing ZIP and POSITION in HR");
+} else if (adUser.zip.equals(hrUser.zip)) {
+    System.out.println(adUser.key() + " → ZIP MATCH (" + hrUser.zip + ")");
+} else if (adUser.zip.equals(hrUser.position)) {
+    System.out.println(adUser.key() + " → POSITION MATCH (" + hrUser.position + ")");
+} else {
+    System.out.println(adUser.key() + 
+        " → NO MATCH (HR ZIP: " + hrUser.zip + 
+        " | HR POSITION: " + hrUser.position + ")");
+}
