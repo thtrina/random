@@ -1,1 +1,3 @@
 
+     #if ($rclo -match '^[HR]\d{3}$') {
+     if ($rclo -match '?i:^(((H|R)[0-9][0-9][0-9]|OFSH|OFSI)$)'{
