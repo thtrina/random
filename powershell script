@@ -56,4 +56,19 @@ $splat = @{
     <p> For additional details please visit our SharePoint site.</p>
 hyperkink for BAccess : https://documentation.sailpoint.com/
 hyperLink for SharePoint : https://documentation.sailpoint.com/SharePoint
+
+
+$body = @"
+<p>Additional access may be requested from 
+    <a href="https://documentation.sailpoint.com/" style="color:#053b80; font-weight:bold;">
+        BAccess
+    </a>.
+</p>
+
+<p>For additional details please visit our 
+    <a href="https://documentation.sailpoint.com/SharePoint" style="color:#053b80; font-weight:bold;">
+        SharePoint site
+    </a>.
+</p>
+"@
     
