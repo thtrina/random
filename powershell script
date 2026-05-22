@@ -3,3 +3,28 @@
      if ($rclo -match '?i:^(((H|R)[0-9][0-9][0-9]|OFSH|OFSI)$)'{
 
 Try: if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
+
+
+
+
+Error: Item =  -> Message = A parameter cannot be found that matches parameter name 'Tofinal'.
+
+
+$to = "ITFOOnboarding@firsthorizon.com"
+
+        $tofinal = @($to,'katrina.harris@firsthorizon.com') | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique  #List of all reciepient email addresses
+
+$splat = @{
+            UseSsl     = $true
+            SMTPServer = $smtpServer
+            From       = $from
+            To         = $to
+            Tofinal    = $tofinal
+            Subject    = $subject
+            Body       = $body
+            BodyAsHtml = $true
+        }
+    
+        
+
+
