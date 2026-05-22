@@ -28,3 +28,22 @@ $splat = @{
         
 
 <p style="color: #333333;"><strong> $plain </strong></p>
+
+
+<table style="border-collapse: collapse; border: 1px solid rgb(5, 59, 128); width: 92.3426%; height: 446.729px;">
+    <tbody>
+    <tr style="height: 80.7292px;">
+    <td style="background-color: #053b80; padding: 10px; width: 97.8778%;"><img src="https://firsthorizon-sb.api.identitynow.com/ums/assets/custom-logos/cc522459-1015-4fee-9a90-4b59c2c135e4/0787592f-8540-41f6-b025-9b50c6391acb.png" alt="width=" height="55"></td>
+    </tr>
+    <tr style="height: 366px;">
+    <td style="font-family: Arial, sans-serif; font-size: 10pt; color: #222222; padding: 20px; width: 97.8778%;">
+    <p>Here is the new Sandbox Active Directory account password for remote new hire $displayName </p>    
+    <p style="color: #1F4E79;"><strong>$plain</strong></p>
+    <p> Employee Number: $sAMAccountName</p>
+    <p> RCLO Code: $rclo</p>
+    <p>Thank you,<br>FirstAccess</p>
+    <p style="color: #333333;"><strong> *This email is system generated and the mailbox is not monitored. Please do not reply. </strong></p>
+    </td>
+    </tr>
+    </tbody>
+    </table>
