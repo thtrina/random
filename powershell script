@@ -81,3 +81,14 @@ $body = @"
     </tr>
     <tr style="height: 366px;">
     <td style="font-family: Arial, sans-serif; font-size: 10pt; color: #222222; padding: 20px; width: 97.8778%;">
+
+
+
+
+<td style="background-color: #053b80; padding: 10px;">
+    <img src="..." height="55" style="vertical-align: middle;">
+    
+    <span style="color:#FFFFFF; font-size:18px; font-weight:bold; margin-left:10px;">
+        Your Company
+    </span>
+</td>
