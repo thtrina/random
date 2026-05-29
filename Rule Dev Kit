@@ -80,3 +80,59 @@ Found in Termination Work Items and Certifications Reassignment
 						}
 					}
 				},
+
+
+
+
+Updated vs
+"Loop 3": {
+  "actionId": "sp:loop:iterator",
+  "attributes": {
+    "context.$": "$.managerId",
+    "input.$": "$.hTTPRequest5.body",
+    "start": "HTTP Request 6",
+    "steps": {
+      "HTTP Request 6": {
+        "actionId": "sp:http",
+        "attributes": {
+          "jsonRequestBody": {
+            "comment": "Previous owner terminated.",
+            "sendNotifications": true,
+            "targetOwnerId": "{{$.loop.context}}"
+          },
+          "method": "post",
+          "param_authenticationRef": "oauth",
+          "param_oauth": {
+            "mapping": {
+              "auth_client_id": "clientId",
+              "auth_client_secret": "clientSecret",
+              "auth_credential_location": "credentialLocation",
+              "auth_token_url": "tokenURL"
+            },
+            "paramType": "1.4"
+          },
+          "requestContentType": "json",
+          "url": "https://firsthorizon.api.identitynow.com/v2025/work-items/{{$.loop.loopInput.id}}/forward"
+        },
+        "nextStep": "End Step - Success 4",
+        "type": "action"
+      },
+      "End Step - Success 4": {
+        "actionId": "sp:operator-success",
+        "type": "success"
+      }
+    }
+  }
+}
+
+
+
+🚫 Before:
+Loop could crash if managerRef = null
+Loop could crash if body = null
+Hard to debug failures
+✅ After:
+Manager existence is validated first
+Loop only runs when safe
+Manager ID is reusable ($.managerId)
+Flow branches cleanly
