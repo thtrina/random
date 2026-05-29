@@ -22,3 +22,15 @@ checking for null:
 				"type": "action",
 				"versionNumber": 2
 			},
+
+
+"Check Manager Exists": {
+  "type": "choice",
+  "choiceList": [
+    {
+      "nextStep": "Get Identity 1",
+      "expression": "$.getIdentity.managerRef != null && $.getIdentity.managerRef.id != null"
+    }
+  ],
+  "defaultStep": "Send Email"
+}
