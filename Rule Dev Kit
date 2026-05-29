@@ -1,7 +1,7 @@
 
 https://developer.sailpoint.com/docs/tools/rule-development-kit#testing-rules
 
-
+Example that needs to be reviewed:
 checking for null: 
 "Get Identity 1": {
         "actionId": "sp:get-identity",
@@ -11,7 +11,7 @@ checking for null:
 
 
 
-
+Found in  RACF Mail Trigger Workflow
 "Get Identity 1": {
 				"actionId": "sp:get-identity",
 				"attributes": {
@@ -34,3 +34,49 @@ checking for null:
   ],
   "defaultStep": "Send Email"
 }
+
+
+Found in Termination Work Items and Certifications Reassignment
+"Loop 3": {
+				"actionId": "sp:loop:iterator",
+				"attributes": {
+					"context.$": "$.getIdentity.managerRef.id",
+					"input.$": "$.hTTPRequest5.body",
+					"start": "HTTP Request 6",
+					"steps": {
+						"End Step - Success 4": {
+							"actionId": "sp:operator-success",
+							"displayName": "",
+							"type": "success"
+						},
+						"HTTP Request 6": {
+							"actionId": "sp:http",
+							"attributes": {
+								"jsonRequestBody": {
+									"comment": "Previous owner terminated.",
+									"sendNotifications": true,
+									"targetOwnerId": "{{$.loop.context}}"
+								},
+								"method": "post",
+								"param_authenticationRef": "oauth",
+								"param_oauth": {
+									"mapping": {
+										"auth_client_id": "clientId",
+										"auth_client_secret": "clientSecret",
+										"auth_credential_location": "credentialLocation",
+										"auth_token_url": "tokenURL"
+									},
+									"paramType": "1.4"
+								},
+								"requestContentType": "json",
+								"requestHeaders": null,
+								"url": "https://firsthorizon.api.identitynow.com/v2025/work-items/{{$.loop.loopInput.id}}/forward",
+								"urlParams": null
+							},
+							"displayName": "",
+							"nextStep": "End Step - Success 4",
+							"type": "action",
+							"versionNumber": 3
+						}
+					}
+				},
