@@ -1,2 +1,24 @@
 
 https://developer.sailpoint.com/docs/tools/rule-development-kit#testing-rules
+
+
+checking for null: 
+"Get Identity 1": {
+        "actionId": "sp:get-identity",
+        "attributes": {
+          "id.$": "$.getIdentity.managerRef.id"
+        },
+
+
+
+
+"Get Identity 1": {
+				"actionId": "sp:get-identity",
+				"attributes": {
+					"id.$": "$.getIdentity.managerRef.id"
+				},
+				"displayName": "",
+				"nextStep": "Send Email",
+				"type": "action",
+				"versionNumber": 2
+			},
