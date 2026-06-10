@@ -2342,3 +2342,83 @@ BUSINESS BNKG RM II-NMLS:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
 BUSINESS BNKING RM - NMLS:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
 BUSINESS BNKING RM SR - N:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++code updated________________________________
+
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        String inputFile = "C:\\Users\\58785\\IIQ\\FlatFiles\\MyTestFiles\\Wire Authority Job Title Matrix_IIQ_PROD.xml";
+        String outputFile = "C:\\Users\\58785\\IIQ\\FlatFiles\\MyTestFiles\\Output.txt";
+
+        Map<String, List<String>> dataMap = new LinkedHashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+
+            String line;
+            String currentKey = null;
+
+            Pattern keyPattern = Pattern.compile("<entry key=\"(.*?)\">");
+            Pattern valuePattern = Pattern.compile("<String>(.*?)</String>");
+
+            while ((line = reader.readLine()) != null) {
+
+                // Match key
+                Matcher keyMatcher = keyPattern.matcher(line);
+                if (keyMatcher.find()) {
+                    currentKey = keyMatcher.group(1);
+                    dataMap.put(currentKey, new ArrayList<>());
+                    continue;
+                }
+
+                // Match values
+                Matcher valueMatcher = valuePattern.matcher(line);
+                if (valueMatcher.find() && currentKey != null) {
+                    String value = valueMatcher.group(1);
+
+                    // Remove commas from numbers
+                    value = value.replace(",", "");
+
+                    dataMap.get(currentKey).add(value);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Write output
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+
+            for (Map.Entry<String, List<String>> entry : dataMap.entrySet()) {
+
+                String key = entry.getKey();
+                List<String> values = entry.getValue();
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(key).append(":( ");
+
+                for (int i = 0; i < values.size(); i++) {
+                    sb.append("\\\"").append(values.get(i)).append("\\\"");
+                    if (i < values.size() - 1) {
+                        sb.append(",");
+                    }
+                }
+
+                sb.append(")");
+
+                writer.write(sb.toString());
+                writer.newLine();
+            }
+
+            System.out.println("File written successfully!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
