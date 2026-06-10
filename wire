@@ -1,1 +1,2344 @@
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class App {
+
+        // Modes:
+    //   to-csv   : input is the TITLE:(\"v1\",\"v2\",...) text format, output is CSV with Job_Title,Value(s)
+    //   to-text  : input is CSV with Job_Title,Value(s), output is the TITLE:(\"v1\",\"v2\",...) text format
+    //
+    // Options:
+    //   --in <path>           input file path
+    //   --out <path>          output file path
+    //   --mode to-csv|to-text
+    //   --joiner pipe|comma|semicolon|<literal>  (how to join multiple values in the single Value(s) column; default: pipe)
+    //   --input-escaped-quotes true|false        (when mode=to-csv, if the input values are \"...\"; default: true)
+    //   --output-escaped-quotes true|false       (when mode=to-text, whether to emit \"...\" or plain quotes; default: true)
+    //
+    // CSV expectations (mode=to-text):
+    //   Header row must be: Job_Title,Value(s)
+    //   The Value(s) cell contains multiple values joined by --joiner (default: |).
+    //   If you choose --joiner comma, the CSV writer must quote that cell.
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("-------Start------------");
+        String inputFile = "C:\\Users\\58785\\IIQ\\FlatFiles\\MyTestFiles\\Wire Authority Job Title Matrix_IIQ_PROD.xml";
+        //String outputFile = "C:\\Users\\58785\\IIQ\\FlatFiles\\MyTestFiles\\Wire Authority Job Title Matrix_IIQ_PROD_Output.csv";
+
+        // int write_count = 0;
+        String line;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+            while ((line = reader.readLine()) != null) {   
+                System.out.println(line);
+            }        
+        
+        }catch (IOException e) {
+         System.err.println("File error: " + e.getMessage());
+        System.err.println("Error reading input file: " + inputFile);
+        e.printStackTrace();
+
+         }
+    }
+}    
+    
+
+========================Input file ====================================================
+
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="Wire Authority Job Title Matrix">
+  <Attributes>
+    <Map>
+      <entry key="ABL SPECIALIST">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ABL SPECIALIST SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ACCOUNTANT">
+        <value>
+          <List>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ACCOUNTANT II">
+        <value>
+          <List>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ACCOUNTANT III">
+        <value>
+          <List>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ACCOUNTING MANAGER">
+        <value>
+          <List>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ACCOUNTING MANAGER II">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ACCOUNTING REP">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ACCOUNTING REP SR">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ASST BRANCH MGR">
+        <value>
+          <List>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ASST BRANCH MGR II">
+        <value>
+          <List>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BANKING CENTER MGR">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BANKING CENTER MGR DUAL">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BANKING CENTER MGR II">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BANKING CENTER MGR III">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BANKING CENTER MGR IV">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BRANCH BUS DEVEL OFC">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BRANCH BUS DEVEL OFC II">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BRANCH BUS DEVEL OFC III">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS BANKING DIRECTOR">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>25,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS BANKING MGR SR">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS BANKING RM">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS BANKING RM II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS BANKING RM SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS BNKG RM II-NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS BNKING RM - NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS BNKING RM SR - N">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS DEV OFFICER">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS DEV OFFICER II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="BUSINESS DEV OFFICER III">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT ADMIN MANAGER">
+        <value>
+          <List>
+            <String>100,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT REL ASST">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT REP">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT SPECIALIST">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT SPECIALIST II">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT SPECIALIST III">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT SPECIALIST MGR">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT SPECIALIST MGR II">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CLIENT SPECIALIST MGR SR">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BKNG - LEAD">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BNKG DIRECTOR">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BNKG MANAGER">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BNKG MANAGER II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BNKG MANAGER III">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BNKG MANAGER SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BNKG SALE MGSR NMLS">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BNKG SALES MGR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML BNKG SALES MGR SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CLIENT SPEC">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CLIENT SPEC - NMLS">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CLIENT SPEC SR">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CLIENT SPEC SR - NM">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CLIENT TEAM LD-NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CLIENT TEAM LEAD">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CONSULTANT">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CONSULTANT II">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML CONSULTANT SR">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML GROUP MGR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML GROUP MGR SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML MANAGER">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML MANAGER II">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML MANAGER III">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML MANAGER SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML RM">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML RM - NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML RM II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML RM II - NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML RM III">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML RM III - NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML RM SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMML RM SR - NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMMUNITY BANKER">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMMUNITY BANKER II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="COMMUNITY BANKER SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CORP REAL ESTATE SPEC">
+        <value>
+          <List>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CORP REAL ESTATE SPEC SR">
+        <value>
+          <List>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CRE RM">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CRE RM II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CRE RM SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT ANALYST">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT ANALYST II">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT ANALYST SR">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT CONSULTANT">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT CONSULTANT II">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT CONSULTANT SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT MANAGER II">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT MANAGER III">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CREDIT MANAGER SR">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="CUSTOMER EXP SUPERVISOR">
+        <value>
+          <List>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ENERGY LEND PORT MGR SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ENERGY LENDING PORT MGR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ENERGY LENDING REL MGR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="ENERGY LENDING REL MGR SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="EQUIP FIN CLIENT REL AST"/>
+      <entry key="EQUIP FIN CLIENT SPEC"/>
+      <entry key="EQUIP FIN OPS MGR II"/>
+      <entry key="EQUIP FIN PORT MGR SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF CLIENT SPECIALIST">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF CLIENT SPECIALIST SR">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF DIRECTOR">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF FINANCIAL ANALYST">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF FINANCIAL ANALYST SR">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF OPERATIONS MANAGER">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF OPERATIONS MGR SR">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF PROCESSOR">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FHNF PROCESSOR SR">
+        <value>
+          <List>
+            <String>250,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCE MANAGER">
+        <value>
+          <List>
+            <String>1,000,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCE MANAGER II">
+        <value>
+          <List>
+            <String>1,000,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCE MANAGER SR">
+        <value>
+          <List>
+            <String>1,000,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCIAL ANALYST">
+        <value>
+          <List>
+            <String>1,500,000,000</String>
+            <String>550,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCIAL ANALYST II">
+        <value>
+          <List>
+            <String>1,500,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCIAL ANALYST SR">
+        <value>
+          <List>
+            <String>1,500,000,000</String>
+            <String>550,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCIAL CONSULTANT">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCIAL CONSULTANT II">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="FINANCIAL CONSULTANT SR">
+        <value>
+          <List>
+            <String>1,000,000,000</String>
+            <String>550,000,000</String>
+            <String>50,000,000</String>
+            <String>500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="HR CONSULTANT">
+        <value>
+          <List>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="HR CONSULTANT II">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="HR CONSULTANT SR">
+        <value>
+          <List>
+            <String>500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="HR MANAGER">
+        <value>
+          <List>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="HR MANAGER III">
+        <value>
+          <List>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="HR MANAGER SR">
+        <value>
+          <List>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL ADVISOR">
+        <value>
+          <List>
+            <String>30,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL ANALYST">
+        <value>
+          <List>
+            <String>5,000,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL CONS">
+        <value>
+          <List>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL CONS SR">
+        <value>
+          <List>
+            <String>5,000,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL MGR II">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL PRCSR SR">
+        <value>
+          <List>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL PROCESSOR">
+        <value>
+          <List>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL SPEC">
+        <value>
+          <List>
+            <String>30,000,000</String>
+            <String>5,000,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="INTERNATIONAL SUPV">
+        <value>
+          <List>
+            <String>30,000,000</String>
+            <String>5,000,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="LEGAL COUNSEL">
+        <value>
+          <List>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="LOAN OPS PROCESSOR">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>30,000,000</String>
+            <String>10,000,000</String>
+            <String>2,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="LOAN OPS PROCESSOR SR">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>30,000,000</String>
+            <String>10,000,000</String>
+            <String>2,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MANAGING COUNSEL">
+        <value>
+          <List>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MARKET PRESIDENT">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MARKET PRESIDENT -NMLS">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MARKET PRESIDENT II">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MARKET PRESIDENT II -NMLS">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG CHIEF OPERATING OFF">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG CLOSING FULFILL MGR">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG DIR OF OPS II">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG LOAN CLOSING MGR SR">
+        <value>
+          <List>
+            <String>15,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG LOAN PROCESSOR">
+        <value>
+          <List>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG POST CLOSING MANAGER">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG POST CLOSING MGR SR">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG SEC MKT CONS II">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG SEC MKT SPEC">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG W&apos;HOUSE SPEC">
+        <value>
+          <List>
+            <String>999,999</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG W&apos;HOUSE SPEC SR">
+        <value>
+          <List>
+            <String>999,999</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="MTG W&apos;HOUSE SUPERVISOR">
+        <value>
+          <List>
+            <String>40,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS ANALYST">
+        <value>
+          <List>
+            <String>2,000,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS ANALYST SR">
+        <value>
+          <List>
+            <String>2,000,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS CONSULTANT">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS CONSULTANT SR">
+        <value>
+          <List>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS LEAD">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>25,000,000</String>
+            <String>2,000,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS MANAGER">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>10,000,000</String>
+            <String>2,000,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS MANAGER II">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>10,000,000</String>
+            <String>2,000,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS MANAGER III">
+        <value>
+          <List>
+            <String>100,000,000</String>
+            <String>50,000,000</String>
+            <String>2,000,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS MANAGER SR">
+        <value>
+          <List>
+            <String>100,000,000</String>
+            <String>50,000,000</String>
+            <String>2,000,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS PROCESSOR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>2,000,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS PROCESSOR SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>2,000,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS SPECIALIST">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>2,000,000</String>
+            <String>15,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS SPECIALIST II">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>2,000,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="OPS SPECIALIST SR">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PORTFOLIO MANAGER">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PORTFOLIO MANAGER - NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PORTFOLIO MANAGER II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PORTFOLIO MANAGER SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PORTFOLIO MGR II - NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PORTFOLIO MGR SR - NMLS">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BANKER">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BANKER II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BANKER II, FINCTR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BANKER SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BANKER SR, FINCTR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BANKER, FINCTR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BANKING GROUP MGR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNK REL MGR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNK REL MGR II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNK REL MGR III">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNKG CLNT SPEC">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNKG CLNT SPEC SR">
+        <value>
+          <List>
+            <String>150,000</String>
+            <String>100,000</String>
+            <String>75,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNKG CONSULTANT">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNKG COORD">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNKG DIRECTOR">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNKG MGR SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNKG SALES MGR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="PRIVATE BNKG SALES MGR SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REGIONAL BANK COO">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REGIONAL GROUP MGR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REGIONAL PRES - NMLS">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REGIONAL PRES SR - NMLS">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REGIONAL PRESIDENT">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REGIONAL PRESIDENT SR">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REHAB CREDIT CONS SR">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REHAB CREDIT EXECUTIVE">
+        <value>
+          <List>
+            <String>25,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REHAB CREDIT MGR II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REHAB CREDIT MGR SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REHAB CREDIT OFFICER">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="REHAB CREDIT OFFICER SR">
+        <value>
+          <List>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RELATIONSHIP BANKER">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>150,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RELATIONSHIP BANKER SR">
+        <value>
+          <List>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL BANKING EXEC">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL CONSULTANT">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL GROUP MANAGER">
+        <value>
+          <List>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL GROUP MANAGER SR">
+        <value>
+          <List>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+            <String>500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL MARKET MANAGER">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL MARKET SUPPORT">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL MARKET SUPPORT II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL MARKET SUPPORT MGR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL RM">
+        <value>
+          <List>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RETAIL RM SR">
+        <value>
+          <List>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RISK ADVISOR">
+        <value>
+          <List>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RISK ANALYST">
+        <value>
+          <List>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RISK ANALYST SR">
+        <value>
+          <List>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RISK CMPLNC MGR">
+        <value>
+          <List>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RISK CMPLNC OFFICER">
+        <value>
+          <List>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RISK CMPLNC OFFICER II">
+        <value>
+          <List>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RISK MANAGER">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="RISK MANAGER III">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SECONDARY MARKETING DIR">
+        <value>
+          <List>
+            <String>4,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SPECIALTY DIRECTOR">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SPECIALTY DIRECTOR - NMLS">
+        <value>
+          <List>
+            <String>35,000,000</String>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SPECIALTY DIRECTOR SR">
+        <value>
+          <List>
+            <String>50,000,000</String>
+            <String>25,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SPECIALTY SALES">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SPECIALTY SALES MGR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SPECIALTY SALES MGR SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>5,000,000</String>
+            <String>2,500,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SYND ACCOUNT MANAGER">
+        <value>
+          <List>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SYND ACCOUNT MANAGER SR">
+        <value>
+          <List>
+            <String>100,000,000</String>
+            <String>75,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SYND SUPPORT MANAGER">
+        <value>
+          <List>
+            <String>100,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="SYND SUPPORT MANAGER SR">
+        <value>
+          <List>
+            <String>110,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TELLER">
+        <value>
+          <List>
+            <String>100,000</String>
+            <String>50,000</String>
+            <String>25,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TELLER OPS COORDINATOR">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>150,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TELLER SR">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>150,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TREASURER">
+        <value>
+          <List>
+            <String>550,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST ACCOUNT OFFICER">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST ACCOUNT OFFICER II">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST ACCOUNT OFFICER SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST ADMIN MANAGER">
+        <value>
+          <List>
+            <String>200,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST ADMIN MGR II">
+        <value>
+          <List>
+            <String>200,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST ADMIN MGR III">
+        <value>
+          <List>
+            <String>200,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST COORDINATOR">
+        <value>
+          <List>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST REGIONAL MGR">
+        <value>
+          <List>
+            <String>200,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST REGIONAL MGR SR">
+        <value>
+          <List>
+            <String>200,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST RM">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST RM SR">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="TRUST SERVICES MGR SR">
+        <value>
+          <List>
+            <String>200,000,000</String>
+            <String>50,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="UNIVERSAL BANKER">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>150,000</String>
+            <String>50,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="UNIVERSAL BANKER SR">
+        <value>
+          <List>
+            <String>1,000,000</String>
+            <String>500,000</String>
+            <String>250,000</String>
+            <String>100,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="VIRTL BNKR FHCS SR - NMLS">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="VIRTUAL BANKER FHCS">
+        <value>
+          <List>
+            <String>500,000</String>
+            <String>250,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="WMT CLIENT SPECIALIST">
+        <value>
+          <List>
+            <String>5,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="WMT CONSULTANT">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="WMT CONSULTANT SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="WMT MANAGER">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="WMT MANAGER II">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="WMT MANAGER SR">
+        <value>
+          <List>
+            <String>10,000,000</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="WMT TRUST ANALYST">
+        <value>
+          <List>
+            <String>25,000,000</String>
+            <String>10,000,000</String>
+            <String>1,000,000</String>
+          </List>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+</Custom>
+==========================================output file =======================================
+
+ABL SPECIALIST SR:(\"10000000\",\"5000000\",\"2500000\")
+ABL SPECIALIST:(\"10000000\",\"5000000\",\"2500000\")
+ACCOUNTANT:(\"2500000\")
+ACCOUNTANT II:(\"2500000\")
+ACCOUNTANT III:(\"2500000\")
+ACCOUNTING MANAGER:(\"2500000\")
+ACCOUNTING MANAGER II:(\"50000000\")
+ACCOUNTING REP:(\"4500000\")
+ACCOUNTING REP SR:(\"4500000\")
+ASST BRANCH MGR:(\"1000000\",\"500000\",\"250000\",\"100000\")
+ASST BRANCH MGR II:(\"1000000\",\"500000\",\"250000\",\"100000\")
+BANKING CENTER MGR:(\"2500000\",\"1000000\",\"500000\",\"250000\")
+BANKING CENTER MGR DUAL:(\"2500000\",\"1000000\",\"500000\",\"250000\")
+BANKING CENTER MGR II:(\"2500000\",\"1000000\",\"500000\",\"250000\")
+BANKING CENTER MGR III:(\"2500000\",\"1000000\",\"500000\",\"250000\")
+BANKING CENTER MGR IV:(\"2500000\",\"1000000\",\"500000\",\"250000\")
+BRANCH BUS DEVEL OFC:(\"2500000\",\"1000000\",\"500000\",\"250000\")
+BRANCH BUS DEVEL OFC II:(\"2500000\",\"1000000\",\"500000\",\"250000\")
+BRANCH BUS DEVEL OFC III:(\"2500000\",\"1000000\",\"500000\",\"250000\")
+BUSINESS BANKING DIRECTOR:(\"50000000\",\"25000000\")
+BUSINESS BANKING MGR SR:(\"35000000\",\"25000000\",\"10000000\",\"5000000\")
+BUSINESS BANKING RM:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
+BUSINESS BANKING RM II:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
+BUSINESS BANKING RM SR:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
+BUSINESS BNKG RM II-NMLS:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
+BUSINESS BNKING RM - NMLS:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
+BUSINESS BNKING RM SR - N:(\"10000000\",\"5000000\",\"2500000\",\"1000000\")
+
