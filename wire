@@ -2490,3 +2490,88 @@ public class CompareFiles {
                 .replaceAll("\\s+", " ");         // collapse extra spaces
     }
 }
+
+----------------------------------------------------------------------------
+
+import java.io.*;
+import java.util.*;
+
+public class CompareStructuredFiles {
+
+    public static void main(String[] args) throws Exception {
+
+        String file1 = "file1.txt";
+        String file2 = "file2.txt";
+        String outputFile = "differences.txt";
+
+        Map<String, List<String>> map1 = loadFile(file1);
+        Map<String, List<String>> map2 = loadFile(file2);
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+        Set<String> allKeys = new HashSet<>();
+        allKeys.addAll(map1.keySet());
+        allKeys.addAll(map2.keySet());
+
+        for (String key : allKeys) {
+
+            List<String> list1 = map1.getOrDefault(key, new ArrayList<>());
+            List<String> list2 = map2.getOrDefault(key, new ArrayList<>());
+
+            Set<String> set1 = new HashSet<>(list1);
+            Set<String> set2 = new HashSet<>(list2);
+
+            // Missing in file2
+            for (String val : set1) {
+                if (!set2.contains(val)) {
+                    writer.write("Missing data for \"" + key + "\": " + val);
+                    writer.newLine();
+                }
+            }
+
+            // Missing in file1
+            for (String val : set2) {
+                if (!set1.contains(val)) {
+                    writer.write("Missing data for \"" + key + "\": " + val);
+                    writer.newLine();
+                }
+            }
+        }
+
+        writer.close();
+        System.out.println("Comparison complete. See " + outputFile);
+    }
+
+    // 🔹 Load file into Map<Title, List<Values>>
+    private static Map<String, List<String>> loadFile(String fileName) throws Exception {
+        Map<String, List<String>> map = new HashMap<>();
+
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        String line;
+
+        while ((line = br.readLine()) != null) {
+
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(":", 2);
+            if (parts.length < 2) continue;
+
+            String key = parts[0].trim();
+            String[] values = parts[1].split("\\|");
+
+            List<String> cleanedValues = new ArrayList<>();
+
+            for (String val : values) {
+                val = val.trim().replaceAll("[\\$,]", "");
+                if (!val.isEmpty()) {
+                    cleanedValues.add(val);
+                }
+            }
+
+            map.put(key, cleanedValues);
+        }
+
+        br.close();
+        return map;
+    }
+}
