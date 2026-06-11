@@ -2427,3 +2427,66 @@ ASST BRANCH MGR II	 $1,000,000 	 $500,000 	 $250,000 	 $100,000 	 $2,000,000
 ASST BRANCH MGR II:(\"1000000\",\"500000\",\"250000\",\"100000\");
 
 ASSTBANKINGCNTRMGRII:\"1000000\",\"500000\",\"250000\",\"100000\",\"2000000\",\"\";
+
+
+
+----------------------
+import java.io.*;
+import java.util.*;
+
+public class CompareFiles {
+
+    public static void main(String[] args) throws Exception {
+
+        String file1 = "file1.txt";
+        String file2 = "file2.txt";
+
+        List<String> list1 = readFile(file1);
+        List<String> list2 = readFile(file2);
+
+        Set<String> set1 = new HashSet<>(list1);
+        Set<String> set2 = new HashSet<>(list2);
+
+        // In file1 but NOT in file2
+        System.out.println("=== Missing in File 2 ===");
+        for (String line : set1) {
+            if (!set2.contains(line)) {
+                System.out.println(line);
+            }
+        }
+
+        // In file2 but NOT in file1
+        System.out.println("\n=== Missing in File 1 ===");
+        for (String line : set2) {
+            if (!set1.contains(line)) {
+                System.out.println(line);
+            }
+        }
+    }
+
+    private static List<String> readFile(String fileName) throws Exception {
+        List<String> lines = new ArrayList<>();
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+
+        String line;
+        while ((line = br.readLine()) != null) {
+
+            // 🔧 Normalize formatting
+            line = normalize(line);
+
+            if (!line.isEmpty()) {
+                lines.add(line);
+            }
+        }
+        br.close();
+        return lines;
+    }
+
+    private static String normalize(String line) {
+        return line
+                .trim()
+                .replaceAll("\\s*\\|\\s*", "|")   // normalize pipe spacing
+                .replaceAll("\\s*:\\s*", ":")     // normalize colon spacing
+                .replaceAll("\\s+", " ");         // collapse extra spaces
+    }
+}
