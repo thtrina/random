@@ -1,1 +1,5 @@
 
+Bikash and I confirmed those emails notifications came from Sandbox. Since the team wants to continue to receive those notifications, Bikash and I reviewed the script in Sandbox and updated the subject and email body to have the word ‘Sandbox’ to help identify which environment triggered the email. 
+- The second issues about the emails going to managers from Sandbox is another process that needs to be discussed how to handle but for now, we stopped those notifications in Sandbox going to managers and operation support and only sent to IAM mailbox.
+-	Third issue about why the account was created even though the ISC showed failure(account already exist) – a new account was created, example Kane, James1 so the script did indeed create a new account so the password was sent. That whole process should be reviewed to look for existing accounts before a new one is created. 
+-	Fourth issue – template updates. – We just need another task created for those changes. The ones test and approved are what went in that change request. 
