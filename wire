@@ -2684,3 +2684,137 @@ public class CompareStructuredFilesEnhanced {
         return sb.toString();
     }
 }
+--------------------------------------------------
+
+import java.io.*;
+import java.util.*;
+
+public class CompareStructuredFilesFinal {
+
+    public static void main(String[] args) throws Exception {
+
+        String file1 = "file1.txt";   // MASTER
+        String file2 = "file2.txt";   // Compare against
+        String outputFile = "differences.txt";
+
+        Map<String, List<Integer>> map1 = loadFile(file1);
+        Map<String, List<Integer>> map2 = loadFile(file2);
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+        // ✅ Check missing from file2 (master comparison)
+        for (String key : map1.keySet()) {
+
+            if (!map2.containsKey(key)) {
+                writer.write("Missing ENTIRE entry for \"" + key + "\"");
+                writer.newLine();
+                continue;
+            }
+
+            List<Integer> list1 = map1.get(key);
+            List<Integer> list2 = map2.get(key);
+
+            Set<Integer> set2 = new HashSet<>(list2);
+
+            List<Integer> missingValues = new ArrayList<>();
+
+            for (Integer val : list1) {
+                if (!set2.contains(val)) {
+                    missingValues.add(val);
+                }
+            }
+
+            if (!missingValues.isEmpty()) {
+                Collections.sort(missingValues);
+                writer.write("Missing data for \"" + key + "\": "
+                        + joinList(missingValues));
+                writer.newLine();
+            }
+        }
+
+        // ✅ Check extras in file2
+        for (String key : map2.keySet()) {
+
+            if (!map1.containsKey(key)) {
+                writer.write("Extra ENTIRE entry in file2: \"" + key + "\"");
+                writer.newLine();
+                continue;
+            }
+
+            List<Integer> list1 = map1.get(key);
+            List<Integer> list2 = map2.get(key);
+
+            Set<Integer> set1 = new HashSet<>(list1);
+
+            List<Integer> extraValues = new ArrayList<>();
+
+            for (Integer val : list2) {
+                if (!set1.contains(val)) {
+                    extraValues.add(val);
+                }
+            }
+
+            if (!extraValues.isEmpty()) {
+                Collections.sort(extraValues);
+                writer.write("Extra data in file2 for \"" + key + "\": "
+                        + joinList(extraValues));
+                writer.newLine();
+            }
+        }
+
+        writer.close();
+        System.out.println("Comparison complete. See " + outputFile);
+    }
+
+    // 🔹 Load file into Map<Title, List<Integer>>
+    private static Map<String, List<Integer>> loadFile(String fileName) throws Exception {
+
+        Map<String, List<Integer>> map = new HashMap<>();
+
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        String line;
+
+        while ((line = br.readLine()) != null) {
+
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(":", 2);
+            if (parts.length < 2) continue;
+
+            String key = parts[0].trim();
+            String[] values = parts[1].split("\\|");
+
+            List<Integer> cleanedValues = new ArrayList<>();
+
+            for (String val : values) {
+                val = val.trim().replaceAll("[\\$,]", "");
+
+                if (!val.isEmpty()) {
+                    try {
+                        cleanedValues.add(Integer.parseInt(val));
+                    } catch (NumberFormatException e) {
+                        // skip invalid values safely
+                    }
+                }
+            }
+
+            map.put(key, cleanedValues);
+        }
+
+        br.close();
+        return map;
+    }
+
+    // 🔹 Convert list to comma-separated string
+    private static String joinList(List<Integer> list) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i));
+            if (i < list.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+}
