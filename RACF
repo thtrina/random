@@ -1,2 +1,35 @@
 https://community.sailpoint.com/t5/Connector-Directory/Mainframe-Integration-Modules/ta-p/78846#toc-hId-448323661
 
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule name="Delete Action Rule RACF" type="BeforeProvisioning">
+  <Description>Before Provisioning Rule that prevents RACF account creation for non-human identities or inactive employees.</Description>
+  <Source><![CDATA[
+import java.util.*;
+import sailpoint.object.*;
+import sailpoint.object.ProvisioningPlan;
+import sailpoint.object.ProvisioningPlan.AccountRequest;
+import sailpoint.object.ProvisioningPlan.AttributeRequest;
+ 
+List accounts = plan.getAccountRequests();
+if (accounts != null)
+{
+    for (AccountRequest req : accounts)
+    {
+        if (AccountRequest.Operation.Delete.equals(req.getOperation()))
+        {
+            req.add(new AttributeRequest("MODE", ProvisioningPlan.Operation.Set, "DELETE"));
+            req.add(new AttributeRequest("DELAY", ProvisioningPlan.Operation.Set, "N"));
+        }
+        if (AccountRequest.Operation.Create.equals(req.getOperation()))
+        {
+            String userId = req.getNativeIdentity();
+            if (userId != null)
+            {
+                req.setNativeIdentity(userId.toUpperCase());
+            }
+        }
+    }
+}
+  ]]></Source>
+</Rule>
