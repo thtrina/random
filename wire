@@ -3030,3 +3030,124 @@ public class App {
         return sb.toString();
     }
 }
+--------------UPDATED CODE
+import java.io.*;
+import java.util.*;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        System.out.println("Starting!");
+
+        String file1 = "C:\\Users\\58785\\IIQ\\FlatFiles\\MyTestFiles\\Existing_ISC_Wire Matrix_formatted.txt";
+        String file2 = "C:\\Users\\58785\\IIQ\\FlatFiles\\MyTestFiles\\Wire Matrix_formatted_updated.txt";
+        String outputFile = "C:\\Users\\58785\\IIQ\\FlatFiles\\MyTestFiles\\delta_updated.txt";
+
+        Map<String, List<Integer>> map1 = loadFile(file1);
+        Map<String, List<Integer>> map2 = loadFile(file2);
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+        // 🔹 Only check what exists in file2 but NOT in file1
+        for (String key : map2.keySet()) {
+
+            // 🔴 Entire role not in master
+            if (!map1.containsKey(key)) {
+                List<Integer> newValues = map2.get(key);
+                Collections.sort(newValues);
+
+                writer.write("New Job-Title added in WireMatrix: "
+                        + key + ": " + joinListWithBackslash(newValues));
+                writer.newLine();
+                continue;
+            }
+
+            List<Integer> masterValues = map1.get(key);
+            List<Integer> file2Values = map2.get(key);
+
+            Set<Integer> masterSet = new HashSet<>(masterValues);
+
+            List<Integer> extraValues = new ArrayList<>();
+
+            for (Integer val : file2Values) {
+                if (!masterSet.contains(val)) {
+                    extraValues.add(val);
+                }
+            }
+
+            if (!extraValues.isEmpty()) {
+                Collections.sort(extraValues);
+                writer.write("Extra Limits added on WireMatrix for \"" + key + "\": "
+                        + joinList(extraValues));
+                writer.newLine();
+            }
+        }
+
+        writer.close();
+        System.out.println("Delta comparison complete. See " + outputFile);
+    }
+
+    // 🔹 Load file into Map<Title, List<Integer>>
+    private static Map<String, List<Integer>> loadFile(String fileName) throws Exception {
+
+        Map<String, List<Integer>> map = new LinkedHashMap<>();
+
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        String line;
+
+        while ((line = br.readLine()) != null) {
+
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(":", 2);
+            if (parts.length < 2) continue;
+
+            String key = parts[0].trim();
+            String[] values = parts[1].split("\\|");
+
+            List<Integer> cleanedValues = new ArrayList<>();
+
+            for (String val : values) {
+                val = val.trim().replaceAll("[\\$,]", "");
+
+                if (!val.isEmpty()) {
+                    try {
+                        cleanedValues.add(Integer.parseInt(val));
+                    } catch (NumberFormatException e) {
+                        // skip bad data
+                    }
+                }
+            }
+
+            map.put(key, cleanedValues);
+        }
+
+        br.close();
+        return map;
+    }
+
+    // 🔹 Join list into comma-separated string
+    private static String joinList(List<Integer> list) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i));
+            if (i < list.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+
+    // 🔹 Join list with backslash (for new job titles)
+    private static String joinListWithBackslash(List<Integer> list) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i));
+            if (i < list.size() - 1) {
+                sb.append("\\");
+            }
+        }
+        return sb.toString();
+    }
+}
