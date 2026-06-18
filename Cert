@@ -1,0 +1,34 @@
+{
+  "id": "5ec18cef39020d6fd7a60ad3970aba61",
+  "name": "Identity Attribute Campaign Filter",
+  "owner": "SailPoint Support",
+  "mode": "INCLUSION",
+  "isSystemFilter": false,
+  "description": "Campaign filter to certify data based on an identity attribute's specified property.",
+  "criteriaList": [
+    {
+      "type": "IDENTITY_ATTRIBUTE",
+      "property": "displayName",
+      "value": "Allie",
+      "operation": "EQUALS",
+      "negateResult": false,
+      "shortCircuit": false,
+      "recordChildMatches": false,
+      "id": "5ec18cef39020d6fd7a60ad3970aba61",
+      "suppressMatchedItems": false
+    },
+    {
+      "type": "IDENTITY_ATTRIBUTE",
+      "property": "displayName",
+      "value": "Allie",
+      "operation": "EQUALS",
+      "negateResult": false,
+      "shortCircuit": false,
+      "recordChildMatches": false,
+      "id": "5ec18cef39020d6fd7a60ad3970aba61",
+      "suppressMatchedItems": false
+    }
+  ]
+}
+
+@accessModelMetadata(*)
