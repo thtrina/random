@@ -75,3 +75,58 @@ for (let i = 0; i < keys.length; i++) {
         }
     });
 }
+--------------------payload trying to request 
+[
+    {
+        "name": "NOACCESS",
+        "type": "ENTITLEMENT",
+        "id": "75dd0b56c3ac391ca119a70b266aaaf3",        
+        "accessRequestPhases": [
+            {
+                
+                "finished": null,
+                "name": "SOD_PHASE",
+                "result": null,
+                "state": "EXECUTING",
+                "phaseReference": "sodViolationContext"
+            }
+        ],
+        "accountActivityItemId": "9a21a4b07e994470bf1a7cb798a24a67",
+        "requestType": "GRANT_ACCESS",        
+        "requester": {
+            "type": "IDENTITY",
+            "id": "4d41d33c4c49450a8ee3ed3f8b341fc3",
+            "name": "ADAPA, SAI DURGA"
+        },
+        "requestedFor": {
+            "type": "IDENTITY",
+            "id": "ae785a5827a741339901fd207db2eab3"
+           
+        },
+        "requesterComment": null,
+        "sodViolationContext": null,
+        "provisioningDetails": null,
+        "preApprovalTriggerDetails": null,
+        "description": "COMMON NO ACCESS DEFAULT GROUP -             DO NOT PERMIT ACCESS",
+        "removeDate": null,
+        "startDate": null,
+        "cancelable": true,       
+        "clientMetadata": null,
+        "form": null,
+        "identityType": "HUMAN",
+        "accessRequestContext": null,
+        "requestedAccounts": [
+            {
+                "sourceName": "RACF",
+                "accountId": null,
+                "accountUuid": null,
+                "type": "ACCOUNT",
+                "id": null,
+                "name": null
+            }
+        ],
+        "privilegeLevel": "None",
+        "jitDetails": null,
+        "privileged": null
+    }
+]
