@@ -45,3 +45,5 @@ pm.request.body.raw = JSON.stringify(cleanedBody, null, 2);
 
 ////////////// how to find the attributes that causing the bad request ..............................
 
+{"detailCode":"400.0 Bad request syntax","trackingId":"280a1c25f73b4a65982068ea0d92fd8d","messages":[{"locale":"en-US","localeOrigin":"DEFAULT","text":"The request could not be parsed."},{"locale":"und","localeOrigin":"REQUEST","text":"The request could not be parsed."}],"causes":[]}
+
