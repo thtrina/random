@@ -130,3 +130,34 @@ for (let i = 0; i < keys.length; i++) {
         "privileged": null
     }
 ]
+
+-------------- use this instead
+{
+  "requestedFor": [
+    "ae785a5827a741339901fd207db2eab3"
+  ],
+  "requestType": "GRANT_ACCESS",
+  "requestedItems": [
+    {
+      "id": "75dd0b56c3ac391ca119a70b266aaaf3",
+      "type": "ENTITLEMENT"
+    }
+  ],
+  "comment": "Requesting NOACCESS entitlement"
+}
+------------------------------------------------------------------------------- or prescript to exclude attributes
+const badAttributes = [
+    "id",
+    "accessRequestPhases",
+    "accountActivityItemId",
+    "cancelable",
+    "clientMetadata",
+    "identityType",
+    "jitDetails",
+    "privileged",
+    "provisioningDetails",
+    "preApprovalTriggerDetails",
+    "accessRequestContext",
+    "requester",
+    "requestedAccounts"
+];
