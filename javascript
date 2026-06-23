@@ -47,3 +47,31 @@ pm.request.body.raw = JSON.stringify(cleanedBody, null, 2);
 
 {"detailCode":"400.0 Bad request syntax","trackingId":"280a1c25f73b4a65982068ea0d92fd8d","messages":[{"locale":"en-US","localeOrigin":"DEFAULT","text":"The request could not be parsed."},{"locale":"und","localeOrigin":"REQUEST","text":"The request could not be parsed."}],"causes":[]}
 
+..............................................................Pre-request Script to Test Attributes One-by-One
+
+let originalBody = JSON.parse(pm.request.body.raw);
+
+// Flatten keys (top-level only for simplicity)
+let keys = Object.keys(originalBody);
+
+let workingKey = null;
+
+for (let i = 0; i < keys.length; i++) {
+    let testBody = JSON.parse(JSON.stringify(originalBody));
+
+    delete testBody[keys[i]];
+
+    pm.sendRequest({
+        url: pm.request.url.toString(),
+        method: pm.request.method,
+        header: pm.request.headers.toObject(),
+        body: {
+            mode: 'raw',
+            raw: JSON.stringify(testBody)
+        }
+    }, function (err, res) {
+        if (res && res.code !== 400) {
+            console.log("🚨 Problem attribute:", keys[i]);
+        }
+    });
+}
