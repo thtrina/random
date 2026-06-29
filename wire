@@ -3154,3 +3154,11 @@ public class App {
 -------------------
 RM-FHCIG:10000000\ 5000000\ 2500000\ 1000000 - Wire Matrix_formatted_updated.txt
 New Job-Title added in WireMatrix: RM-FHCIG:  - delta_updated3.txt
+
+===================================
+~~~ACCOUNTING REP:(\"4500000\");
+~~~ACCOUNTING REP SR:(\"4500000\");
+~~~ASST BANKING CNTR MGR:(\"1000000\"500000\"250000\"100000\");
+~~~ASST BANKING CNTR MGR II:(\"1000000\"500000\"250000\"100000\");
+~~~ASST BRANCH MGR:(\"1000000\"500000\"250000\"100000\");
+~~~ASST BRANCH MGR II:(\"1000000\"500000\"250000\"100000\");
