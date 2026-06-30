@@ -1,1 +1,2 @@
 
+if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
