@@ -1,94 +1,545 @@
+###############################################################################################################################
+# SETUP
+# Instructions (for each IQService host that could run the script):
+#   - Update the path to Utils.dll (can be an unqualified path like "Utils.dll" since script is copied to IQService folder for execution)
+#   - Make sure Utils.dll is in the specified folder on each IQService host
+#   - Be sure the account that runs IQService has appropriate permissions to create directories and set permissions on them
+#   - Be sure to set the "run as" account for the IQService in Windows Service to the above-specified account instead of just the "logged on" user
+#   - Set a proper location for the $logFile variable
+#   - Set the $enableDebug flag to $true or $false to toggle debug mode
+###############################################################################################################################
 
-     #if ($rclo -match '^[HR]\d{3}$') {
-     if ($rclo -match '?i:^(((H|R)[0-9][0-9][0-9]|OFSH|OFSI)$)'{
 
-Try: if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
+# ------------------------------------------------------------------
+# set logging
+# ------------------------------------------------------------------
+mkdir D:\Logs\ISC_Rule_Directory\After_Create_Rule -ErrorAction SilentlyContinue
+$logFile = "D:\Logs\ISC_Rule_Directory\After_Create_Rule\$(Get-Date -format "yyyy-MM-dd").afterprovisioning.log"  ##Add logpath here
+$version = "6"
 
+$guid = [guid]::NewGuid()
+$gs = $guid.ToString()
 
+Function writeToLog() {
+    param([string]$message)
+    Add-Content ($(Get-Date -format "yyyy-MM-dd HH:mm:ss") + " : $($gs) : v$($version) : afterCreate : $($message)") -Path $logFile
+}
 
+# ------------------------------------------------------------------
+# helper function
+# ------------------------------------------------------------------
 
-Error: Item =  -> Message = A parameter cannot be found that matches parameter name 'Tofinal'.
+function Get-SecureRandomIndex {
+    param([Parameter(Mandatory = $true)][int]$MaxExclusive)
+    if ($MaxExclusive -le 0) { throw "MaxExclusive must be > 0" }
 
-
-$to = "ITFOOnboarding@firsthorizon.com"
-
-        $tofinal = @($to,'katrina.harris@firsthorizon.com') | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique  #List of all reciepient email addresses
-
-$splat = @{
-            UseSsl     = $true
-            SMTPServer = $smtpServer
-            From       = $from
-            To         = $to
-            Tofinal    = $tofinal
-            Subject    = $subject
-            Body       = $body
-            BodyAsHtml = $true
+    $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+    try {
+        $buf = New-Object byte[] 4
+        $limit = [uint32]::MaxValue - ([uint32]::MaxValue % [uint32]$MaxExclusive)
+        while ($true) {
+            $rng.GetBytes($buf)
+            $x = [BitConverter]::ToUInt32($buf, 0)
+            if ($x -lt $limit) { return [int]($x % [uint32]$MaxExclusive) }
         }
+    }
+    finally { $rng.Dispose() }
+}
+
+function New-CompliantPassword {
+    param(
+        [int]$Length = 15,
+        [string]$Specials = '!@#$%^&*()-_=+[]{}:,.?'
+    )
+
+    if ($Length -lt 15) { throw "Length must be at least 15." }
+
+    $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    $lower = 'abcdefghijklmnopqrstuvwxyz'
+    $digits = '0123456789'
+    $special = $Specials
+    $all = ($upper + $lower + $digits + $special).ToCharArray()
+
+    $chars = New-Object System.Collections.Generic.List[char]
+    $chars.Add($upper[(Get-SecureRandomIndex $upper.Length)])
+    $chars.Add($lower[(Get-SecureRandomIndex $lower.Length)])
+    $chars.Add($digits[(Get-SecureRandomIndex $digits.Length)])
+    $chars.Add($special[(Get-SecureRandomIndex $special.Length)])
+
+    for ($i = $chars.Count; $i -lt $Length; $i++) {
+        $chars.Add($all[(Get-SecureRandomIndex $all.Length)])
+    }
+
+    for ($i = $chars.Count - 1; $i -gt 0; $i--) {
+        $j = Get-SecureRandomIndex ($i + 1)
+        $tmp = $chars[$i]; $chars[$i] = $chars[$j]; $chars[$j] = $tmp
+    }
+
+    -join $chars.ToArray()
+}
+
+writeToLog("In script:")
+
+Add-Type -Path "D:\IQService-842\Utils.dll";  #Add the correct path after prod IQService deployment
+
+Import-Module activeDirectory
+
+try {
+    ##########################
+    # Begin SailPoint protected code -- do not modify this code block
+   
+    # Read the environment variables
+    $sRequest = New-Object System.IO.StringReader([System.String]$env:Request)
+    $xmlReader_request = [ System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sRequest))
+    $requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader_request)
+
+    $sResult = New-Object System.IO.StringReader([System.String]$env:Result)
+    $xmlReader_result = [ System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sResult))
+    $resultObject = New-Object Sailpoint.Utils.objects.ServiceResult($xmlReader_result)
+
+    # if($resultObject.Errors.count -ne 0) {
+    #     writeToLog("ad provisioning plan result ")
+    #     return "There were errors in the provision result. Skipping mailbox create."
+    # }
+
+    writeToLog("------------------------------------------------------")
+    writeToLog("Request")
+    writeToLog("\n", [System.String]$env:Request)
+    writeToLog("------------------------------------------------------")
+    writeToLog("Result")
+    writeToLog("\n", [System.String]$env:Result)
+    writeToLog("------------------------------------------------------")
+
+	# NOTE: EARLY EXIT if the Result indicates the AD object already exists. This prevents mailbox creation,
+	# password changes, and emails when provisioning returns a duplicate error from AD.
+	# Place this check immediately after logging the Result.
+	$alreadyExists = $false
+	try {
+	$errorText = @()
+	# Prefer reading explicit errors if present on resultObject
+	if ($resultObject -and $resultObject.Errors -and $resultObject.Errors.Count -gt 0) {
+	$errorText += ($resultObject.Errors | ForEach-Object { [string]$_ })
+	}
+	# Fallback: parse raw Result XML for <ServiceResult><Errors><List><String>
+	if ($errorText.Count -eq 0 -and -not [string]::IsNullOrWhiteSpace($env:Result)) {
+	try {
+	$xml = [xml][string]$env:Result
+	if ($xml -and $xml.ServiceResult -and $xml.ServiceResult.Errors -and $xml.ServiceResult.Errors.List) {
+	  $errorText += @($xml.ServiceResult.Errors.List.String) | ForEach-Object { [string]$_ }
+	}
+	} catch {
+	# Last resort: raw text search
+	$errorText += [string]$env:Result
+	}
+	}
+	$joined = ($errorText -join ' ')
+	if ($joined -match '(?i)\bthe object already exists\b') {
+	$alreadyExists = $true
+	}
+	} catch {
+	writeToLog("Warning during 'object already exists' detection: $($_.Exception.Message)")
+	}
+
+	if ($alreadyExists) {
+	writeToLog("Detected 'The object already exists' in ServiceResult. Skipping remaining steps for this account.")
+	try {
+	if ($resultObject -and $resultObject.Messages) {
+	$resultObject.Messages.add("Script stopped early: The object already exists.")
+	}
+	} catch {}
+	# Cleanup if needed (session shouldn't exist yet at this point)
+	try { if ($Session) { Remove-PSSession $Session -ErrorAction SilentlyContinue } } catch {}
+	writeToLog("Exiting afterCreateScript")
+	return
+	}
+
+    # ------------------------------------------------------------------
+    # get data from the operation
+    # ------------------------------------------------------------------
+    $nativeIdentity = $requestObject.NativeIdentity
+    writeToLog("nativeIdentity: $($nativeIdentity)")
+
+    # ------------------------------------------------------------------
+    # get the user credentials from the app config
+    # ------------------------------------------------------------------
+    $xmlFactory = [sailpoint.Utils.xml.XmlFactory]::Instance;
+    $sReader1 = $env:Application
+    $appObject = $xmlFactory.parseXml($sReader1)
+    writeToLog("appObject: $($appObject)")
+
+    $forest = $appObject.forestSettings
+    $adminUser = $forest.user
+    $adminPass = $forest.password
+
+    $secpasswd = ConvertTo-SecureString $adminPass -AsPlainText -Force
+    $cred = New-Object System.Management.Automation.PSCredential ($adminUser, $secpasswd)
+
+    ####################################
+    # Enable These statement while debugging
+
+    # writeToLog("adminUser: $($adminUser)")
+    # writeToLog("adminPass: $($adminPass)")
+    # writeToLog("Cred:")
+    # writeToLog($cred)
+
+    ####################################
+
+    $resultObject.Messages.add("Cred:")
+    $resultObject.Messages.add($cred)
     
+    # ------------------------------------------------------------------
+    # Get account attributes from the request
+    # ------------------------------------------------------------------
+    $sAMAccountName = ""
+    $mailNickname = ""
+    $manager = ""
+    $displayName = ""
+    $rclo = ""
+
+    writeToLog("AttributeRequests:")
+    $attributeRequests = $requestObject.AttributeRequests
+    foreach ($ar in $attributeRequests.GetEnumerator()) {
+        if ($ar.Name -eq "sAMAccountName") {
+            $sAMAccountName = $ar.value
+        }
+
+        if ($ar.Name -eq "mailNickname") {
+            $mailNickname = $ar.value
+        }
+
+        if ($ar.Name -eq "Manager") {
+            $manager = $ar.value
+        }
+
+        if ($ar.Name -eq "mail") {
+            $mail = $ar.value
+        }
+		
+        if ($ar.Name -eq "displayName") {
+            $displayName = $ar.value
+        }
+		
+        if ($ar.Name -eq "physicalDeliveryOfficeName") {
+            $rclo = $ar.value
+        }
+
+    }
+
+    $emailAddress = "$($mailNickname)@firsthorizon.com"
+    $remoteAddress = "$($mailNickname)@firsthorizon.mail.onmicrosoft.com"
+
+    writeToLog("Extracted data from Account Requests")
+    writeToLog("sAMAccountName: $($sAMAccountName)")
+    writeToLog("mailNickname:   $($mailNickname)")
+    writeToLog("emailAddress:   $($emailAddress)")
+    writeToLog("remoteAddress:  $($remoteAddress)")
+    writeToLog("manager:        $($manager)")
+    writeToLog("displayName:    $($displayName)")
+    writeToLog("rclo:           $($rclo)")
+
+    $resultObject.Messages.add("sAMAccountName: $($sAMAccountName)")
+    $resultObject.Messages.add("mailNickname:   $($mailNickname)")
+    $resultObject.Messages.add("emailAddress:   $($emailAddress)")
+    $resultObject.Messages.add("remoteAddress:  $($remoteAddress)")
+    $resultObject.Messages.add("displayName:    $($displayName)")
+    $resultObject.Messages.add("rclo:           $($rclo)")
+
+    # ------------------------------------------------------------------
+    # create the session
+    # ------------------------------------------------------------------
+
+        if($sAMAccountName -notlike "sa_*"){
+    #
+    #    writeToLog("Not a Service Account. Starting Mailbox Creation")
+
+    #    Guard Clause - We don't want to process any further if it not a domain user
+    if ($nativeIdentity -notlike "*OU=Domain Users*") {
+        writeToLog("Exiting Early. This is not a domain user account.")
+        exit
+    }
+    
+    writeToLog("This is a User Account. Starting mailbox creation via Exchange remote PowerShell.")
+ 
+    writeToLog("Setting session")
         
+    # new servers:
+    # $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "http://feprmexapp05.ftbco.ftn.com/PowerShell/" -Authentication Kerberos -Credential $cred 2>&1
+    # dc3pmexapp01
+    # dc3pmexapp02
+    # dc4pmexapp01
+    # dc4pmexapp02
+    # $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "http://dc3pmexapp01.ftbco.ftn.com/PowerShell/" -Authentication Kerberos -Credential $cred 2>&1
+    # $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "http://dc3pmexapp02.ftbco.ftn.com/PowerShell/" -Authentication Kerberos -Credential $cred 2>&1
+    # $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "http://dc4pmexapp01.ftbco.ftn.com/PowerShell/" -Authentication Kerberos -Credential $cred 2>&1
+    # $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "http://dc4pmexapp02.ftbco.ftn.com/PowerShell/" -Authentication Kerberos -Credential $cred 2>&1
 
-<p style="color: #333333;"><strong> $plain </strong></p>
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri 'http://dc3pmexapp01.ftbco.ftn.com/PowerShell/' -Authentication Kerberos 2>&1
+        
+    #$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri 'http://dc3pmexapp01.ftbco.ftn.com/PowerShell/' -Authentication Kerberos -Credential $cred 2>&1
+    writeToLog("Session was executed here")
+    writeToLog("done.")
+    $resultObject.Messages.add("Session:")
+    $resultObject.Messages.add($Session);
 
 
-<table style="border-collapse: collapse; border: 1px solid rgb(5, 59, 128); width: 92.3426%; height: 446.729px;">
+    writeToLog("Importing session")
+    $out = Import-PSSession $Session 2>&1
+    writeToLog("done.")
+    $resultObject.Messages.add("Import")
+    $resultObject.Messages.add($out);
+
+
+    # ------------------------------------------------------------------
+    # create and configure the mailbox
+    # ------------------------------------------------------------------
+    writeToLog("creating the mailbox")
+    $out = Enable-remotemailbox $sAMAccountName -alias $mailNickname -Primarysmtpaddress $emailAddress -Remoteroutingaddress $remoteAddress 2>&1
+    writeToLog("done.")
+    $resultObject.Messages.add("creating the mailbox")
+    $resultObject.Messages.add($out)
+    $resultObject.Messages.add("done.")
+
+
+    # ------------------------------------------------------------------
+    writeToLog("enabling remote routing")
+    $out = Get-RemoteMailbox -Identity $emailAddress | Set-RemoteMailbox -EmailAddressPolicyEnabled $True 2>&1
+    writeToLog("done.")
+    $resultObject.Messages.add("enabling remote routing")
+    $resultObject.Messages.add($out)
+    $resultObject.Messages.add("done.")
+
+
+    # ------------------------------------------------------------------
+    writeToLog("enabling the archive")
+    $out = Get-RemoteMailbox -Identity $emailAddress | Enable-RemoteMailbox -Archive -Confirm:$false  2>&1
+    writeToLog("done.")
+    $resultObject.Messages.add("enabling the archive")
+    $resultObject.Messages.add($out)
+    $resultObject.Messages.add("done.")
+
+
+    # ------------------------------------------------------------------
+    writeToLog("checking for mailbox")
+    $out = Get-RemoteMailbox $emailAddress 2>&1
+    writeToLog("done.")
+    $resultObject.Messages.add("checking for mailbox")
+    $resultObject.Messages.add($out)
+    $resultObject.Messages.add("done.")
+
+
+    # ------------------------------------------------------------------
+    # starting password setup
+    # ------------------------------------------------------------------
+    #writeToLog("Waiting 4 mins to account for mailbox creation on exchanger server")
+    Start-Sleep -Seconds 240
+    
+    writeToLog(". . . . . . . . . . .")
+    writeToLog(". . . . . . . . . . .")
+    writeToLog(". . . . . . . . . . .")
+    writeToLog("Starting next part")
+    writeToLog(". . . . . . . . . . .")
+    writeToLog(". . . . . . . . . . .")
+    writeToLog(". . . . . . . . . . .")
+
+    # ------------------------------------------------------------------
+    # generate and set password
+    # ------------------------------------------------------------------
+    writeToLog("Generating password")
+    $plain = New-CompliantPassword -Length 15
+    $pass = ConvertTo-SecureString $plain -AsPlainText -Force
+    writeToLog("done.")
+
+    writeToLog("Setting password for active directory account")
+    Set-ADAccountPassword -Identity $nativeIdentity -NewPassword $pass -Confirm:$false
+    writeToLog("done.")
+
+    # Set-ADUser $nativeIdentity -ChangePasswordAtLogon $true    
+
+    # ------------------------------------------------------------------
+    # get manager email
+    # ------------------------------------------------------------------
+
+    writeToLog("Getting manager")
+    $managerDn = (Get-ADUser -Identity $nativeIdentity -Properties Manager).Manager
+    writeToLog("manager:  $($managerDn)")
+
+    if ($managerDn) {
+        writeToLog("Getting manager email")
+        $manager = Get-ADUser -Identity $managerDn -Properties mail, displayName
+        $managerMail = $manager.mail
+        $managerDisplayName = $manager.displayName
+        
+        writeToLog("manager email:  $($managerMail)")
+        writeToLog("manager displayName:  $($managerDisplayName)")
+        writeToLog("done")
+    }
+    else {
+        writeToLog("Manager mail is empty")
+    }
+
+
+    # ------------------------------------------------------------------
+    # set mail params and body
+    # ------------------------------------------------------------------
+    $smtpServer = "smtp.firsthorizon.com"
+    $from = "IAMDoNotReply@firsthorizon.com"
+    #------------- IDMGMT-884 notification template updated---------------------
+     if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
+        # If rclo code matches regex
+        writeToLog("Setting mail body and params for remote new hire")
+        $body = @"
+    <table style="border-collapse: collapse; border: 1px solid rgb(5, 59, 128); width: 92.3426%; height: 446.729px;">
     <tbody>
     <tr style="height: 80.7292px;">
-    <td style="background-color: #053b80; padding: 10px; width: 97.8778%;"><img src="https://firsthorizon-sb.api.identitynow.com/ums/assets/custom-logos/cc522459-1015-4fee-9a90-4b59c2c135e4/0787592f-8540-41f6-b025-9b50c6391acb.png" alt="width=" height="55"></td>
+    <td style="background-color: #053b80; padding: 10px; width: 97.8778%;"><img src="https://firsthorizon.api.identitynow.com/ums/assets/custom-logos/cc522459-1015-4fee-9a90-4b59c2c135e4/0787592f-8540-41f6-b025-9b50c6391acb.png" alt="width=" height="55"></td>
     </tr>
     <tr style="height: 366px;">
     <td style="font-family: Arial, sans-serif; font-size: 10pt; color: #222222; padding: 20px; width: 97.8778%;">
-    <p>Here is the new Sandbox Active Directory account password for remote new hire $displayName </p>    
+    <p>Here is the new Active Directory account password for remote new hire $displayName </p>    
     <p style="color: #1F4E79;"><strong>$plain</strong></p>
     <p> Employee Number: $sAMAccountName</p>
     <p> RCLO Code: $rclo</p>
+    <p> Additional access may be requested from <a href="https://firsthorizon.identitynow.com/" style="color:#053b80; font-weight:bold;">
+        First Access. </a></p>
+    <P> Please confirm access is needed before requesting, as birthright access may already be provisioned.</p>
+    <p> For additional details regarding Identity Management or First Access, please visit our <a href="https://firsthorizon.sharepoint.com/teams/IdentityAccessManagement_gp/SitePages/Home.aspx" style="color:#053b80; font-weight:bold;">
+        SharePoint site. </a></p>        
+    <p> For further questions, please contact FirstHelp via your desktop icon, or call 901-523-4357, Press 2.</p>
     <p>Thank you,<br>FirstAccess</p>
     <p style="color: #333333;"><strong> *This email is system generated and the mailbox is not monitored. Please do not reply. </strong></p>
     </td>
     </tr>
     </tbody>
     </table>
+"@
+         $to = "ITFOOnboarding@firsthorizon.com"
 
+        $tofinal = @($to) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique  #List of all reciepient email addresses
+    
+        $subject = "Active Directory account password for remote new hire $displayName"
+        # $portnumber = "25" 
 
+    
+        $splat = @{
+            UseSsl     = $true
+            SMTPServer = $smtpServer
+            From       = $from
+            To         = $tofinal
+            Subject    = $subject
+            Body       = $body
+            BodyAsHtml = $true
+        }
 
-
-
-    <p> Additional access may be requested from BAccess.</p>
-    <p> For additional details please visit our SharePoint site.</p>
-hyperkink for BAccess : https://documentation.sailpoint.com/
-hyperLink for SharePoint : https://documentation.sailpoint.com/SharePoint
-
-
-$body = @"
-<p>Additional access may be requested from 
-    <a href="https://documentation.sailpoint.com/" style="color:#053b80; font-weight:bold;">
-        BAccess
-    </a>.
-</p>
-
-<p>For additional details please visit our 
-    <a href="https://documentation.sailpoint.com/SharePoint" style="color:#053b80; font-weight:bold;">
-        SharePoint site
-    </a>.
-</p>
+        writeToLog("Sending email")
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+        if (-not [string]::IsNullOrWhiteSpace($to)) {
+            Send-MailMessage @splat
+            writeToLog("Password set and email sent to $to for account $nativeIdentity.")
+        }
+        else {
+            writeToLog("Manager email is null or empty. Email not sent.")
+        }
+ 
+        # End Client-provided code
+    }
+    if ($sAMAccountName -like "sa_*") {
+        # If this account was a service account else skips this 
+        writeToLog("Setting mail body and params for service account")
+        $body = @"
+    <table style="border-collapse: collapse; border: 1px solid rgb(5, 59, 128); width: 92.3426%; height: 446.729px;">
+    <tbody>
+    <tr style="height: 80.7292px;">
+    <td style="background-color: #053b80; padding: 10px; width: 97.8778%;"><img src="https://firsthorizon.api.identitynow.com/ums/assets/custom-logos/cc522459-1015-4fee-9a90-4b59c2c135e4/0787592f-8540-41f6-b025-9b50c6391acb.png" alt="width=" height="55"></td>
+    </tr>
+    <tr style="height: 366px;">
+    <td style="font-family: Arial, sans-serif; font-size: 10pt; color: #222222; padding: 20px; width: 97.8778%;">
+    <p>Dear Service Account Owner,</p>
+    <p>Here is the new Active Directory account password for your service account $sAMAccountName :</p>
+    <p>$plain</p>
+    <p>Thank you,<br>FirstAccess</p>
+    <p style="color: #333333;"><strong> *This email is system generated and the mailbox is not monitored. Please do not reply. </strong></p>
+    </td>
+    </tr>
+    </tbody>
+    </table>
 "@
 
+        $to = $mail
+        $subject = "Active Directory account password for service account $sAMAccountName"
+        
+        $splat = @{
+            UseSsl     = $true
+            SMTPServer = $smtpServer
+            From       = $from
+            To         = $to
+            Subject    = $subject
+            Body       = $body
+            BodyAsHtml = $true
+        }
 
-
-
------------
-<tr style="height: 80.7292px;">
+        writeToLog("Sending email")
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+        if (-not [string]::IsNullOrWhiteSpace($to)) {
+            Send-MailMessage @splat
+            writeToLog("Password set and email sent to $to for account $nativeIdentity.")
+        }
+        else {
+            writeToLog("Manager email is null or empty. Email not sent.")
+        }              
+    }
+    else {
+        writeToLog("Setting mail body and params for new hire")
+        $body = @"
+    <table style="border-collapse: collapse; border: 1px solid rgb(5, 59, 128); width: 92.3426%; height: 446.729px;">
+    <tbody>
+    <tr style="height: 80.7292px;">
     <td style="background-color: #053b80; padding: 10px; width: 97.8778%;"><img src="https://firsthorizon-sb.api.identitynow.com/ums/assets/custom-logos/cc522459-1015-4fee-9a90-4b59c2c135e4/0787592f-8540-41f6-b025-9b50c6391acb.png" alt="Logo" height="55" width="auto"></td>
     </tr>
     <tr style="height: 366px;">
     <td style="font-family: Arial, sans-serif; font-size: 10pt; color: #222222; padding: 20px; width: 97.8778%;">
+    <p>Dear Manager,</p>
+    <p>Here is the password for network access for your new hire $displayName :</p>
+    <p>$plain</p>
+    <p>The Employee ID has been emailed separately.</p>
+    <p>Please share the username(Employee ID) and password with the employee.</p>
+    <p>The password must be reset by the new hire upon first login.<p>
+    <p>Thank you,<br>FirstAccess</p>
+    <p style="color: #333333;"><strong> *This email is system generated and the mailbox is not monitored. Please do not reply. </strong></p>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+"@
 
+        $to = $managerMail
 
-
-
-<td style="background-color: #053b80; padding: 10px;">
-    <img src="..." height="55" style="vertical-align: middle;">
+        $tofinal = @($to) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique  #List of all reciepient email addresses
     
-    <span style="color:#FFFFFF; font-size:18px; font-weight:bold; margin-left:10px;">
-        Your Company
-    </span>
-</td>
+        $subject = "Active Directory account password for your new hire $displayName"
+        $splat = @{
+            UseSsl     = $true
+            SMTPServer = $smtpServer
+            From       = $from
+            To         = $tofinal
+            Subject    = $subject
+            Body       = $body
+            BodyAsHtml = $true
+        }
+
+        writeToLog("Sending email")
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+        if($tofinal){
+            Send-MailMessage @splat
+            writeToLog("Password set and email sent to manager's email $to for account $nativeIdentity.")
+        } else {
+            writeToLog("Recipient list is empty. Email not sent.")
+        }
+    } 
+} 
+catch {
+    $ErrorMessage = $_.Exception.Message
+    $ErrorItem = $_.Exception.ItemName
+    writeToLog("Error: Item = $ErrorItem -> Message = $ErrorMessage")
+}
+
+writeToLog("Exiting afterCreateScript")
