@@ -1,0 +1,135 @@
+import java.sql.*;
+import java.util.*;
+
+public class CompareTables {
+
+    // Represents one row
+    static class Employee {
+
+        String id;
+        String name;
+        String title;
+        String dept;
+
+        Employee(String id, String name, String title, String dept) {
+            this.id = id;
+            this.name = name;
+            this.title = title;
+            this.dept = dept;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+
+            if (!(obj instanceof Employee))
+                return false;
+
+            Employee other = (Employee) obj;
+
+            return Objects.equals(name, other.name)
+                    && Objects.equals(title, other.title)
+                    && Objects.equals(dept, other.dept);
+        }
+
+        @Override
+        public String toString() {
+
+            return "Employee{id=" + id +
+                    ", name=" + name +
+                    ", title=" + title +
+                    ", dept=" + dept + "}";
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        String url = "jdbc:sqlserver://server:1433;databaseName=HR";
+        String username = "user";
+        String password = "password";
+
+        Connection conn = DriverManager.getConnection(url, username, password);
+
+        Map<String, Employee> table1 = loadTable(conn,
+                "SELECT EMP_ID, NAME, TITLE, DEPT FROM employee_hr");
+
+        Map<String, Employee> table2 = loadTable(conn,
+                "SELECT EMP_ID, NAME, TITLE, DEPT FROM employee_ad");
+
+        compare(table1, table2);
+
+        conn.close();
+    }
+
+    static Map<String, Employee> loadTable(Connection conn, String sql)
+            throws SQLException {
+
+        Map<String, Employee> map = new HashMap<>();
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
+
+        while (rs.next()) {
+
+            Employee emp = new Employee(
+                    rs.getString("EMP_ID"),
+                    rs.getString("NAME"),
+                    rs.getString("TITLE"),
+                    rs.getString("DEPT"));
+
+            map.put(emp.id, emp);
+        }
+
+        rs.close();
+        stmt.close();
+
+        return map;
+    }
+
+    static void compare(Map<String, Employee> table1,
+                        Map<String, Employee> table2) {
+
+        System.out.println("=========== Comparing Tables ===========");
+
+        for (String id : table1.keySet()) {
+
+            if (!table2.containsKey(id)) {
+
+                System.out.println("Only in Table1: "
+                        + table1.get(id));
+
+            } else {
+
+                Employee emp1 = table1.get(id);
+                Employee emp2 = table2.get(id);
+
+                if (!emp1.equals(emp2)) {
+
+                    System.out.println("\nDifferences for EMP_ID = " + id);
+
+                    if (!Objects.equals(emp1.name, emp2.name))
+                        System.out.println("Name : "
+                                + emp1.name + " <> " + emp2.name);
+
+                    if (!Objects.equals(emp1.title, emp2.title))
+                        System.out.println("Title: "
+                                + emp1.title + " <> " + emp2.title);
+
+                    if (!Objects.equals(emp1.dept, emp2.dept))
+                        System.out.println("Dept : "
+                                + emp1.dept + " <> " + emp2.dept);
+                }
+            }
+        }
+
+        for (String id : table2.keySet()) {
+
+            if (!table1.containsKey(id)) {
+
+                System.out.println("Only in Table2: "
+                        + table2.get(id));
+            }
+        }
+
+        System.out.println("=========== Finished ===========");
+    }
+}
