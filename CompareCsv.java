@@ -1,3 +1,12 @@
+
+long idMismatch =
+    results.stream()
+    .filter(r -> r.type.equals("ID Mismatch"))
+    .count();
+
+
+System.out.println("ID Mismatches: " + idMismatch);
+-------------------------------- updates to include dups
 import java.util.*;
 public class CompareCsv{
  public static void main(String[] args)throws Exception{
@@ -8,9 +17,12 @@ public class CompareCsv{
   long diff=results.stream().filter(r->r.type.equals("Difference")).count();
   long missRec=results.stream().filter(r->r.type.equals("Missing Record")).count();
   long missCol=results.stream().filter(r->r.type.equals("Missing Column")).count();
+  long idMismatch=results.stream().filter(r -> r.type.equals("ID Mismatch")).count();
+System.out.println("ID Mismatches: " + idMismatch);
   System.out.println("Comparison complete");
   System.out.println("Missing Columns: "+missCol);
   System.out.println("Missing Records: "+missRec);
   System.out.println("Differences: "+diff);
  }
 }
+
