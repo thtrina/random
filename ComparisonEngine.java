@@ -1,4 +1,143 @@
 import java.util.*;
+
+public class ComparisonEngine {
+
+
+    public static List<ComparisonResult> compare(
+            CsvFile dev,
+            CsvFile prod) {
+
+
+        List<ComparisonResult> results = new ArrayList<>();
+
+
+        /*
+         * Existing comparison logic stays here
+         */
+
+
+
+        /*
+         * New Identity Correlation Check
+         */
+        results.addAll(
+            checkIdentityMismatch(dev, prod)
+        );
+
+
+        return results;
+    }
+
+
+
+    private static List<ComparisonResult> checkIdentityMismatch(
+            CsvFile dev,
+            CsvFile prod) {
+
+
+        List<ComparisonResult> results = new ArrayList<>();
+
+
+        /*
+         Create lookup:
+         FirstName|LastName --> PROD record
+        */
+
+        Map<String, Map<String,String>> prodNameLookup =
+                new HashMap<>();
+
+
+        for(Map<String,String> row : prod.rows.values()) {
+
+            String key =
+                buildNameKey(row);
+
+
+            prodNameLookup.put(key,row);
+        }
+
+
+
+        /*
+          Check DEV users missing by ID
+        */
+
+        for(Map<String,String> devRow : dev.rows.values()) {
+
+
+            String devId =
+                devRow.get("id");
+
+
+            if(!prod.rows.containsKey(devId)) {
+
+
+                String key =
+                    buildNameKey(devRow);
+
+
+                Map<String,String> prodRow =
+                    prodNameLookup.get(key);
+
+
+
+                if(prodRow != null) {
+
+
+                    String prodId =
+                        prodRow.get("id");
+
+
+                    if(!devId.equals(prodId)) {
+
+
+                        results.add(
+                            new ComparisonResult(
+                                "ID Mismatch",
+                                devId,
+                                "id",
+                                devId,
+                                prodId,
+                                "Same first and last name, different ID"
+                            )
+                        );
+                    }
+                }
+            }
+        }
+
+
+        return results;
+    }
+
+
+
+    private static String buildNameKey(
+            Map<String,String> row) {
+
+
+        String first =
+            row.getOrDefault(
+                "first_name",
+                ""
+            ).trim().toLowerCase();
+
+
+        String last =
+            row.getOrDefault(
+                "last_name",
+                ""
+            ).trim().toLowerCase();
+
+
+        return last + "|" + first;
+    }
+
+}
+
+
+-------------------------------------------- changed to include dups
+import java.util.*;
 public class ComparisonEngine{
  public static java.util.List<ComparisonResult> compare(CsvFile dev,CsvFile prod){
   List<ComparisonResult> out=new ArrayList<>();
