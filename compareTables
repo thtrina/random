@@ -1,3 +1,6 @@
+position	jobcode	id	last_name	first_name	mi	suffix	type	location	blank1	company	company_name	ssn	yob	start_date	manager	mgr_id	blank2	group	division	status	deprovision	termination	job_date	esrm_name	blank3	job_title	blank4	center_no	phone	grade	domain	cost_center_name	rclo	address	city	st	zip	preferred_name	mainframe	load_ts	file_name
+
+
 import java.sql.*;
 import java.util.*;
 
