@@ -1,5 +1,5 @@
 
-long idMismatch =
+
     results.stream()
     .filter(r -> r.type.equals("ID Mismatch"))
     .count();
@@ -18,6 +18,7 @@ public class CompareCsv{
   long missRec=results.stream().filter(r->r.type.equals("Missing Record")).count();
   long missCol=results.stream().filter(r->r.type.equals("Missing Column")).count();
   long idMismatch=results.stream().filter(r -> r.type.equals("ID Mismatch")).count();
+  long idMismatch = results.stream().filter(r -> r.type.equals("ID Mismatch")).count();  
 System.out.println("ID Mismatches: " + idMismatch);
   System.out.println("Comparison complete");
   System.out.println("Missing Columns: "+missCol);
