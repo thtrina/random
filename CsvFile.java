@@ -2,17 +2,24 @@ import java.util.*;
 
 public class CsvFile {
 
-    public Map<String, Map<String,String>> rows;
 
-    public Set<String> columns;
+    // Column names from CSV header row
+    public Set<String> headers =
+            new LinkedHashSet<>();
 
 
-    public CsvFile() {
+    // Data stored by ID
+    // Key = id column
+    // Value = complete row
+    public Map<String, Map<String,String>> rows =
+            new LinkedHashMap<>();
 
-        rows = new LinkedHashMap<>();
 
-        columns = new TreeSet<>();
-    }
+    // Duplicate IDs found while loading
+    public Set<String> duplicateIds =
+            new LinkedHashSet<>();
+
+
 }
 
 -------------------------------------------------------try this instead
