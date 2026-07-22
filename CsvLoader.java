@@ -1,6 +1,92 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import org.apache.commons.csv.*;
+
+public class CsvLoader {
+
+    private static String clean(String value) {
+
+        if (value == null) {
+            return "";
+        }
+
+        return value.trim();
+    }
+
+    public static CsvFile load(String file) throws Exception {
+
+        CsvFile csv = new CsvFile();
+
+        try (
+            Reader reader =
+                new InputStreamReader(
+                    new FileInputStream(file),
+                    StandardCharsets.UTF_8);
+
+            CSVParser parser =
+                CSVFormat.DEFAULT
+                    .builder()
+                    .setHeader()
+                    .setSkipHeaderRecord(true)
+                    .setIgnoreSurroundingSpaces(true)
+                    .build()
+                    .parse(reader)
+        ) {
+
+            csv.headers.addAll(parser.getHeaderNames());
+
+            if (!csv.headers.contains("id")) {
+                throw new Exception(
+                    "Required column 'id' not found in "
+                    + file);
+            }
+
+            for (CSVRecord record : parser) {
+
+                Map<String,String> row =
+                    new LinkedHashMap<>();
+
+                for (String header : csv.headers) {
+
+                    row.put(
+                        header,
+                        clean(record.get(header))
+                    );
+                }
+
+                String id = row.get("id");
+
+                if (id == null || id.isBlank()) {
+
+                    // Skip rows with no ID
+                    continue;
+                }
+
+                // Detect duplicate IDs
+                if (csv.rows.containsKey(id)) {
+
+                    csv.duplicateIds.add(id);
+
+                    // Keep the first record
+                    continue;
+                }
+
+                csv.rows.put(id, row);
+            }
+        }
+
+        return csv;
+    }
+}
+
+
+
+---------------------- file format misaligned
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import org.apache.commons.csv.*;
 
 public class CsvLoader {
