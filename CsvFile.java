@@ -2,6 +2,24 @@ import java.util.*;
 
 public class CsvFile {
 
+    public Map<String, Map<String,String>> rows;
+
+    public Set<String> columns;
+
+
+    public CsvFile() {
+
+        rows = new LinkedHashMap<>();
+
+        columns = new TreeSet<>();
+    }
+}
+
+-------------------------------------------------------try this instead
+import java.util.*;
+
+public class CsvFile {
+
     // Column headers
     public List<String> headers = new ArrayList<>();
 
