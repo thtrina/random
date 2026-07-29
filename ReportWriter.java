@@ -1,3 +1,103 @@
+public static void write(
+        String filename,
+        List<ComparisonResult> results)
+        throws IOException {
+
+
+    Map<String,Integer> columnCounts =
+            new TreeMap<>();
+
+    int totalDifferences = 0;
+
+
+    // Build column difference counts
+    for(ComparisonResult r : results) {
+
+        if(r.type.equals("Data Difference")) {
+
+            columnCounts.put(
+                r.column,
+                columnCounts.getOrDefault(
+                    r.column,
+                    0
+                ) + 1
+            );
+
+            totalDifferences++;
+        }
+    }
+
+
+
+    try(FileWriter writer =
+            new FileWriter(filename)) {
+
+
+        /*
+         * Summary section
+         */
+        writer.write(
+            "COLUMN DIFFERENCE SUMMARY\n"
+        );
+
+        writer.write(
+            "Column,Count\n"
+        );
+
+
+        for(Map.Entry<String,Integer> entry :
+                columnCounts.entrySet()) {
+
+
+            writer.write(
+                clean(entry.getKey())
+                + ","
+                + entry.getValue()
+                + "\n"
+            );
+        }
+
+
+        writer.write(
+            "TOTAL,"
+            + totalDifferences
+            + "\n\n"
+        );
+
+
+
+        /*
+         * Existing detailed report
+         */
+        writer.write(
+            "Type,DEV ID,PROD ID,Last Name,First Name,Column,DEV Value,PROD Value,Notes\n"
+        );
+
+
+
+        for(ComparisonResult r : results) {
+
+
+            writer.write(
+                clean(r.type) + "," +
+                clean(r.devId) + "," +
+                clean(r.prodId) + "," +
+                clean(r.lastName) + "," +
+                clean(r.firstName) + "," +
+                clean(r.column) + "," +
+                clean(r.devValue) + "," +
+                clean(r.prodValue) + "," +
+                clean(r.notes)
+                + "\n"
+            );
+        }
+    }
+}
+
+
+
+
+============================= Add summary details
 import java.io.*;
 import java.util.*;
 
