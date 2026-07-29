@@ -99,4 +99,29 @@ Select-Object Name,
     # starting password setup
     # ------------------------------------------------------------------
     #writeToLog("Waiting 4 mins to account for mailbox creation on exchanger server")
+
+
+
+
+
+$out = Get-RemoteMailbox $emailAddress 2>&1
+
+if ($out -is [System.Management.Automation.ErrorRecord]) {
+    writeToLog("ERROR: $($out.Exception.Message)")
+    $resultObject.Messages.Add($out | Out-String)
+}
+else {
+    $mailbox = $out | Select-Object `
+        Name,
+        Alias,
+        PrimarySmtpAddress,
+        RemoteRoutingAddress,
+        ExchangeGuid,
+        RecipientTypeDetails
+
+    $mailbox | Format-List | Out-String | ForEach-Object {
+        writeToLog($_)
+        $resultObject.Messages.Add($_)
+    }
+}
     Start-Sleep -Seconds 240
