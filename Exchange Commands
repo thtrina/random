@@ -1,0 +1,72 @@
+This works even if the Exchange Remote Mailbox cmdlets aren't available, and it shows the key values that SailPoint provisioning typically sets during remote mailbox creation.
+
+Get-ADUser jsmith -Properties mail,mailNickname,targetAddress,msExchRemoteRecipientType |
+    Select-Object `
+        SamAccountName,
+        @{Name="RemoteMailboxEnabled";Expression={$_.msExchRemoteRecipientType -ne $null}},
+        @{Name="Alias";Expression={$_.mailNickname}},
+        @{Name="PrimarySMTP";Expression={$_.mail}},
+        @{Name="RemoteRoutingAddress";Expression={$_.targetAddress}},
+        msExchRemoteRecipientType
+
+
+See all Exchange-related AD attributes
+For troubleshooting, I often dump all Exchange attributes:
+Get-ADUser jsmith -Properties * |
+    Select-Object mail,
+                  mailNickname,
+                  targetAddress,
+                  proxyAddresses,
+                  msExchRemoteRecipientType,
+                  msExchRecipientDisplayType,
+                  msExchRecipientTypeDetails,
+                  msExchMailboxGuid,
+                  homeMDB
+
+
+
+
+Search-AdminAuditLog `
+    -Cmdlets Enable-RemoteMailbox `
+    -StartDate (Get-Date).AddHours(-24) `
+    -EndDate (Get-Date)
+
+Search-AdminAuditLog `
+    -Cmdlets Enable-RemoteMailbox,Set-RemoteMailbox `
+    -StartDate (Get-Date).AddHours(-24) `
+    -EndDate (Get-Date)
+
+Get-WinEvent -LogName Security |
+Where-Object {$_.TimeCreated -ge (Get-Date).AddHours(-24)}
+
+
+$since = (Get-Date).AddHours(-24)
+
+Get-ADUser -Filter * `
+    -Properties whenChanged,mail,mailNickname,targetAddress,msExchRemoteRecipientType |
+Where-Object {
+    $_.whenChanged -ge $since -and
+    $_.msExchRemoteRecipientType
+} |
+Select-Object Name,
+              SamAccountName,
+              whenChanged,
+              @{Name="Alias";Expression={$_.mailNickname}},
+              @{Name="PrimarySMTP";Expression={$_.mail}},
+              @{Name="RemoteRoutingAddress";Expression={$_.targetAddress}},
+              msExchRemoteRecipientType |
+Sort-Object whenChanged -Descending
+
+
+
+Get-ADUser <username> -Properties * |
+Select-Object Name,
+              whenCreated,
+              whenChanged,
+              mail,
+              mailNickname,
+              targetAddress,
+              proxyAddresses,
+              msExchRemoteRecipientType,
+              msExchRecipientTypeDetails,
+              msExchRecipientDisplayType
