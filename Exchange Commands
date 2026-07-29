@@ -57,6 +57,18 @@ Select-Object Name,
               msExchRemoteRecipientType |
 Sort-Object whenChanged -Descending
 
+foreach ($user in $results) {
+
+    Write-Host "=================================="
+    Write-Host "Name: $($user.Name)"
+    Write-Host "SAM: $($user.SamAccountName)"
+    Write-Host "Created: $($user.whenCreated)"
+    Write-Host "Changed: $($user.whenChanged)"
+    Write-Host "Alias: $($user.Alias)"
+    Write-Host "Primary SMTP: $($user.PrimarySMTP)"
+    Write-Host "Remote Routing: $($user.RemoteRoutingAddress)"
+    Write-Host "RemoteRecipientType: $($user.msExchRemoteRecipientType)"
+}
 
 
 Get-ADUser <username> -Properties * |
