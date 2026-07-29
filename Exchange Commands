@@ -82,3 +82,21 @@ Select-Object Name,
               msExchRemoteRecipientType,
               msExchRecipientTypeDetails,
               msExchRecipientDisplayType
+
+
+
+# ------------------------------------------------------------------
+    #writeToLog("checking for mailbox")
+	writeToLog("checking for mailbox $($emailAddress)")
+    $out = Get-RemoteMailbox $emailAddress 2>&1    
+    writeToLog("done checking for mailbox $($emailAddress)")
+    $resultObject.Messages.add("checking for mailbox")
+    $resultObject.Messages.add($out)
+    $resultObject.Messages.add("done.")
+
+
+    # ------------------------------------------------------------------
+    # starting password setup
+    # ------------------------------------------------------------------
+    #writeToLog("Waiting 4 mins to account for mailbox creation on exchanger server")
+    Start-Sleep -Seconds 240
