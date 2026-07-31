@@ -1,3 +1,14 @@
+Additional Comments / Examples – Meets Expectations
+
+I consistently follow the policies, procedures, and internal controls that apply to my role as a SailPoint developer. When developing, configuring, or supporting SailPoint IdentityIQ and Identity Security Cloud integrations, I consider security, access, data integrity, and operational requirements as part of the work.
+
+I proactively identify technical risks and potential issues during application onboarding and integration activities. For example, when a business requirement could not be supported due to a SailPoint IdentityIQ platform limitation, I identified the limitation, communicated the concern to the appropriate stakeholders, and worked toward an alternative approach rather than introducing an unsupported or potentially risky solution.
+
+I communicate technical issues, requirements, and potential risks with application teams and other stakeholders as needed. I also follow established development, testing, change management, and release processes to help ensure that changes are properly reviewed and validated before being moved forward.
+
+I maintain appropriate controls around SailPoint development and administration by following established procedures, validating changes, and documenting or communicating issues that could impact service delivery. Overall, I believe I consistently demonstrate sound judgment, follow required policies and procedures, and meet expectations for managing risk and maintaining internal controls within my role.
+
+
 
 Sets a Good Example & Communicates - Sets a good example by proactively identifying and managing key risks as it relates to associate’s role. Coordinates and communicates effectively with risk management, assurance teams and if requested, regulators.
 Follows Policy and Procedure - Has working knowledge of and follows policies and procedures that are relevant to the associate’s role.
