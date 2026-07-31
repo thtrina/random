@@ -1,4 +1,22 @@
 
+
+Puts Clients First:
+I focus on understanding the needs of internal clients and application teams and work to provide solutions that are practical, reliable, and aligned with their requirements. During SailPoint application onboarding and support activities, I work through technical issues and requirements with stakeholders and communicate limitations or concerns when a requested solution cannot be supported. I follow through on issues and work toward solutions that meet both business and technical needs.
+
+Cares About People:
+I treat colleagues, application teams, and stakeholders with respect and professionalism. I share my knowledge and experience with others, particularly around SailPoint IdentityIQ, and work collaboratively to help resolve issues and accomplish team objectives. I recognize that different teams may have different technical backgrounds and work to explain technical information in a clear and helpful way.
+
+Commits to Excellence:
+I take pride in the quality and accuracy of my work and approach SailPoint development and support with a professional and solutions-oriented mindset. I take the time to understand technical issues, troubleshoot problems, validate changes, and follow established processes. I strive to deliver solutions that are dependable and meet the needs of the business.
+
+Expands Access:
+I support an open and collaborative working environment by sharing information, providing technical guidance, and helping teams better understand SailPoint capabilities and requirements. I work to make identity and access solutions available to applications and users while also recognizing and communicating platform limitations when they exist.
+
+Fosters Team Success:
+I approach my work as a team effort and collaborate with coworkers, application teams, and stakeholders to achieve shared goals. I share my SailPoint IdentityIQ knowledge and contribute to resolving technical challenges that affect the broader team. I focus on successful outcomes for the team and the organization rather than individual accomplishments.
+
+
+..........................................................
 Puts Clients First - Goes above and beyond to listen, understand, and solve the client’s needs. Follows through and exceeds expectations every step of the way.
 Cares about People - Treats others with respect and dignity. Fosters a culture of collaboration. Demonstrates kindness and empathy for all.
 Commits to Excellence - Conducts business with professionalism and integrity. When we embody a “can do” spirit, we get results for our clients.
