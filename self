@@ -1,3 +1,10 @@
+
+Sets a Good Example & Communicates - Sets a good example by proactively identifying and managing key risks as it relates to associate’s role. Coordinates and communicates effectively with risk management, assurance teams and if requested, regulators.
+Follows Policy and Procedure - Has working knowledge of and follows policies and procedures that are relevant to the associate’s role.
+Follows Internal Controls - Establishes, maintains, and/or follows (based on relevant job role) effective internal controls and/or monitoring processes for identified risks.
+
+
+
 ## Self-Evaluation – SailPoint IdentityIQ & Identity Security Cloud Developer
 
 ## Self-Evaluation – SailPoint IdentityIQ & Identity Security Cloud Developer
