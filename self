@@ -1,3 +1,15 @@
+
+Puts Clients First - Goes above and beyond to listen, understand, and solve the client’s needs. Follows through and exceeds expectations every step of the way.
+Cares about People - Treats others with respect and dignity. Fosters a culture of collaboration. Demonstrates kindness and empathy for all.
+Commits to Excellence - Conducts business with professionalism and integrity. When we embody a “can do” spirit, we get results for our clients.
+Expands Access - Commits to an open and supportive workplace and provides opportunity and access to capital and counsel for all.
+Fosters Team Success - Measures wins in terms of “we” not ”me.” Takes pride in company success. Invested in a shared vision for future growth.
+
+
+
+
+
+------------------------------------------------------
 Additional Comments / Examples – Meets Expectations
 
 I consistently follow the policies, procedures, and internal controls that apply to my role as a SailPoint developer. When developing, configuring, or supporting SailPoint IdentityIQ and Identity Security Cloud integrations, I consider security, access, data integrity, and operational requirements as part of the work.
