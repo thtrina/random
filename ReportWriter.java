@@ -1,3 +1,29 @@
+if(r.type.equals("Data Difference")) {
+
+    boolean devTerminated =
+            r.devStatus.equalsIgnoreCase("T");
+
+    boolean prodTerminated =
+            r.prodStatus.equalsIgnoreCase("T");
+
+    if (!devTerminated && !prodTerminated) {
+
+        columnCounts.put(
+            r.column,
+            columnCounts.getOrDefault(
+                r.column,
+                0
+            ) + 1
+        );
+
+        totalDifferences++;
+    }
+}
+
+
+
+
+============================ excluding terms
 public static void write(
         String filename,
         List<ComparisonResult> results)
