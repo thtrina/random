@@ -13,6 +13,57 @@ public class ComparisonResult {
     public String devValue;
     public String prodValue;
 
+    public String devStatus;
+    public String prodStatus;
+
+    public String notes;
+
+    public ComparisonResult(
+            String type,
+            String devId,
+            String prodId,
+            String lastName,
+            String firstName,
+            String column,
+            String devValue,
+            String prodValue,
+            //String devStatus,
+            //String prodStatus,
+            String notes) {
+
+        this.type = type;
+
+        this.devId = devId;
+        this.prodId = prodId;
+
+        this.lastName = lastName;
+        this.firstName = firstName;
+
+        this.column = column;
+
+        this.devValue = devValue;
+        this.prodValue = prodValue;
+
+        this.notes = notes;
+    }
+}
+
+----------------------------------------
+public class ComparisonResult {
+
+    public String type;
+
+    public String devId;
+    public String prodId;
+
+    public String firstName;
+    public String lastName;
+
+    public String column;
+
+    public String devValue;
+    public String prodValue;
+
     public String notes;
 
     public ComparisonResult(
