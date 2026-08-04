@@ -1,0 +1,55 @@
+// com.fh.rule.ad_sync_manager
+import sailpoint.object.Application;
+import sailpoint.object.Identity;
+import sailpoint.object.Link;
+
+import org.apache.log4j.*;
+Logger log = Logger.getLogger("com.fh.rule.ad_sync_manager");
+log.setLevel(Level.TRACE);
+log.trace("Starting...");
+
+log.trace("value: " + value);
+
+Identity managerIdentity = context.getObjectByName(Identity.class,value);
+String managerDN;
+// String matchRegex = "(?i:^(C|[0-9])[0-9]{4}$)";
+String matchRegex = "(?i:^(\\d{5}|C\\d{4}|C[A-Z]\\d{3})$)";
+
+if ( managerIdentity != null ) {
+
+    Application application = context.getObjectByName(Application.class, "Active Directory - FTBCO");
+
+    if ( application != null ) {
+
+        List links = managerIdentity.getLinks(application);
+
+        if ((null != links) &amp;&amp; (!links.isEmpty())) {
+
+            for (Link link : links) {
+
+                String samAccountName = (String) link.getAttribute("sAMAccountName");
+
+                log.trace("sAMAccountName: " + samAccountName);
+
+                if (samAccountName != null) {
+
+                    if (samAccountName.matches(matchRegex)) {
+
+                        managerDN = link.getAttribute("distinguishedName");
+                        log.trace("match: manager dn will be " + managerDN);
+
+                    } else {
+
+                        log.trace("miss:  sAMAccountName is is not a emplid");
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+log.trace("Ending.");
+return managerDN;
+
+  
