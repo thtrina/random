@@ -1,3 +1,7 @@
+This is a classic IdentityIQ (IIQ) Transform/Rule that looks up a user's manager in Active Directory and returns the manager's Distinguished Name (DN). 
+This DN is typically written to the AD manager attribute during provisioning.
+
+
 // com.fh.rule.ad_sync_manager
 import sailpoint.object.Application;
 import sailpoint.object.Identity;
@@ -52,4 +56,54 @@ if ( managerIdentity != null ) {
 log.trace("Ending.");
 return managerDN;
 
-  
+
+
+
+
+
+How would you handle this in ISC?
+
+There are several approaches depending on your architecture.
+
+Option 1 (Preferred): Synchronize the manager DN from the authoritative source
+
+If your HR system (such as Workday) already provides the manager relationship, configure your identity profile and transforms so the manager identity is correlated, and then configure the Active Directory source to resolve the manager attribute from the manager identity's AD account. This avoids custom code entirely and is the recommended cloud-native design.
+
+Option 2: Use an Account Profile Attribute Generator (when appropriate)
+
+If you're provisioning an AD account and need to derive values based on identity attributes, an Account Profile Attribute Generator rule can be used. However, unlike IIQ, it cannot query arbitrary identities through context. The needed manager information must already be available on the provisioning identity or provided through supported APIs.
+
+Option 3: Use the Identity Security Cloud APIs
+
+If you absolutely need to look up another identity at runtime:
+
+Get the manager's identity ID.
+Call the ISC Identity API.
+Get the manager's accounts.
+Find the Active Directory account.
+Read the Distinguished Name.
+Return it.
+
+This requires making authenticated REST API calls rather than using context.getObjectByName().
+
+Conceptually:
+
+Identity
+      │
+      ▼
+Manager ID
+      │
+      ▼
+GET /v3/identities/{id}
+      │
+      ▼
+Manager Accounts
+      │
+      ▼
+Find AD account
+      │
+      ▼
+Read distinguishedName
+Option 4: Use a Before Provisioning Rule with a connector
+
+For Active Directory provisioning, another common approach is to use a Before Provisioning rule or connector-specific logic that has access to the provisioning plan. If the manager's DN is already available as an identity attribute, the rule simply copies it into the outgoing manager attribute without performing any repository lookups.
