@@ -1,0 +1,23 @@
+import sailpoint.object.Identity;
+
+import org.apache.log4j.*;
+Logger log = Logger.getLogger("com.fh.script.TransformationMaskRemoteAddress_v2");
+log.setLevel(Level.TRACE);
+log.trace("Starting...");
+
+if (identity != null) {
+    log.trace("name:         " + identity.getName());
+
+    log.trace("value:        " + value);
+
+    String rclo = identity.getAttribute("rcloCode");
+    if (rclo != null) {
+        log.trace("rclo:         " + rclo);
+        if (rclo.matches("(?i:^(H|R)[0-9][0-9][0-9]$)")) {
+            log.trace("masking");
+            return "-";
+        }
+    }
+}
+
+return value;
