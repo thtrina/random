@@ -1,0 +1,21 @@
+// TransformationStripPhoneNumber
+//
+// used in the identity mapping for phone to clean the data for FCE
+//
+
+// import org.apache.log4j.*;
+// Logger log = Logger.getLogger("com.fh.script.TransformationStripPhoneNumber");
+// log.setLevel(Level.TRACE);
+
+// log.trace("fce old phone: " + value);
+  
+if (value == null) {
+    value = "1111111111";
+}
+
+value = value.replaceAll("[^0-9]+?", "");
+
+// log.trace("fce new phone: " + value);
+  
+return value;
+  
