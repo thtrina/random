@@ -1,0 +1,30 @@
+import sailpoint.object.Application;
+import sailpoint.object.Identity;
+import sailpoint.object.Link;
+
+Identity managerIdentity = context.getObjectByName(Identity.class,value);
+String managerName = null;
+
+//If the identity has a manager populated on the identity cube, then proceed.
+if ( managerIdentity != null ) {
+
+  Application application = context.getObjectByName(Application.class, "ServiceNow");
+  
+  //If application was retrieved successfully, proceed with retrieving the link for the identity.
+  if ( application != null ) {
+  
+    Link applicationLink = managerIdentity.getLink(application);
+    
+    if( applicationLink != null ) {
+    
+        managerName = applicationLink.getAttribute("name");   
+
+    }
+    
+  } 
+
+}
+
+
+return managerName;</Source>
+
