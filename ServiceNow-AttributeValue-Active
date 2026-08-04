@@ -1,0 +1,21 @@
+// our value is for IS INACTIVE so we need to flip it for ServiceNow since theirs is a checkbox.
+// If (value == true) {
+//     return false;
+// } else {
+//     return true;
+// }
+
+// using employee status
+// note: this may cause issues with accounts that are not connected to a human
+String emplStatus = identity.getAttribute("employeeStatus");
+if (emplStatus != null) {
+    if (emplStatus.equals("A")) {
+        return true;
+    } else {
+        return false;
+    }
+} else {
+    // if there's no employee status then assume that the account should be inactive
+    // see note above
+    return false;
+}
