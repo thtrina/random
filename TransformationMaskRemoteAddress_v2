@@ -1,3 +1,15 @@
+
+{
+  "type": "static",
+  "attributes": {
+    "expression": "rcloCode ~= '(?i)^(H|R)\\d{3}$' ? '-' : remoteAddress"
+  }
+}
+
+
+
+
+-----------------------isc transform
 import sailpoint.object.Identity;
 
 import org.apache.log4j.*;
