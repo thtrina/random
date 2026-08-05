@@ -1,3 +1,56 @@
+for (String column : columns) {
+
+    System.out.println("--------------------------------");
+    System.out.println("ID: " + id);
+    System.out.println("Column: " + column);
+
+    if (isIgnoredColumn(column)) {
+        System.out.println("IGNORED");
+        continue;
+    }
+
+    String devValue =
+            devRow.getOrDefault(
+                column,
+                ""
+            );
+
+    String prodValue =
+            prodRow.getOrDefault(
+                column,
+                ""
+            );
+
+    System.out.println("DEV : [" + devValue + "]");
+    System.out.println("PROD: [" + prodValue + "]");
+
+    if (!valuesEqual(devValue, prodValue)) {
+
+        System.out.println("*** DIFFERENT ***");
+
+        results.add(
+            new ComparisonResult(
+                "Data Difference",
+                id,
+                id,
+                last,
+                first,
+                column,
+                devValue,
+                prodValue,
+                devStatus,
+                prodStatus,
+                "Value differs"
+            )
+        );
+    }
+}
+
+
+
+
+
+--------------------------------------------replacing 'compareFields' to see why domain and rclo does not show on the report
 import java.util.*;
 
 public class ComparisonEngine {
