@@ -24,24 +24,16 @@ Function writeToLog() {
     param([string]$message)
     Add-Content ($(Get-Date -format "yyyy-MM-dd HH:mm:ss") + " : $($gs) : v$($version) : afterCreate : $($message)") -Path $logFile
 }
-$enableDebug = $true
+
+writeToLog("Script Starts here:")
+
+
+Import-Module activeDirectory
+writeToLog("Done - Import-Module activeDirectory")
 # ------------------------------------------------------------------
 # helper function
 # ------------------------------------------------------------------
-function Get-AttributeValueFromAccountRequest([sailpoint.Utils.objects.AccountRequest] $request, [String] $targetAttribute) {
-    $value = $null;
-    if ($request) {
-        foreach ($attrib in $request.AttributeRequests) {
-            if ($attrib.Name -eq $targetAttribute) {
-                $value = $attrib.Value;
-                break;
-            }
-        }
-    } else {
-        LogToFile("Account request object was null");
-    }
-    return $value;
-}
+
 
 function Get-SecureRandomIndex {
     param([Parameter(Mandatory = $true)][int]$MaxExclusive)
@@ -94,41 +86,44 @@ function New-CompliantPassword {
 
 writeToLog("In script:")
 
-if($enableDebug) { LogToFile("Entering beforeScript") }
 
-Add-Type -Path "D:\IQService-842\Utils.dll";  #Add the correct path after prod IQService deployment
 
-Import-Module activeDirectory
+#Add-Type -Path "D:\IQService-842\Utils.dll";  #Add the correct path after prod IQService deployment
+
+#Import-Module activeDirectory
 try {
     ##########################
     # Begin SailPoint protected code -- do not modify this code block
    
     # Read the environment variables
-    $sRequest = New-Object System.IO.StringReader([System.String]$env:Request)
-    $xmlReader_request = [ System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sRequest))
-    $requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader_request)
+    #$sRequest = New-Object System.IO.StringReader([System.String]$env:Request)
+    #$xmlReader_request = [ System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sRequest))
+    #$requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader_request)
 
-    $sResult = New-Object System.IO.StringReader([System.String]$env:Result)
-    $xmlReader_result = [ System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sResult))
-    $resultObject = New-Object Sailpoint.Utils.objects.ServiceResult($xmlReader_result)
+    #$sResult = New-Object System.IO.StringReader([System.String]$env:Result)
+    #$xmlReader_result = [ System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sResult))
+    #$resultObject = New-Object Sailpoint.Utils.objects.ServiceResult($xmlReader_result)
 	
-	if($enableDebug) {
-        LogToFile("Request object contents:")
-        LogToFile($requestObject | Out-String)
-    }
+	#if($enableDebug) {
+    #    LogToFile("Request object contents:")
+    #    LogToFile($requestObject | Out-String)
+    #}
 
     # if($resultObject.Errors.count -ne 0) {
     #     writeToLog("ad provisioning plan result ")
     #     return "There were errors in the provision result. Skipping mailbox create."
     # }
+        $sReader = New-Object System.IO.StringReader([System.String]$env:Request);
+        $xmlReader = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sReader));
+        $requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader);
 
     writeToLog("------------------------------------------------------")
     writeToLog("Request")
     writeToLog("\n", [System.String]$env:Request)
     writeToLog("------------------------------------------------------")
-    writeToLog("Result")
-    writeToLog("\n", [System.String]$env:Result)
-    writeToLog("------------------------------------------------------")
+    # writeToLog("Result")
+    # writeToLog("\n", [System.String]$env:Result)
+    # writeToLog("------------------------------------------------------")
 
 
     # ------------------------------------------------------------------
@@ -140,17 +135,17 @@ try {
     # ------------------------------------------------------------------
     # get the user credentials from the app config
     # ------------------------------------------------------------------
-    $xmlFactory = [sailpoint.Utils.xml.XmlFactory]::Instance;
-    $sReader1 = $env:Application
-    $appObject = $xmlFactory.parseXml($sReader1)
-    writeToLog("appObject: $($appObject)")
+    #$xmlFactory = [sailpoint.Utils.xml.XmlFactory]::Instance;
+    #$sReader1 = $env:Application
+    #$appObject = $xmlFactory.parseXml($sReader1)
+    #writeToLog("appObject: $($appObject)")
 
-    $forest = $appObject.forestSettings
-    $adminUser = $forest.user
-    $adminPass = $forest.password
+    #$forest = $appObject.forestSettings
+    #$adminUser = $forest.user
+    #$adminPass = $forest.password
 
-    $secpasswd = ConvertTo-SecureString $adminPass -AsPlainText -Force
-    $cred = New-Object System.Management.Automation.PSCredential ($adminUser, $secpasswd)
+    #$secpasswd = ConvertTo-SecureString $adminPass -AsPlainText -Force
+    #$cred = New-Object System.Management.Automation.PSCredential ($adminUser, $secpasswd)
 
     ####################################
     # Enable These statement while debugging
@@ -162,19 +157,28 @@ try {
 
     ####################################
 
-    $resultObject.Messages.add("Cred:")
-    $resultObject.Messages.add($cred)
+    #$resultObject.Messages.add("Cred:")
+    #$resultObject.Messages.add($cred)
     
     # ------------------------------------------------------------------
     # Get account attributes from the request
     # ------------------------------------------------------------------
-    $sAMAccountName = ""
-    $mailNickname = ""
-    $manager = ""
-    $displayName = ""
-    $rclo = ""
+    #$sAMAccountName = ""
+    #$mailNickname = ""
+    #$manager = ""
+    #$displayName = ""
+    #$rclo = ""
+    $sAMAccountName = $null
+    $mailNickname = $null
+    $manager = $null
+    $mail = $null
+    $displayName = $null
+    $rclo = $null
+    $physicalDeliveryOfficeName = $null
 
+  
     writeToLog("AttributeRequests:")
+    <#
     $attributeRequests = $requestObject.AttributeRequests
     foreach ($ar in $attributeRequests.GetEnumerator()) {
         if ($ar.Name -eq "sAMAccountName") {
@@ -202,6 +206,47 @@ try {
         }
 
     }
+    #>
+
+        if ($null -eq $requestObject.AttributeRequests) {
+        Write-Host "AttributeRequests is null. All values will be set to null." 
+        
+        writeToLog("AttributeRequests:2")       
+
+    } else {
+        $attributeRequests = $requestObject.AttributeRequests
+    foreach ($ar in $attributeRequests.GetEnumerator()) {
+
+    writeToLog("AttributeRequests:3 Inside foreach  " + $ar.Name) 
+          
+        if ($ar.Name -eq "sAMAccountName") {
+            $sAMAccountName = $ar.value
+            }
+        if ($ar.Name -eq "mailNickname") {
+            $mailNickname = $ar.value
+            }
+        if ($ar.Name -eq "Manager") {
+            $manager = $ar.value
+         }
+        if ($ar.Name -eq "mail") {
+            $mail = $ar.value
+        }
+        if ($ar.Name -eq "displayName") {
+            $displayName = $ar.value
+            }
+        if ($ar.Name -eq "physicalDeliveryOfficeName") {
+            $rclo = $ar.value
+            }
+        }
+    }
+
+        #  output a warning for missing individual attributes after the loop:
+        if (-not $sAMAccountName) { writeToLog "sAMAccountName is null" }
+        if (-not $mailNickname) { writeToLog "mailNickname is null" }
+        if (-not $manager) { writeToLog "Manager is null" }
+        if (-not $mail) { writeToLog "mail is null" }
+        if (-not $displayName) { writeToLog "displayName is null" }
+        if (-not $rclo) { writeToLog "physicalDeliveryOfficeName (rclo) is null" } 
 
     $emailAddress = "$($mailNickname)@firsthorizon.com"
     $remoteAddress = "$($mailNickname)@firsthorizon.mail.onmicrosoft.com"
@@ -215,12 +260,14 @@ try {
     writeToLog("displayName:    $($displayName)")
     writeToLog("rclo:           $($rclo)")
 
-    $resultObject.Messages.add("sAMAccountName: $($sAMAccountName)")
-    $resultObject.Messages.add("mailNickname:   $($mailNickname)")
-    $resultObject.Messages.add("emailAddress:   $($emailAddress)")
-    $resultObject.Messages.add("remoteAddress:  $($remoteAddress)")
-    $resultObject.Messages.add("displayName:    $($displayName)")
-    $resultObject.Messages.add("rclo:           $($rclo)")
+    <#
+
+    ##$resultObject.Messages.add("sAMAccountName: $($sAMAccountName)")
+    ##$resultObject.Messages.add("mailNickname:   $($mailNickname)")
+    ##$resultObject.Messages.add("emailAddress:   $($emailAddress)")
+    ##$resultObject.Messages.add("remoteAddress:  $($remoteAddress)")
+    ##$resultObject.Messages.add("displayName:    $($displayName)")
+    ##$resultObject.Messages.add("rclo:           $($rclo)")
 
     # ------------------------------------------------------------------
     # create the session
@@ -303,30 +350,161 @@ try {
     # ------------------------------------------------------------------
     #writeToLog("checking for mailbox")
 	writeToLog("checking for mailbox $($emailAddress)")
-    $out = Get-RemoteMailbox $emailAddress 2>&1    
-    if ($out -is [System.Management.Automation.ErrorRecord]) {
-    writeToLog("ERROR: $($out.Exception.Message)")
-    $resultObject.Messages.Add($out | Out-String) 
+    $out = Get-RemoteMailbox $emailAddress 2>&1
+    writeToLog("done checking for mailbox $($emailAddress)")
+    $resultObject.Messages.add("checking for mailbox")
+    $resultObject.Messages.add($out)
+    $resultObject.Messages.add("done.")
+
+    #>
+
+        writeToLog("Done with this section")
+	# ------------------------------------------------------------------
+    # create the session
+    # ------------------------------------------------------------------
+	#    Guard Clause - We don't want to process any further if it not a domain user
+    writeToLog("Next section looking for nativeIdentity:: " + $nativeIdentity)
+    if ($nativeIdentity -notlike "*OU=Domain Users*") {
+        writeToLog("Exiting Early. This is not a domain user account.")
+        exit
     }
-    else {
-    $mailbox = $out | Select-Object `
-        Name,
-        Alias,
-        PrimarySmtpAddress,
-        RemoteRoutingAddress,
-        ExchangeGuid,
-        RecipientTypeDetails
+    
+    writeToLog("This is a User Account. Starting mailbox creation via Exchange remote PowerShell.")
+ 
+    writeToLog("Setting session")
+	
+	$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri 'http://dc3pmexapp01.ftbco.ftn.com/PowerShell/' -Authentication Kerberos  2>&1
+    writeToLog("Session was executed here")
+    writeToLog("done.")
+    ##$resultObject.Messages.add("Session:")
+    ##$resultObject.Messages.add($Session); 
 
-    $mailbox | Format-List | Out-String | ForEach-Object {
-        writeToLog($_)
-        $resultObject.Messages.Add($_)
-      }
-    }  
-    #writeToLog("done checking for mailbox $($emailAddress)")
-    #$resultObject.Messages.add("checking for mailbox")
-    #$resultObject.Messages.add($out)
-    #$resultObject.Messages.add("done.")
+	writeToLog("Importing session")
+    #$out = Import-PSSession $Session
+    $out = Import-PSSession $Session 2>&1
+    writeToLog("Import-PSSession Done.")
+    ##$resultObject.Messages.add("Import")
+    ##$resultObject.Messages.add($out);
 
+    # ------------------------------------------------------------------
+    # create and configure the mailbox
+    # ------------------------------------------------------------------
+	writeToLog("creating the mailbox")
+	try {
+        #Invoke-Expression "Enable-remotemailbox $sAMAccountName -alias $mailNickname -Primarysmtpaddress $emailAddress -Remoteroutingaddress $remoteAddress" -ErrorVariable err -OutVariable out
+        Enable-RemoteMailbox -Identity $sAMAccountName -Alias $mailNickname -PrimarySmtpAddress $emailAddress -RemoteRoutingAddress $remoteAddress -ErrorVariable err -OutVariable out
+        writeToLog("done.")
+        writeToLog("output:")
+        writeToLog($out)
+        writeToLog("errors:")
+        writeToLog($err)
+        ##$resultObject.Messages.add("creating the mailbox")
+        ##$resultObject.Messages.add($out)
+        ##$resultObject.Messages.add("done.")
+    } catch {
+        writeToLog("An error occurred during mailbox creation:")
+        writeToLog($_.Exception.Message)
+        #$resultObject.Messages.add("Error during mailbox creation: $_.Exception.Message")
+    }
+	
+	 writeToLog("enabling remote routing")
+    try {
+        # Enable remote routing policy
+        #Invoke-Expression "Get-RemoteMailbox -Identity $emailAddress | Set-RemoteMailbox -EmailAddressPolicyEnabled $True" -ErrorVariable err -OutVariable out
+        Get-RemoteMailbox -Identity $emailAddress | Set-RemoteMailbox -EmailAddressPolicyEnabled $True -ErrorVariable err -OutVariable out
+        writeToLog("done.")
+        writeToLog("output:")
+        writeToLog($out)
+        writeToLog("errors:")
+        writeToLog($err)
+        #$resultObject.Messages.add("enabling remote routing")
+        #$resultObject.Messages.add($out)
+        #$resultObject.Messages.add("done.")
+
+        # Confirm remote routing is enabled and log mailbox properties
+        $checkMailbox = Get-RemoteMailbox -Identity $emailAddress
+        if ($checkMailbox.EmailAddressPolicyEnabled -eq $True) {
+            writeToLog("Remote routing is successfully enabled for $emailAddress.")
+            #$resultObject.Messages.add("Remote routing is successfully enabled for $emailAddress.")
+        }
+        else {
+            writeToLog("Remote routing is NOT enabled for $emailAddress.")
+            #$resultObject.Messages.add("Remote routing is NOT enabled for $emailAddress.")
+        }
+    }catch {
+        writeToLog("An error occurred when enabling remote routing:")
+        writeToLog($_.Exception.Message)
+        #$resultObject.Messages.add("Error enabling remote routing: $_.Exception.Message")
+    }
+	
+	writeToLog("enabling the archive")
+    try {
+        # Enable archive for the remote mailbox
+        #Invoke-Expression "Get-RemoteMailbox -Identity $emailAddress | Enable-RemoteMailbox -Archive -Confirm: $false" -ErrorVariable err -OutVariable out
+        Enable-RemoteMailbox -Identity $emailAddress -Archive -Confirm:$false -ErrorVariable err -OutVariable out
+        writeToLog("done.")
+        writeToLog("output:")
+        writeToLog($out)
+        writeToLog("errors:")
+        writeToLog($err)
+        #$resultObject.Messages.add("enabling the archive")
+        #$resultObject.Messages.add($out)
+        #$resultObject.Messages.add("done.")
+
+        # Confirm archive is enabled and log mailbox properties
+        $checkMailbox = Get-RemoteMailbox -Identity $emailAddress
+
+        if ($checkMailbox.ArchiveStatus -eq "Active") {
+            writeToLog("Archive is successfully enabled for $emailAddress.")
+            #$resultObject.Messages.add("Archive is successfully enabled for $emailAddress.")
+			}
+        else {
+            writeToLog("Archive is NOT enabled for $emailAddress.")
+            #$resultObject.Messages.add("Archive is NOT enabled for $emailAddress.")
+			}
+    } catch {
+        writeToLog("An error occurred when enabling the archive:")
+        writeToLog($_.Exception.Message)
+        #$resultObject.Messages.add("Error enabling archive: $_.Exception.Message")
+		}
+	
+		writeToLog("checking for mailbox")
+    try {
+        # Check for remote mailbox
+        #Invoke-Expression "Get-RemoteMailbox $emailAddress" -ErrorVariable err -OutVariable out
+        Get-RemoteMailbox -Identity $emailAddress -ErrorVariable err -OutVariable out
+        writeToLog("done.")
+        writeToLog("output:")
+        writeToLog($out)
+        writeToLog("errors:")
+        writeToLog($err)
+        #$resultObject.Messages.add("checking for mailbox")
+        #$resultObject.Messages.add($out)
+        #$resultObject.Messages.add("done.")
+
+        # After checking, fetch and log mailbox properties
+        $checkMailbox = Get-RemoteMailbox -Identity $emailAddress
+
+        writeToLog("Mailbox properties for $emailAddress")
+        writeToLog("Name: $($checkMailbox.Name)")
+        writeToLog("Alias: $($checkMailbox.Alias)")
+        writeToLog("PrimarySmtpAddress: $($checkMailbox.PrimarySmtpAddress)")
+        writeToLog("RemoteRoutingAddress: $($checkMailbox.RemoteRoutingAddress)")
+        writeToLog("ExchangeGuid: $($checkMailbox.ExchangeGuid)")
+        writeToLog("RecipientTypeDetails: $($checkMailbox.RecipientTypeDetails)")
+
+        #$resultObject.Messages.add("Mailbox properties for $emailAddress")
+        #$resultObject.Messages.add("Name: $($checkMailbox.Name)")
+        #$resultObject.Messages.add("Alias: $($checkMailbox.Alias)")
+        #$resultObject.Messages.add("PrimarySmtpAddress: $($checkMailbox.PrimarySmtpAddress)")
+        #$resultObject.Messages.add("RemoteRoutingAddress: $($checkMailbox.RemoteRoutingAddress)")
+        #$resultObject.Messages.add("ExchangeGuid: $($checkMailbox.ExchangeGuid)")
+        #$resultObject.Messages.add("RecipientTypeDetails: $($checkMailbox.RecipientTypeDetails)")
+    } catch {
+		writeToLog("An error occurred when checking for the mailbox:")
+		writeToLog($_.Exception.Message)
+		#$resultObject.Messages.add("Error checking mailbox: $_.Exception.Message")
+    }
 
     # ------------------------------------------------------------------
     # starting password setup
@@ -385,8 +563,8 @@ try {
     $smtpServer = "smtp.firsthorizon.com"
     $from = "IAMDoNotReply@firsthorizon.com"
     #------------- IDMGMT-884 notification template updated---------------------
-     if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
-        # If rclo code matches regex
+     # If rclo code matches regex
+     if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {        
         writeToLog("Setting mail body and params for remote new hire")
         $body = @"
     <table style="border-collapse: collapse; border: 1px solid rgb(5, 59, 128); width: 92.3426%; height: 446.729px;">
@@ -524,7 +702,7 @@ try {
 "@
 
         #$to = $managerMail
-	$to = "IAMDoNotReply@firsthorizon.com"
+	     $to = "IAMDoNotReply@firsthorizon.com"
 
         $tofinal = @($to) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique  #List of all reciepient email addresses
     
