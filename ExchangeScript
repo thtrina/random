@@ -1,3 +1,253 @@
+    writeToLog("This is a User Account. Starting mailbox creation via Exchange remote PowerShell.")
+
+    # ------------------------------------------------------------------
+    # Create Exchange PowerShell session
+    # ------------------------------------------------------------------
+    writeToLog("Creating Exchange PowerShell session.")
+
+    $Session = $null
+    $exchangeSessionImported = $false
+    $mailboxCreated = $false
+    $mailboxVerified = $false
+
+    try {
+
+        $Session = New-PSSession `
+            -ConfigurationName Microsoft.Exchange `
+            -ConnectionUri 'http://dc3pmexapp01.ftbco.ftn.com/PowerShell/' `
+            -Authentication Kerberos `
+            -ErrorAction Stop
+
+        writeToLog("Exchange PowerShell session created successfully.")
+
+        # --------------------------------------------------------------
+        # Import Exchange session
+        # --------------------------------------------------------------
+        writeToLog("Importing Exchange PowerShell session.")
+
+        Import-PSSession $Session -DisableNameChecking -AllowClobber -ErrorAction Stop | Out-Null
+
+        $exchangeSessionImported = $true
+
+        writeToLog("Exchange PowerShell session imported successfully.")
+
+    }
+    catch {
+
+        writeToLog("ERROR: Unable to create or import Exchange PowerShell session.")
+        writeToLog("ERROR: $($_.Exception.Message)")
+
+        if ($Session) {
+            Remove-PSSession $Session -ErrorAction SilentlyContinue
+        }
+
+        throw
+    }
+
+
+    # ------------------------------------------------------------------
+    # Create and configure the remote mailbox
+    # ------------------------------------------------------------------
+    writeToLog("------------------------------------------------------")
+    writeToLog("Starting remote mailbox creation.")
+    writeToLog("Identity: $($sAMAccountName)")
+    writeToLog("Primary SMTP: $($emailAddress)")
+    writeToLog("Remote Routing Address: $($remoteAddress)")
+    writeToLog("Archive: ENABLED")
+    writeToLog("------------------------------------------------------")
+
+    try {
+
+        # Clear previous values
+        $err = $null
+        $out = $null
+
+        # --------------------------------------------------------------
+        # Enable Remote Mailbox AND Archive in one operation
+        # --------------------------------------------------------------
+        $out = Enable-RemoteMailbox `
+            -Identity $sAMAccountName `
+            -Alias $mailNickname `
+            -PrimarySmtpAddress $emailAddress `
+            -RemoteRoutingAddress $remoteAddress `
+            -Archive `
+            -Confirm:$false `
+            -ErrorAction Stop
+
+        $mailboxCreated = $true
+
+        writeToLog("SUCCESS: Enable-RemoteMailbox completed.")
+        
+        if ($out) {
+            writeToLog("Enable-RemoteMailbox output:")
+            writeToLog($out)
+        }
+
+    }
+    catch {
+
+        $mailboxCreated = $false
+
+        writeToLog("ERROR: Enable-RemoteMailbox FAILED.")
+        writeToLog("ERROR: $($_.Exception.Message)")
+
+        if ($err) {
+            writeToLog("Exchange ErrorVariable:")
+            writeToLog($err)
+        }
+
+        # --------------------------------------------------------------
+        # Do NOT continue mailbox processing if creation failed
+        # --------------------------------------------------------------
+        writeToLog("Mailbox creation failed. Mailbox verification will not continue.")
+
+        if ($Session) {
+            Remove-PSSession $Session -ErrorAction SilentlyContinue
+        }
+
+        throw
+    }
+
+
+    # ------------------------------------------------------------------
+    # Verify remote mailbox
+    # ------------------------------------------------------------------
+    writeToLog("------------------------------------------------------")
+    writeToLog("Verifying remote mailbox.")
+    writeToLog("------------------------------------------------------")
+
+    try {
+
+        $checkMailbox = Get-RemoteMailbox `
+            -Identity $sAMAccountName `
+            -ErrorAction Stop
+
+        if (-not $checkMailbox) {
+            throw "Get-RemoteMailbox did not return a mailbox."
+        }
+
+        writeToLog("Remote mailbox was found.")
+
+        # --------------------------------------------------------------
+        # Log important mailbox properties
+        # --------------------------------------------------------------
+        writeToLog("Mailbox properties:")
+        writeToLog("Name: $($checkMailbox.Name)")
+        writeToLog("Alias: $($checkMailbox.Alias)")
+        writeToLog("PrimarySmtpAddress: $($checkMailbox.PrimarySmtpAddress)")
+        writeToLog("RemoteRoutingAddress: $($checkMailbox.RemoteRoutingAddress)")
+        writeToLog("ExchangeGuid: $($checkMailbox.ExchangeGuid)")
+        writeToLog("RecipientTypeDetails: $($checkMailbox.RecipientTypeDetails)")
+        writeToLog("ArchiveStatus: $($checkMailbox.ArchiveStatus)")
+        writeToLog("EmailAddressPolicyEnabled: $($checkMailbox.EmailAddressPolicyEnabled)")
+
+        # --------------------------------------------------------------
+        # Verify primary SMTP address
+        # --------------------------------------------------------------
+        if ($checkMailbox.PrimarySmtpAddress.ToString() -ieq $emailAddress) {
+            writeToLog("SUCCESS: Primary SMTP address verified.")
+        }
+        else {
+            writeToLog("WARNING: Primary SMTP address does not match expected value.")
+            writeToLog("Expected: $($emailAddress)")
+            writeToLog("Actual: $($checkMailbox.PrimarySmtpAddress)")
+        }
+
+        # --------------------------------------------------------------
+        # Verify remote routing address
+        # --------------------------------------------------------------
+        if ($checkMailbox.RemoteRoutingAddress.ToString() -ieq $remoteAddress) {
+            writeToLog("SUCCESS: Remote routing address verified.")
+        }
+        else {
+            writeToLog("WARNING: Remote routing address does not match expected value.")
+            writeToLog("Expected: $($remoteAddress)")
+            writeToLog("Actual: $($checkMailbox.RemoteRoutingAddress)")
+        }
+
+        # --------------------------------------------------------------
+        # Verify archive
+        #
+        # ArchiveStatus may not immediately be Active.
+        # Therefore, don't automatically treat Pending as a failure.
+        # --------------------------------------------------------------
+        if ($checkMailbox.ArchiveStatus -eq "Active") {
+
+            writeToLog("SUCCESS: Archive is ACTIVE.")
+
+        }
+        elseif ($checkMailbox.ArchiveStatus) {
+
+            writeToLog("WARNING: Archive exists but status is '$($checkMailbox.ArchiveStatus)'.")
+
+        }
+        else {
+
+            writeToLog("WARNING: Archive status was not returned.")
+
+        }
+
+        $mailboxVerified = $true
+
+        writeToLog("------------------------------------------------------")
+        writeToLog("MAILBOX VERIFICATION SUCCESSFUL")
+        writeToLog("Account: $($sAMAccountName)")
+        writeToLog("Email: $($emailAddress)")
+        writeToLog("------------------------------------------------------")
+
+    }
+    catch {
+
+        $mailboxVerified = $false
+
+        writeToLog("ERROR: Remote mailbox verification FAILED.")
+        writeToLog("ERROR: $($_.Exception.Message)")
+
+        if ($Session) {
+            Remove-PSSession $Session -ErrorAction SilentlyContinue
+        }
+
+        throw
+    }
+
+
+    # ------------------------------------------------------------------
+    # Close Exchange PowerShell session
+    # ------------------------------------------------------------------
+    if ($Session) {
+
+        writeToLog("Closing Exchange PowerShell session.")
+
+        Remove-PSSession $Session -ErrorAction SilentlyContinue
+
+        writeToLog("Exchange PowerShell session closed.")
+    }
+
+
+    # ------------------------------------------------------------------
+    # Final mailbox status
+    # ------------------------------------------------------------------
+    if ($mailboxCreated -and $mailboxVerified) {
+
+        writeToLog("======================================================")
+        writeToLog("REMOTE MAILBOX PROVISIONING SUCCESSFUL")
+        writeToLog("Account: $($sAMAccountName)")
+        writeToLog("Email: $($emailAddress)")
+        writeToLog("======================================================")
+
+    }
+    else {
+
+        writeToLog("======================================================")
+        writeToLog("REMOTE MAILBOX PROVISIONING FAILED")
+        writeToLog("Account: $($sAMAccountName)")
+        writeToLog("Email: $($emailAddress)")
+        writeToLog("======================================================")
+
+        throw "Remote mailbox provisioning failed for $($sAMAccountName)."
+    }
+
+
 ###############################################################################################################################
 # SETUP
 # Instructions (for each IQService host that could run the script):
