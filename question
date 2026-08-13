@@ -1,3 +1,293 @@
+###############################################################################################################################
+# EMAIL NOTIFICATION
+###############################################################################################################################
+
+writeToLog("------------------------------------------------------")
+writeToLog("Starting email notification processing")
+writeToLog("EmployeeID / sAMAccountName: $sAMAccountName")
+writeToLog("rclo: $rclo")
+writeToLog("mail: $mail")
+writeToLog("Manager email: $managerMail")
+writeToLog("------------------------------------------------------")
+
+
+###############################################################################################################################
+# REMOTE NEW HIRE
+###############################################################################################################################
+
+if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
+
+    writeToLog("Setting mail body and params for remote new hire")
+
+    $body = @"
+    
+YOUR EXISTING REMOTE NEW HIRE EMAIL BODY GOES HERE
+
+"@
+
+    # Keep your existing recipient
+    # $to = "somebody"
+    $to = "somebody"
+
+
+    $tofinal = @($to) |
+        Where-Object {
+            -not [string]::IsNullOrWhiteSpace($_)
+        } |
+        Select-Object -Unique
+
+
+    $subject = "Sandbox-Active Directory account password for remote new hire $displayName"
+
+
+    $splat = @{
+        UseSsl     = $true
+        SMTPServer = $smtpServer
+        From       = $from
+        To         = $tofinal
+        Subject    = $subject
+        Body       = $body
+        BodyAsHtml = $true
+    }
+
+
+    writeToLog("Email type: Remote New Hire")
+    writeToLog("Email recipient: $to")
+    writeToLog("Email subject: $subject")
+    writeToLog("Sending email")
+
+
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+
+    if (-not [string]::IsNullOrWhiteSpace($to)) {
+
+        try {
+
+            Send-MailMessage @splat
+
+            writeToLog(
+                "SUCCESS: Password set and email sent to $to for account $nativeIdentity."
+            )
+
+        }
+        catch {
+
+            writeToLog(
+                "ERROR: Failed to send remote new hire email."
+            )
+
+            writeToLog(
+                "ERROR: $($_.Exception.Message)"
+            )
+
+            throw
+        }
+
+    }
+    else {
+
+        writeToLog(
+            "WARNING: Manager email is null or empty. Email not sent."
+        )
+
+    }
+
+}
+
+
+###############################################################################################################################
+# SERVICE ACCOUNT
+###############################################################################################################################
+
+if ($sAMAccountName -like "sa_*") {
+
+    # If this account was a service account, execute this section
+    # otherwise it is skipped.
+
+    writeToLog("Setting mail body and params for service account")
+
+    $body = @"
+
+YOUR EXISTING SERVICE ACCOUNT EMAIL BODY GOES HERE
+
+"@
+
+
+    $to = $mail
+
+
+    $subject = "Sandbox Active Directory account password for service account $sAMAccountName"
+
+
+    $splat = @{
+        UseSsl     = $true
+        SMTPServer = $smtpServer
+        From       = $from
+        To         = $to
+        Subject    = $subject
+        Body       = $body
+        BodyAsHtml = $true
+    }
+
+
+    writeToLog("Email type: Service Account")
+    writeToLog("Email recipient: $to")
+    writeToLog("Email subject: $subject")
+    writeToLog("Sending email")
+
+
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+
+    if (-not [string]::IsNullOrWhiteSpace($to)) {
+
+        try {
+
+            Send-MailMessage @splat
+
+            writeToLog(
+                "SUCCESS: Password set and email sent to $to for account $nativeIdentity."
+            )
+
+        }
+        catch {
+
+            writeToLog(
+                "ERROR: Failed to send service account email."
+            )
+
+            writeToLog(
+                "ERROR: $($_.Exception.Message)"
+            )
+
+            throw
+        }
+
+    }
+    else {
+
+        writeToLog(
+            "WARNING: Manager email is null or empty. Email not sent."
+        )
+
+    }
+
+}
+
+
+###############################################################################################################################
+# STANDARD NEW HIRE
+###############################################################################################################################
+
+else {
+
+    writeToLog("Setting mail body and params for new hire")
+
+    $body = @"
+
+YOUR EXISTING NEW HIRE EMAIL BODY GOES HERE
+
+"@
+
+
+    # Keep your existing recipient
+    # $to = $managerMail
+    $to = "IAMDoNotReply@firsthorizon.com"
+
+
+    $tofinal = @($to) |
+        Where-Object {
+            -not [string]::IsNullOrWhiteSpace($_)
+        } |
+        Select-Object -Unique
+
+
+    $subject = "Sandbox Active Directory account password for your new hire $displayName"
+
+
+    $splat = @{
+        UseSsl     = $true
+        SMTPServer = $smtpServer
+        From       = $from
+        To         = $tofinal
+        Subject    = $subject
+        Body       = $body
+        BodyAsHtml = $true
+    }
+
+
+    writeToLog("Email type: Standard New Hire")
+    writeToLog("Email recipient: $to")
+    writeToLog("Email subject: $subject")
+    writeToLog("Sending email")
+
+
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+
+    if ($tofinal) {
+
+        try {
+
+            Send-MailMessage @splat
+
+            writeToLog(
+                "SUCCESS: Password set and email sent to manager's email $to for account $nativeIdentity."
+            )
+
+        }
+        catch {
+
+            writeToLog(
+                "ERROR: Failed to send standard new hire email."
+            )
+
+            writeToLog(
+                "ERROR: $($_.Exception.Message)"
+            )
+
+            throw
+        }
+
+    }
+    else {
+
+        writeToLog(
+            "WARNING: Recipient list is empty. Email not sent."
+        )
+
+    }
+
+}
+
+
+###############################################################################################################################
+# EMAIL PROCESSING COMPLETE
+###############################################################################################################################
+
+writeToLog("------------------------------------------------------")
+writeToLog("Email notification processing completed")
+writeToLog("------------------------------------------------------")
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
+
+    # REMOTE NEW HIRE
+
+}
+elseif ($sAMAccountName -like "sa_*") {
+
+    # SERVICE ACCOUNT
+
+}
+else {
+
+    # STANDARD NEW HIRE
+
+}
+==============================================================================================================================================================================
 if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
 		writeToLog("Setting mail body and params for remote new hire")
 		
