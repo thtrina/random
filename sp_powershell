@@ -1,5 +1,91 @@
 ###############################################################################################################################
 # SETUP
+###############################################################################################################################
+
+# Log directory
+$logDirectory = "D:\Logs\ISC_Rule_Directory\After_Create_Rule"
+
+# Make sure log directory exists
+if (-not (Test-Path $logDirectory)) {
+    New-Item -Path $logDirectory -ItemType Directory -Force | Out-Null
+}
+
+# SailPoint debug flag
+$enableDebug = $false
+
+# Script version
+$version = "8"
+
+# These are populated after the AccountRequest is parsed
+$sAMAccountName = $null
+$logFile = $null
+
+
+###############################################################################################################################
+# LOGGING FUNCTION
+###############################################################################################################################
+
+function writeToLog {
+    param(
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
+        [string]$message
+    )
+
+    # If sAMAccountName has not been identified yet,
+    # use a temporary log file.
+    if ([string]::IsNullOrWhiteSpace($script:logFile)) {
+
+        $currentLogFile = Join-Path `
+            $script:logDirectory `
+            "UNKNOWN_EMPLOYEE.log"
+
+    }
+    else {
+
+        $currentLogFile = $script:logFile
+
+    }
+
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+    $logMessage = "$timestamp : v$($script:version) : $message"
+
+    Add-Content `
+        -Path $currentLogFile `
+        -Value $logMessage
+}
+
+
+###############################################################################################################################
+# CREATE EMPLOYEE-SPECIFIC LOG FILE
+###############################################################################################################################
+
+function Set-EmployeeLogFile {
+
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$EmployeeID
+    )
+
+    # Make sure the value is safe to use as a Windows filename
+    $safeEmployeeID = $EmployeeID -replace '[\\/:*?"<>|]', '_'
+
+    # EmployeeID and sAMAccountName are the same
+    $script:logFile = Join-Path `
+        $script:logDirectory `
+        "$safeEmployeeID.txt"
+
+    writeToLog("======================================================")
+    writeToLog("Starting After Create provisioning script")
+    writeToLog("EmployeeID / sAMAccountName: $EmployeeID")
+    writeToLog("Log File: $($script:logFile)")
+    writeToLog("======================================================")
+}
+
+
+###############################################################################################################################
+# SETUP
 # Instructions (for each IQService host that could run the script):
 #   - Update the path to Utils.dll (can be an unqualified path like "Utils.dll" since script is copied to IQService folder for execution)
 #   - Make sure Utils.dll is in the specified folder on each IQService host
