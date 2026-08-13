@@ -351,8 +351,7 @@ try {
     # set mail params and body
     # ------------------------------------------------------------------
     $smtpServer = "smtp.firsthorizon.com"
-    $from = "IAMDoNotReply@firsthorizon.com"
-    #------------- IDMGMT-884 notification template updated---------------------
+    $from = "IAMDoNotReply@firsthorizon.com"   
      # If rclo code matches regex
      if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {        
         writeToLog("Setting mail body and params for remote new hire")
