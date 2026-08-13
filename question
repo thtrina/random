@@ -1,0 +1,99 @@
+if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
+		writeToLog("Setting mail body and params for remote new hire")
+		
+		$body = @"
+
+"@
+        #$to = "somebody"
+        $to = "somebody"
+
+        $tofinal = @($to) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique  #List of all reciepient email addresses
+    
+        $subject = "Sandbox-Active Directory account password for remote new hire $displayName"
+            
+        $splat = @{
+            UseSsl     = $true
+            SMTPServer = $smtpServer
+            From       = $from
+            #To         = $to
+            To         = $tofinal
+            Subject    = $subject
+            Body       = $body
+            BodyAsHtml = $true
+        }
+
+        writeToLog("Sending email")
+		
+		[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+		
+		if (-not [string]::IsNullOrWhiteSpace($to)) {
+            Send-MailMessage @splat
+            writeToLog("Password set and email sent to $to for account $nativeIdentity.")
+        }
+        else {
+            writeToLog("Manager email is null or empty. Email not sent.")
+        }
+ 
+        
+    }
+
+if ($sAMAccountName -like "sa_*") {
+        # If this account was a service account else skips this 
+        writeToLog("Setting mail body and params for service account")
+        $body = @"
+		
+"@
+
+        $to = $mail
+        $subject = "Sandbox Active Directory account password for service account $sAMAccountName"
+        
+        $splat = @{
+            UseSsl     = $true
+            SMTPServer = $smtpServer
+            From       = $from
+            To         = $to
+            Subject    = $subject
+            Body       = $body
+            BodyAsHtml = $true
+        }
+
+        writeToLog("Sending email")
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+        if (-not [string]::IsNullOrWhiteSpace($to)) {
+            Send-MailMessage @splat
+            writeToLog("Password set and email sent to $to for account $nativeIdentity.")
+        }
+        else {
+            writeToLog("Manager email is null or empty. Email not sent.")
+        }              
+    } else {
+        writeToLog("Setting mail body and params for new hire")
+        $body = @"
+		
+"@
+
+         #$to = $managerMail
+	     $to = "IAMDoNotReply@firsthorizon.com"
+
+         $tofinal = @($to) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique  #List of all reciepient email addresses
+    
+         $subject = "Sandbox Active Directory account password for your new hire $displayName"
+         $splat = @{
+            UseSsl     = $true
+            SMTPServer = $smtpServer
+            From       = $from
+            To         = $tofinal
+            Subject    = $subject
+            Body       = $body
+            BodyAsHtml = $true
+        }
+
+        writeToLog("Sending email")
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+        if($tofinal){
+            Send-MailMessage @splat
+            writeToLog("Password set and email sent to manager's email $to for account $nativeIdentity.")
+        } else {
+            writeToLog("Recipient list is empty. Email not sent.")
+        }
+    } 
