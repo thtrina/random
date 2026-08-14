@@ -1,0 +1,31 @@
+function Set-EmployeeLogFile {
+
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$EmployeeID
+    )
+
+    # Remove characters that are not valid in Windows filenames
+    $safeEmployeeID = $EmployeeID -replace '[\\/:*?"<>|]', '_'
+
+    # Get current date in yyyy-MM-dd format
+    $logDate = Get-Date -Format "yyyy-MM-dd"
+
+    # Build employee-specific log filename
+    #
+    # Example:
+    # 2026-08-14.afterprovisioning.TEST123.txt
+    #
+    $logFileName = "$logDate.afterprovisioning.$safeEmployeeID.txt"
+
+    # Build complete path
+    $script:logFile = Join-Path `
+        $script:logDirectory `
+        $logFileName
+
+    writeToLog("======================================================")
+    writeToLog("Starting After Create provisioning script")
+    writeToLog("EmployeeID / sAMAccountName: $EmployeeID")
+    writeToLog("Log File: $($script:logFile)")
+    writeToLog("======================================================")
+}
