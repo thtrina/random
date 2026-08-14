@@ -29,3 +29,104 @@ function Set-EmployeeLogFile {
     writeToLog("Log File: $($script:logFile)")
     writeToLog("======================================================")
 }
+
+
+------------------------------------------- how to test without running whole prov
+
+# ==============================================================
+# TEST EMPLOYEE-SPECIFIC LOGGING
+# ==============================================================
+
+$logDirectory = "D:\Logs\ISC_Rule_Directory\After_Create_Rule"
+
+$version = "8"
+
+# Test employee
+$sAMAccountName = "TEST123"
+
+
+# --------------------------------------------------------------
+# Make sure log directory exists
+# --------------------------------------------------------------
+
+if (-not (Test-Path $logDirectory)) {
+
+    New-Item `
+        -Path $logDirectory `
+        -ItemType Directory `
+        -Force | Out-Null
+}
+
+
+# --------------------------------------------------------------
+# Logging function
+# --------------------------------------------------------------
+
+function writeToLog {
+
+    param(
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
+        [string]$message
+    )
+
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+    $logMessage = "$timestamp : v$version : $message"
+
+    Add-Content `
+        -Path $script:logFile `
+        -Value $logMessage
+}
+
+
+# --------------------------------------------------------------
+# Create employee-specific log file
+# --------------------------------------------------------------
+
+function Set-EmployeeLogFile {
+
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$EmployeeID
+    )
+
+    $safeEmployeeID = $EmployeeID -replace '[\\/:*?"<>|]', '_'
+
+    $logDate = Get-Date -Format "yyyy-MM-dd"
+
+    $logFileName = "$logDate.afterprovisioning.$safeEmployeeID.txt"
+
+    $script:logFile = Join-Path `
+        $script:logDirectory `
+        $logFileName
+}
+
+
+# --------------------------------------------------------------
+# CREATE TEST LOG
+# --------------------------------------------------------------
+
+Set-EmployeeLogFile -EmployeeID $sAMAccountName
+
+
+writeToLog("======================================================")
+writeToLog("TEST MESSAGE")
+writeToLog("Logging is working.")
+writeToLog("EmployeeID / sAMAccountName: $sAMAccountName")
+writeToLog("Test date/time: $(Get-Date)")
+writeToLog("Log file: $logFile")
+writeToLog("This test did NOT run SailPoint provisioning.")
+writeToLog("======================================================")
+
+
+# --------------------------------------------------------------
+# Display result
+# --------------------------------------------------------------
+
+Write-Host ""
+Write-Host "Logging test completed." -ForegroundColor Green
+Write-Host ""
+Write-Host "Log file created:" -ForegroundColor Yellow
+Write-Host $logFile
+Write-Host ""
