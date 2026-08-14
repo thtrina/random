@@ -1,0 +1,33 @@
+$logDirectory = "D:\Logs\ISC_Rule_Directory\After_Create_Rule"
+
+$version = "8"
+
+$sAMAccountName = "TEST123"
+
+$logFile = Join-Path `
+    $logDirectory `
+    "$sAMAccountName.txt"
+
+
+function writeToLog {
+
+    param(
+        [string]$message
+    )
+
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+    $logMessage = "$timestamp : v$version : $message"
+
+    Add-Content `
+        -Path $logFile `
+        -Value $logMessage
+}
+
+
+writeToLog("========================================")
+writeToLog("TEST MESSAGE")
+writeToLog("Logging is working.")
+writeToLog("Employee: $sAMAccountName")
+writeToLog("Test completed.")
+writeToLog("========================================")
