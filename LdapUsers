@@ -1,0 +1,253 @@
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.*;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.Hashtable;
+
+public class LdapUserExport {
+
+    public static void main(String[] args) {
+
+        String ldapUrl = "ldap://ldap.example.com:389";
+        String bindUser =
+                "CN=ldapservice,OU=Service Accounts,DC=example,DC=com";
+        String bindPassword = "password";
+
+        String baseDn = "DC=example,DC=com";
+
+        String outputFile = "AD_Users.csv";
+
+        try {
+
+            // --------------------------------------------------
+            // LDAP connection
+            // --------------------------------------------------
+
+            Hashtable<String, String> env = new Hashtable<>();
+
+            env.put(
+                Context.INITIAL_CONTEXT_FACTORY,
+                "com.sun.jndi.ldap.LdapCtxFactory"
+            );
+
+            env.put(
+                Context.PROVIDER_URL,
+                ldapUrl
+            );
+
+            env.put(
+                Context.SECURITY_AUTHENTICATION,
+                "simple"
+            );
+
+            env.put(
+                Context.SECURITY_PRINCIPAL,
+                bindUser
+            );
+
+            env.put(
+                Context.SECURITY_CREDENTIALS,
+                bindPassword
+            );
+
+            DirContext ctx =
+                    new InitialDirContext(env);
+
+            // --------------------------------------------------
+            // LDAP filter - ALL AD USERS
+            // --------------------------------------------------
+
+            String filter =
+                    "(&(objectCategory=person)(objectClass=user))";
+
+            System.out.println("LDAP Filter:");
+            System.out.println(filter);
+
+            // --------------------------------------------------
+            // Attributes to retrieve
+            // --------------------------------------------------
+
+            String[] attributes = {
+                "sAMAccountName",
+                "userPrincipalName",
+                "distinguishedName",
+                "userAccountControl",
+                "mail",
+                "givenName",
+                "sn"
+            };
+
+            SearchControls controls =
+                    new SearchControls();
+
+            controls.setSearchScope(
+                    SearchControls.SUBTREE_SCOPE
+            );
+
+            controls.setReturningAttributes(
+                    attributes
+            );
+
+            // --------------------------------------------------
+            // CSV output
+            // --------------------------------------------------
+
+            PrintWriter writer =
+                    new PrintWriter(
+                            new FileWriter(outputFile)
+                    );
+
+            writer.println(
+                    "sAMAccountName," +
+                    "userPrincipalName," +
+                    "distinguishedName," +
+                    "userAccountControl," +
+                    "mail," +
+                    "givenName," +
+                    "sn"
+            );
+
+            // --------------------------------------------------
+            // Search AD
+            // --------------------------------------------------
+
+            NamingEnumeration<SearchResult> results =
+                    ctx.search(
+                            baseDn,
+                            filter,
+                            controls
+                    );
+
+            int count = 0;
+
+            while (results.hasMore()) {
+
+                SearchResult result =
+                        results.next();
+
+                Attributes attrs =
+                        result.getAttributes();
+
+                String sAMAccountName =
+                        getValue(
+                            attrs,
+                            "sAMAccountName"
+                        );
+
+                String userPrincipalName =
+                        getValue(
+                            attrs,
+                            "userPrincipalName"
+                        );
+
+                String distinguishedName =
+                        getValue(
+                            attrs,
+                            "distinguishedName"
+                        );
+
+                String userAccountControl =
+                        getValue(
+                            attrs,
+                            "userAccountControl"
+                        );
+
+                String mail =
+                        getValue(
+                            attrs,
+                            "mail"
+                        );
+
+                String givenName =
+                        getValue(
+                            attrs,
+                            "givenName"
+                        );
+
+                String sn =
+                        getValue(
+                            attrs,
+                            "sn"
+                        );
+
+                writer.println(
+                        csv(sAMAccountName) + "," +
+                        csv(userPrincipalName) + "," +
+                        csv(distinguishedName) + "," +
+                        csv(userAccountControl) + "," +
+                        csv(mail) + "," +
+                        csv(givenName) + "," +
+                        csv(sn)
+                );
+
+                count++;
+            }
+
+            writer.close();
+            ctx.close();
+
+            System.out.println();
+            System.out.println(
+                    "Users exported: " + count
+            );
+
+            System.out.println(
+                    "Output file: " + outputFile
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    // ----------------------------------------------------------
+    // Get LDAP attribute safely
+    // ----------------------------------------------------------
+
+    private static String getValue(
+            Attributes attrs,
+            String attributeName) {
+
+        try {
+
+            Attribute attribute =
+                    attrs.get(attributeName);
+
+            if (attribute != null) {
+
+                Object value =
+                        attribute.get();
+
+                if (value != null) {
+                    return value.toString();
+                }
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Error reading " +
+                    attributeName
+            );
+        }
+
+        return "";
+    }
+
+    // ----------------------------------------------------------
+    // CSV formatting
+    // ----------------------------------------------------------
+
+    private static String csv(String value) {
+
+        if (value == null) {
+            return "";
+        }
+
+        value = value.replace("\"", "\"\"");
+
+        return "\"" + value + "\"";
+    }
+}
