@@ -1,3 +1,12 @@
+[PS] C:\WINDOWS\system32>Invoke-Command -Session WinRM1 { Get-Command Search-AdminAuditLog }
+Invoke-Command : Cannot bind parameter 'Session'. Cannot convert the "WinRM1" value of type "System.String" to type "System.Management.Automation.Runspaces.PSSession".
+At line:1 char:25
++ Invoke-Command -Session WinRM1 { Get-Command Search-AdminAuditLog }
++                         ~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Invoke-Command], ParameterBindingException
+    + FullyQualifiedErrorId : CannotConvertArgumentNoMessage,Microsoft.PowerShell.Commands.InvokeCommandCommand
+
+----------------------------------- new ----------------------------
 [PS] C:\WINDOWS\system32>Get-PSSession | Format-List Name,State,ComputerName,ConfigurationName
 
 
