@@ -1,5 +1,12 @@
+Get-UnifiedAuditSetting [[-WarningVariable] <Object>] [[-OutBuffer] <Object>] [[-InformationVariable] <Object>] [[-InformationAction] <Object>] [[-OutVariable] <Object>] [[-Identity] <Object>] [[-ErrorVariable] <Object>] [[-PipelineVariable] <Object>] [[-ErrorAction] <Object>] [[-WarningAction] <Object>] [-AsJob] [-Verbose] [-Debug]
 
+[PS] C:\WINDOWS\system32>Get-Help Get-UnifiedAuditSetting -Examples
 
+Do you want to run Update-Help?
+The Update-Help cmdlet downloads the most current Help files for Windows PowerShell modules, and installs them on your computer. For more information about the Update-Help cmdlet, see
+https:/go.microsoft.com/fwlink/?LinkId=210614.
+[Y] Yes  [N] No  [S] Suspend  [?] Help (default is "Y"): Y
+======================================================================
 [PS] C:\WINDOWS\system32>Get-UnifiedAuditSetting | Format-List *
 cmdlet Get-UnifiedAuditSetting at command pipeline position 1
 Supply values for the following parameters:
