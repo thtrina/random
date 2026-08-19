@@ -1,3 +1,18 @@
+[PS] C:\WINDOWS\system32>$session.CommandNames | Where-Object {$_ -like "*Audit*"}
+[PS] C:\WINDOWS\system32>Get-PSSessionConfiguration | Where-Object {$_.Name -eq "Microsoft.Exchange"} | Format-List Name,Permission,Enabled,PSVersion,RunAsUser
+Get-PSSessionConfiguration : Access is denied. To run this cmdlet, start Windows PowerShell with the "Run as administrator" option.
+At line:1 char:1
++ Get-PSSessionConfiguration | Where-Object {$_.Name -eq "Microsoft.Exc ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-PSSessionConfiguration], InvalidOperationException
+    + FullyQualifiedErrorId : System.InvalidOperationException,Microsoft.PowerShell.Commands.GetPSSessionConfigurationCommand
+
+[PS] C:\WINDOWS\system32>
+
+
+
+
+===============================================new ------------------------------
 [PS] C:\WINDOWS\system32>Get-ManagementRoleEntry "Audit Logs\*" | Where-Object {$_.Name -like "*Audit*"} | Select-Object Role,Name
 Get-ManagementRoleEntry : The term 'Get-ManagementRoleEntry' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is
 correct and try again.
