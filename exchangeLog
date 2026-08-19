@@ -1,3 +1,40 @@
+---------------------error for 30 day sent to a file 
+
+New-Item -ItemType Directory -Path "C:\Temp" -Force
+
+
+$startDate = (Get-Date).AddDays(-30)
+
+$events = Get-WinEvent -FilterHashtable @{
+    LogName   = "MSExchange Management"
+    StartTime = $startDate
+} | Where-Object {
+    $_.Message -like "*Enable-RemoteMailbox*"
+}
+
+$events |
+    ForEach-Object {
+
+        "============================================================"
+        "Time Created : $($_.TimeCreated)"
+        "Event ID     : $($_.Id)"
+        "Level        : $($_.LevelDisplayName)"
+        "Machine      : $($_.MachineName)"
+        "Provider     : $($_.ProviderName)"
+        "Record ID    : $($_.RecordId)"
+        "------------------------------------------------------------"
+
+        $_.Properties | ForEach-Object {
+            $_.Value
+        }
+
+        ""
+    } |
+    Out-File "C:\Temp\Enable-RemoteMailbox-Last30Days.txt" -Width 500
+
+
+
+
 --------------Better detail error
 PS C:\WINDOWS\system32> $event.Properties | ForEach-Object { $_.Value}
 Enable-RemoteMailbox
