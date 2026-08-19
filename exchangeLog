@@ -1,3 +1,484 @@
+[PS] C:\WINDOWS\system32>Get-ManagementRoleAssignment -RoleAssignee $env:SA_ISC_AD_PROD | Format-Table Role,RoleAssigneeName,AssignmentMethod
+
+Role                          RoleAssigneeName                  AssignmentMethod
+----                          ----------------                  ----------------
+Distribution Groups           Recipient Management                        Direct
+Monitoring                    View-Only Organization Management           Direct
+UM Mailboxes                  Organization Management                     Direct
+Receive Connectors            Server Management                           Direct
+Transport Hygiene             Hygiene Management                          Direct
+Public Folders                Public Folder Management                    Direct
+Mail Recipients               Organization Management                     Direct
+View-Only Recipients          View-Only Organization Management           Direct
+Exchange Server Certificates  Organization Management                     Direct
+Migration                     Recipient Management                        Direct
+User Options                  Organization Management                     Direct
+Recipient Policies            Organization Management                     Direct
+Exchange Connectors           Server Management                           Direct
+POP3 And IMAP4 Protocols      Server Management                           Direct
+View-Only Recipients          Hygiene Management                          Direct
+Send Connectors               Organization Management                     Direct
+User Options                  Organization Management                     Direct
+E-Mail Address Policies       Organization Management                     Direct
+Mail Enabled Public Folders   Organization Management                     Direct
+Monitoring                    Organization Management                     Direct
+Exchange Server Certificates  Server Management                           Direct
+Mail Recipients               Recipient Management                        Direct
+Recipient Policies            Recipient Management                        Direct
+Legal Hold                    Discovery Management                        Direct
+Migration                     Organization Management                     Direct
+Public Folder Replication     Organization Management                     Direct
+Public Folders                Organization Management                     Direct
+Transport Agents              Organization Management                     Direct
+Transport Queues              Server Management                           Direct
+Database Copies               Organization Management                     Direct
+MyBaseOptions                 Default Role Assignment Policy              Direct
+MyContactInformation          Organization Management                     Direct
+Cmdlet Extension Agents       Organization Management                     Direct
+Information Rights Management Organization Management                     Direct
+Receive Connectors            Organization Management                     Direct
+UM Prompts                    Organization Management                     Direct
+Exchange Virtual Directories  Server Management                           Direct
+View-Only Configuration       Organization Management                     Direct
+Mail Enabled Public Folders   Recipient Management                        Direct
+Legal Hold                    Organization Management                     Direct
+View-Only Recipients          Organization Management                     Direct
+Mail Recipient Creation       Organization Management                     Direct
+MyDistributionGroupMembership Organization Management                     Direct
+Exchange Servers              Organization Management                     Direct
+Audit Logs                    Organization Management                     Direct
+MyDiagnostics                 Organization Management                     Direct
+Transport Rules               Records Management                          Direct
+View-Only Configuration       Organization Management                     Direct
+Legal Hold                    Organization Management                     Direct
+Role Management               Organization Management                     Direct
+Message Tracking              Organization Management                     Direct
+MyVoiceMail                   Organization Management                     Direct
+Retention Management          Organization Management                     Direct
+View-Only Recipients          Help Desk                                   Direct
+MyProfileInformation          Organization Management                     Direct
+Distribution Groups           Organization Management                     Direct
+Journaling                    Organization Management                     Direct
+Audit Logs                    Records Management                          Direct
+Transport Queues              Organization Management                     Direct
+Exchange Connectors           Organization Management                     Direct
+Exchange Connectors           Organization Management                     Direct
+Transport Agents              Organization Management                     Direct
+User Options                  Help Desk                                   Direct
+Mail Recipients               Organization Management                     Direct
+Disaster Recovery             Organization Management                     Direct
+Transport Queues              Organization Management                     Direct
+Remote and Accepted Domains   Organization Management                     Direct
+View-Only Recipients          Organization Management                     Direct
+Security Group Creation an... Organization Management                     Direct
+Receive Connectors            Organization Management                     Direct
+Federated Sharing             Organization Management                     Direct
+Organization Configuration    Organization Management                     Direct
+Address Lists                 Organization Management                     Direct
+Message Tracking              Records Management                          Direct
+Retention Management          Records Management                          Direct
+MyDistributionGroups          Organization Management                     Direct
+Mail Recipient Creation       Organization Management                     Direct
+Remote and Accepted Domains   Organization Management                     Direct
+Database Copies               Organization Management                     Direct
+MyMailboxDelegation           Organization Management                     Direct
+MyRetentionPolicies           Organization Management                     Direct
+UM Mailboxes                  Organization Management                     Direct
+MyMailboxDelegation           Default Role Assignment Policy              Direct
+Transport Agents              Hygiene Management                          Direct
+Mailbox Search                Discovery Management                        Direct
+Role Management               Organization Management                     Direct
+MyDistributionGroupMembership Default Role Assignment Policy              Direct
+Transport Hygiene             Organization Management                     Direct
+Message Tracking              Organization Management                     Direct
+Journaling                    Records Management                          Direct
+Database Copies               Server Management                           Direct
+MyTextMessaging               Organization Management                     Direct
+Exchange Servers              Server Management                           Direct
+Mail Recipient Creation       Recipient Management                        Direct
+Organization Configuration    Organization Management                     Direct
+UnScoped Role Management      Organization Management                     Direct
+Recipient Policies            Organization Management                     Direct
+Address Lists                 Organization Management                     Direct
+Public Folder Replication     Organization Management                     Direct
+View-Only Configuration       Delegated Setup                             Direct
+Mailbox Import Export         Smith, Alan                                 Direct
+Public Folders                Organization Management                     Direct
+POP3 And IMAP4 Protocols      Organization Management                     Direct
+MyBaseOptions                 Organization Management                     Direct
+Cmdlet Extension Agents       Organization Management                     Direct
+Edge Subscriptions            Organization Management                     Direct
+ApplicationImpersonation      Organization Management                     Direct
+Move Mailboxes                Organization Management                     Direct
+Active Directory Permissions  Organization Management                     Direct
+Audit Logs                    Organization Management                     Direct
+Move Mailboxes                Recipient Management                        Direct
+View-Only Configuration       View-Only Organization Management           Direct
+Monitoring                    Organization Management                     Direct
+View-Only Configuration       Hygiene Management                          Direct
+Databases                     Organization Management                     Direct
+Unified Messaging             Organization Management                     Direct
+Security Group Creation an... Organization Management                     Direct
+Mailbox Import Export         JONES, MITCH-17414                          Direct
+Mail Enabled Public Folders   Public Folder Management                    Direct
+Transport Rules               Organization Management                     Direct
+Move Mailboxes                Organization Management                     Direct
+View-Only Audit Logs          Organization Management                     Direct
+Mailbox Import Export         Organization Management                     Direct
+Mailbox Search                Organization Management                     Direct
+UM Prompts                    Organization Management                     Direct
+Organization Transport Set... Organization Management                     Direct
+E-Mail Address Policies       Organization Management                     Direct
+MyDistributionGroups          Default Role Assignment Policy              Direct
+Message Tracking              Recipient Management                        Direct
+Monitoring                    Server Management                           Direct
+Information Rights Management Organization Management                     Direct
+Exchange Server Certificates  Organization Management                     Direct
+Transport Rules               Organization Management                     Direct
+Federated Sharing             Organization Management                     Direct
+ApplicationImpersonation      Hygiene Management                          Direct
+Receive Connectors            Hygiene Management                          Direct
+Active Directory Permissions  Organization Management                     Direct
+Exchange Virtual Directories  Organization Management                     Direct
+Databases                     Organization Management                     Direct
+Exchange Virtual Directories  Organization Management                     Direct
+Databases                     Server Management                           Direct
+Send Connectors               Organization Management                     Direct
+View-Only Audit Logs          Organization Management                     Direct
+Organization Client Access    Organization Management                     Direct
+Distribution Groups           Organization Management                     Direct
+Edge Subscriptions            Organization Management                     Direct
+Organization Client Access    Organization Management                     Direct
+Support Diagnostics           Organization Management                     Direct
+Exchange Servers              Organization Management                     Direct
+Unified Messaging             Organization Management                     Direct
+Mail Tips                     Organization Management                     Direct
+Database Availability Groups  Organization Management                     Direct
+Organization Transport Set... Organization Management                     Direct
+Retention Management          Organization Management                     Direct
+POP3 And IMAP4 Protocols      Organization Management                     Direct
+Mail Tips                     Organization Management                     Direct
+Mail Enabled Public Folders   Organization Management                     Direct
+Journaling                    Organization Management                     Direct
+Database Availability Groups  Organization Management                     Direct
+Migration                     Organization Management                     Direct
+Transport Hygiene             Organization Management                     Direct
+Disaster Recovery             Organization Management                     Direct
+ApplicationImpersonation      CICadmin_user                               Direct
+Security Reader               Security Reader                             Direct
+SendMailApplication           Organization Management                     Direct
+Org Marketplace Apps          Organization Management                     Direct
+ExchangeCrossServiceIntegr... Organization Management                     Direct
+Team Mailboxes                Organization Management                     Direct
+OfficeExtensionApplication    Organization Management                     Direct
+Org Custom Apps               Organization Management                     Direct
+MyTeamMailboxes               Organization Management                     Direct
+WorkloadManagement            Organization Management                     Direct
+Org Marketplace Apps          Organization Management                     Direct
+TeamMailboxLifecycleApplic... Organization Management                     Direct
+Security Admin                Organization Management                     Direct
+Mailbox Import Export         (DA) Smith, Alan                            Direct
+Compliance Admin              Organization Management                     Direct
+MeetingGraphApplication       Organization Management                     Direct
+UserApplication               Exchange Online-ApplicationAcc...           Direct
+ApplicationImpersonation      SA_VOIPUCXNEXCH_PROD                        Direct
+Security Reader               Organization Management                     Direct
+Security Admin                Organization Management                     Direct
+My ReadWriteMailbox Apps      Organization Management                     Direct
+ArchiveApplication            Exchange Online-ApplicationAcc...           Direct
+Data Loss Prevention          Compliance Management                       Direct
+Compliance Admin              Compliance Management                       Direct
+WorkloadManagement            Organization Management                     Direct
+Team Mailboxes                Organization Management                     Direct
+Mailbox Search                Exchange Online-ApplicationAcc...           Direct
+Mailbox Import Export         (DA) Jones, Mitch                           Direct
+UserApplication               Organization Management                     Direct
+LegalHoldApplication          Organization Management                     Direct
+ApplicationImpersonation      SA_VOIPTMSXE_PROD                           Direct
+MailboxSearchApplication      Exchange Online-ApplicationAcc...           Direct
+MailboxSearchApplication      Organization Management                     Direct
+My Marketplace Apps           Organization Management                     Direct
+Data Loss Prevention          Organization Management                     Direct
+Security Admin                Security Administrator                      Direct
+Team Mailboxes                Recipient Management                        Direct
+TeamMailboxLifecycleApplic... Exchange Online-ApplicationAcc...           Direct
+ArchiveApplication            Organization Management                     Direct
+Org Custom Apps               Organization Management                     Direct
+Data Loss Prevention          Organization Management                     Direct
+LegalHoldApplication          Exchange Online-ApplicationAcc...           Direct
+Security Reader               Organization Management                     Direct
+Compliance Admin              Organization Management                     Direct
+My Custom Apps                Organization Management                     Direct
+ApplicationImpersonation      SA_PPTRAP_PROD                              Direct
+ApplicationImpersonation      SA_WXCALONPREM_PROD                         Direct
+My Custom Apps                Default Role Assignment Policy              Direct
+Security Group Creation an... UM Management                               Direct
+Distribution Groups           UM Management                               Direct
+MeetingGraphApplication       Exchange Online-ApplicationAcc...           Direct
+Mail Recipients               UM Management                               Direct
+ApplicationImpersonation                                                  Direct
+WARNING: The object ApplicationImpersonation-(SA) DALFREY, JOHN has been corrupted or isn't compatible with Microsoft support requirements, and it's in an inconsistent state. The following validation errors happened:
+WARNING: The management role assignment ApplicationImpersonation-(SA) DALFREY, JOHN isn't associated with a role group, assignment policy, user, or universal security group. The role group, assignment policy, user, or USG might have
+been deleted. Use the Remove-ManagementRoleAssignment cmdlet to remove this role assignment.
+
+
+[PS] C:\WINDOWS\system32>Get-ManagementRoleAssignment -RoleAssignee $env:ftbco\SA_ISC_AD_PROD | Format-Table Role,RoleAssigneeName,AssignmentMethod
+
+Role                        RoleAssigneeName     AssignmentMethod
+----                        ----------------     ----------------
+Distribution Groups         Recipient Management        RoleGroup
+Migration                   Recipient Management        RoleGroup
+Mail Recipients             Recipient Management        RoleGroup
+Recipient Policies          Recipient Management        RoleGroup
+Mail Enabled Public Folders Recipient Management        RoleGroup
+Mail Recipient Creation     Recipient Management        RoleGroup
+Move Mailboxes              Recipient Management        RoleGroup
+Message Tracking            Recipient Management        RoleGroup
+Team Mailboxes              Recipient Management        RoleGroup
+
+
+[PS] C:\WINDOWS\system32>Get-ManagementRoleAssignment -RoleAssignee $env:ftbco\SA_ISC_AD_PROD | Where-Object {$_.Role -like "*Audit*"} | Format-Table Role,RoleAssigneeName,AssignmentMethod
+[PS] C:\WINDOWS\system32>Get-ManagementRole *Audit* | Format-Table Name,RoleType
+Get-ManagementRole : The term 'Get-ManagementRole' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and
+try again.
+At line:1 char:1
++ Get-ManagementRole *Audit* | Format-Table Name,RoleType
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-ManagementRole:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+[PS] C:\WINDOWS\system32>Get-Command New-AdminAuditLogSearch -ErrorAction SilentlyContinue
+[PS] C:\WINDOWS\system32>Get-Command Write-AdminAuditLog | Format-List *
+
+
+HelpUri             :
+ScriptBlock         :
+                          param(
+
+                          [Alias('ea')]
+                          ${ErrorAction},
+
+                          [Alias('vb')]
+                          [switch]
+                          ${Verbose},
+
+                          [Alias('ov')]
+                          ${OutVariable},
+
+                          [Alias('infa')]
+                          ${InformationAction},
+
+                          [Alias('wv')]
+                          ${WarningVariable},
+
+                          [Alias('db')]
+                          [switch]
+                          ${Debug},
+
+                          [Alias('pv')]
+                          ${PipelineVariable},
+
+                          [Alias('cf')]
+                          [switch]
+                          ${Confirm},
+
+                          ${Comment},
+
+                          [Alias('ev')]
+                          ${ErrorVariable},
+
+                          [Alias('ob')]
+                          ${OutBuffer},
+
+                          [Alias('wa')]
+                          ${WarningAction},
+
+                          ${DomainController},
+
+                          [Alias('wi')]
+                          [switch]
+                          ${WhatIf},
+
+                          [Alias('iv')]
+                          ${InformationVariable},
+
+                          [switch]
+                          ${AsJob})
+
+                          Begin {
+                              try {
+                                  $positionalArguments = & $script:NewObject collections.arraylist
+                                  foreach ($parameterName in $PSBoundParameters.BoundPositionally)
+                                  {
+                                      $null = $positionalArguments.Add( $PSBoundParameters[$parameterName] )
+                                      $null = $PSBoundParameters.Remove($parameterName)
+                                  }
+                                  $positionalArguments.AddRange($args)
+
+                                  $clientSideParameters = Get-PSImplicitRemotingClientSideParameters $PSBoundParameters $True
+
+                                  $scriptCmd = { & $script:InvokeCommand `
+                                                  @clientSideParameters `
+                                                  -HideComputerName `
+                                                  -Session (Get-PSImplicitRemotingSession -CommandName 'Write-AdminAuditLog') `
+                                                  -Arg ('Write-AdminAuditLog', $PSBoundParameters, $positionalArguments) `
+                                                  -Script { param($name, $boundParams, $unboundParams) & $name @boundParams @unboundParams } `
+                                               }
+
+                                  $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
+                                  $steppablePipeline.Begin($myInvocation.ExpectingInput, $ExecutionContext)
+                              } catch {
+                                  throw
+                              }
+                          }
+                          Process {
+                          try {
+                              $steppablePipeline.Process($_)
+                          } catch {
+                              throw
+                          }
+                       }
+                          End {
+                          try {
+                              $steppablePipeline.End()
+                          } catch {
+                              throw
+                          }
+                       }
+
+                          # .ForwardHelpTargetName Write-AdminAuditLog
+                          # .ForwardHelpCategory Function
+                          # .RemoteHelpRunspace PSSession
+
+CmdletBinding       : False
+DefaultParameterSet :
+Definition          :
+                          param(
+
+                          [Alias('ea')]
+                          ${ErrorAction},
+
+                          [Alias('vb')]
+                          [switch]
+                          ${Verbose},
+
+                          [Alias('ov')]
+                          ${OutVariable},
+
+                          [Alias('infa')]
+                          ${InformationAction},
+
+                          [Alias('wv')]
+                          ${WarningVariable},
+
+                          [Alias('db')]
+                          [switch]
+                          ${Debug},
+
+                          [Alias('pv')]
+                          ${PipelineVariable},
+
+                          [Alias('cf')]
+                          [switch]
+                          ${Confirm},
+
+                          ${Comment},
+
+                          [Alias('ev')]
+                          ${ErrorVariable},
+
+                          [Alias('ob')]
+                          ${OutBuffer},
+
+                          [Alias('wa')]
+                          ${WarningAction},
+
+                          ${DomainController},
+
+                          [Alias('wi')]
+                          [switch]
+                          ${WhatIf},
+
+                          [Alias('iv')]
+                          ${InformationVariable},
+
+                          [switch]
+                          ${AsJob})
+
+                          Begin {
+                              try {
+                                  $positionalArguments = & $script:NewObject collections.arraylist
+                                  foreach ($parameterName in $PSBoundParameters.BoundPositionally)
+                                  {
+                                      $null = $positionalArguments.Add( $PSBoundParameters[$parameterName] )
+                                      $null = $PSBoundParameters.Remove($parameterName)
+                                  }
+                                  $positionalArguments.AddRange($args)
+
+                                  $clientSideParameters = Get-PSImplicitRemotingClientSideParameters $PSBoundParameters $True
+
+                                  $scriptCmd = { & $script:InvokeCommand `
+                                                  @clientSideParameters `
+                                                  -HideComputerName `
+                                                  -Session (Get-PSImplicitRemotingSession -CommandName 'Write-AdminAuditLog') `
+                                                  -Arg ('Write-AdminAuditLog', $PSBoundParameters, $positionalArguments) `
+                                                  -Script { param($name, $boundParams, $unboundParams) & $name @boundParams @unboundParams } `
+                                               }
+
+                                  $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
+                                  $steppablePipeline.Begin($myInvocation.ExpectingInput, $ExecutionContext)
+                              } catch {
+                                  throw
+                              }
+                          }
+                          Process {
+                          try {
+                              $steppablePipeline.Process($_)
+                          } catch {
+                              throw
+                          }
+                       }
+                          End {
+                          try {
+                              $steppablePipeline.End()
+                          } catch {
+                              throw
+                          }
+                       }
+
+                          # .ForwardHelpTargetName Write-AdminAuditLog
+                          # .ForwardHelpCategory Function
+                          # .RemoteHelpRunspace PSSession
+
+Options             : None
+Description         :
+Verb                : Write
+Noun                : AdminAuditLog
+HelpFile            :
+OutputType          : {}
+Name                : Write-AdminAuditLog
+CommandType         : Function
+Source              : dc3pmexapp01.ftbco.ftn.com
+Version             : 1.0
+Visibility          : Public
+ModuleName          : dc3pmexapp01.ftbco.ftn.com
+Module              : dc3pmexapp01.ftbco.ftn.com
+RemotingCapability  : PowerShell
+Parameters          : {[ErrorAction, System.Management.Automation.ParameterMetadata], [Verbose, System.Management.Automation.ParameterMetadata], [OutVariable, System.Management.Automation.ParameterMetadata], [InformationAction,
+                      System.Management.Automation.ParameterMetadata], [WarningVariable, System.Management.Automation.ParameterMetadata], [Debug, System.Management.Automation.ParameterMetadata], [PipelineVariable,
+                      System.Management.Automation.ParameterMetadata], [Confirm, System.Management.Automation.ParameterMetadata], [Comment, System.Management.Automation.ParameterMetadata], [ErrorVariable,
+                      System.Management.Automation.ParameterMetadata], [OutBuffer, System.Management.Automation.ParameterMetadata], [WarningAction, System.Management.Automation.ParameterMetadata], [DomainController,
+                      System.Management.Automation.ParameterMetadata], [WhatIf, System.Management.Automation.ParameterMetadata], [InformationVariable, System.Management.Automation.ParameterMetadata], [AsJob,
+                      System.Management.Automation.ParameterMetadata]}
+ParameterSets       : {[[-ErrorAction] <Object>] [[-OutVariable] <Object>] [[-InformationAction] <Object>] [[-WarningVariable] <Object>] [[-PipelineVariable] <Object>] [[-Comment] <Object>] [[-ErrorVariable] <Object>] [[-OutBuffer]
+                      <Object>] [[-WarningAction] <Object>] [[-DomainController] <Object>] [[-InformationVariable] <Object>] [-Confirm] [-WhatIf] [-AsJob] [-Verbose] [-Debug]}
+
+
+
+[PS] C:\WINDOWS\system32>
+
+
+-----------------------------------------------------------------------------------------------new 
 [PS] C:\WINDOWS\system32>$session = Get-PSSession | Where-Object {$_.Name -eq "WinRM1"}
 [PS] C:\WINDOWS\system32>$session
 
