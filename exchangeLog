@@ -1,3 +1,44 @@
+-----------------------------------------out from code below -------------------
+PS C:\WINDOWS\system32> $event = Get-WinEvent -FilterHashtable @{
+>>     LogName   = "MSExchange Management"
+>>     StartTime = [datetime]"08/15/2026 02:09:00"
+>>     EndTime   = [datetime]"08/15/2026 02:10:00"
+>> } | Where-Object {
+>>     $_.Message -like "*Enable-RemoteMailbox*"
+>> } | Select-Object -First 1
+>>
+>> $event | Format-List *
+
+
+Message              : Cmdlet failed. Cmdlet Enable-RemoteMailbox, parameters -Identity "tommy.wright@firsthorizon.com" -Archive "True" -Confirm "False".
+Id                   : 6
+Version              : 0
+Qualifiers           : 49152
+Level                : 2
+Task                 : 1
+Opcode               : 0
+Keywords             : 36028797018963968
+RecordId             : 57658
+ProviderName         : MSExchange CmdletLogs
+ProviderId           :
+LogName              : MSExchange Management
+ProcessId            : 0
+ThreadId             : 0
+MachineName          : DC3PMEXAPP01.ftbco.FTN.com
+UserId               :
+TimeCreated          : 8/15/2026 2:09:38 AM
+ActivityId           :
+RelatedActivityId    :
+ContainerLog         : MSExchange Management
+MatchedQueryIds      : {}
+Bookmark             : System.Diagnostics.Eventing.Reader.EventBookmark
+LevelDisplayName     : Error
+OpcodeDisplayName    :
+TaskDisplayName      : General
+KeywordsDisplayNames : {Classic}
+Properties           : {System.Diagnostics.Eventing.Reader.EventProperty, System.Diagnostics.Eventing.Reader.EventProperty, System.Diagnostics.Eventing.Reader.EventProperty,
+                       System.Diagnostics.Eventing.Reader.EventProperty...}
+
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
 $event = Get-WinEvent -FilterHashtable @{
     LogName   = "MSExchange Management"
