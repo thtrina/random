@@ -1,3 +1,41 @@
+--------------Better detail error
+PS C:\WINDOWS\system32> $event.Properties | ForEach-Object { $_.Value}
+Enable-RemoteMailbox
+-Identity "tommy.wright@firsthorizon.com" -Archive "True" -Confirm "False"
+ftbco.FTN.com/Servers/Service Accounts/SA_ISC_AD_PROD
+S-1-5-21-1718497100-374411357-7473742-295974
+S-1-5-21-1718497100-374411357-7473742-295974
+Remote-PowerShell-Unknown
+20432 w3wp#MSExchangePowerShellAppPool
+
+84
+00:00:00.0360278
+View Entire Forest: 'False', Default Scope: 'ftbco.FTN.com', Configuration Domain Controller: 'DC3PFTBCOAD01.ftbco.FTN.COM', Preferred Global Catalog: 'DC3PFTNAD01.FTN.COM', Preferred Domain Controllers: '{ DC3PFTNAD01.FTN.COM, DC3PFTBCOAD03.ftbco.FTN.COM }'
+Microsoft.Exchange.Management.Tasks.RecipientTaskException: Recipient tommy.wright@firsthorizon.com already has an archive. This task doesn't support multiple archives per recipient.
+   at Microsoft.Exchange.Configuration.Tasks.Task.ThrowError(Exception exception, ErrorCategory errorCategory, Object target, String helpUrl)
+   at Microsoft.Exchange.Management.RecipientTasks.EnableRemoteMailbox.PrepareRecipientObject(ADUser& user)
+   at Microsoft.Exchange.Management.RecipientTasks.EnableRecipientObjectTask`2.PrepareDataObject()
+   at Microsoft.Exchange.Configuration.Tasks.SetTaskBase`1.InternalValidate()
+   at Microsoft.Exchange.Configuration.Tasks.RecipientObjectActionTask`2.InternalValidate()
+   at Microsoft.Exchange.Configuration.Tasks.Task.<ProcessRecord>b__91_1()
+   at Microsoft.Exchange.Configuration.Tasks.Task.InvokeRetryableFunc(String funcName, Action func, Boolean terminatePipelineIfFailed)
+Context
+
+Ex735436
+
+
+False
+
+0 objects execution has been proxied to remote server.
+
+
+0
+ActivityId: d7f83680-e4e8-4e6d-8438-eccbc5036b44
+ServicePlan:;IsAdmin:True;
+
+en-US
+
+
 -----------------------------------------out from code below -------------------
 PS C:\WINDOWS\system32> $event = Get-WinEvent -FilterHashtable @{
 >>     LogName   = "MSExchange Management"
