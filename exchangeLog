@@ -1,4 +1,18 @@
 
+[PS] C:\WINDOWS\system32>Get-Command Get-AdminAuditLogConfig -ErrorAction SilentlyContinue
+[PS] C:\WINDOWS\system32>Get-Command Set-AdminAuditLogConfig -ErrorAction SilentlyContinue
+[PS] C:\WINDOWS\system32>Get-Command Search-AdminAuditLog -ErrorAction SilentlyContinue
+[PS] C:\WINDOWS\system32>Get-Command New-AdminAuditLogSearch -ErrorAction SilentlyContinue
+[PS] C:\WINDOWS\system32>Get-ManagementRoleAssignment -RoleAssignee "Organization Management" | Where-Object {$_.Role -like "*Audit*"} Format-Table Role,RoleAssigneeName,AssignmentMethod
+Where-Object : A positional parameter cannot be found that accepts argument 'Format-Table'.
+At line:1 char:72
++ ... nagement" | Where-Object {$_.Role -like "*Audit*"} Format-Table Role, ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Where-Object], ParameterBindingException
+    + FullyQualifiedErrorId : PositionalParameterNotFound,Microsoft.PowerShell.Commands.WhereObjectCommand
+
+
+====================================================================================================================================================================
 [PS] C:\WINDOWS\system32>Get-Command Get-UnifiedAuditSetting | Format-List Name,Parameters,Source
 
 
