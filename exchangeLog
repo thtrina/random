@@ -1,6 +1,6 @@
 ---------------------error for 30 day sent to a file 
 
-New-Item -ItemType Directory -Path "C:\Temp" -Force
+New-Item -ItemType Directory -Path "D:\Katrina" -Force
 
 
 $startDate = (Get-Date).AddDays(-30)
@@ -30,7 +30,7 @@ $events |
 
         ""
     } |
-    Out-File "C:\Temp\Enable-RemoteMailbox-Last30Days.txt" -Width 500
+    Out-File "D:\Katrina\Enable-RemoteMailbox-Last30Days.txt" -Width 500
 
 
 
