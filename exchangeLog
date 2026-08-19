@@ -1,6 +1,57 @@
 
+PS C:\WINDOWS\system32> Get-WinEvent -ListLog *Exchange* | Select-Object LogName,IsEnabled,RecordCount
+
+LogName                                                               IsEnabled RecordCount
+-------                                                               --------- -----------
+MSExchange Management                                                      True       40430
+Microsoft-Windows-Security-ExchangeActiveSyncProvisioning/Operational     False
+Microsoft-Exchange-Troubleshooters/Operational                             True           0
+Microsoft-Exchange-PushNotifications/Operational                           True         110
+Microsoft-Exchange-PushNotifications/Debug                                False
+Microsoft-Exchange-PushNotifications/Client                                True           0
+Microsoft-Exchange-PushNotifications/Analytics                            False           0
+Microsoft-Exchange-ManagedAvailability/ThrottlingConfig                    True          59
+Microsoft-Exchange-ManagedAvailability/StartupNotification                 True         331
+Microsoft-Exchange-ManagedAvailability/RemoteActionLogs                    True           3
+Microsoft-Exchange-ManagedAvailability/RecoveryActionResults               True         310
+Microsoft-Exchange-ManagedAvailability/RecoveryActionLogs                  True        1137
+Microsoft-Exchange-ManagedAvailability/Monitoring                          True       10311
+Microsoft-Exchange-ManagedAvailability/InvokeNowResult                     True           0
+Microsoft-Exchange-ManagedAvailability/InvokeNowRequest                    True           0
+Microsoft-Exchange-MailboxDatabaseFailureItems/Operational                 True           9
+Microsoft-Exchange-MailboxDatabaseFailureItems/Debug                       True           0
+Microsoft-Exchange-MailboxAssistants/Operational                           True           0
+Microsoft-Exchange-MailboxAssistants/Exception                            False
+Microsoft-Exchange-MailboxAssistants/Debug                                False
+Microsoft-Exchange-HighAvailability/TruncationDebug                        True       36379
+Microsoft-Exchange-HighAvailability/Seeding                                True        1024
+Microsoft-Exchange-HighAvailability/Operational                            True       61100
+Microsoft-Exchange-HighAvailability/Network                                True       39265
+Microsoft-Exchange-HighAvailability/Monitoring                             True       81912
+Microsoft-Exchange-HighAvailability/Debug                                  True        9514
+Microsoft-Exchange-HighAvailability/BlockReplication                       True         177
+Microsoft-Exchange-HighAvailability/AppLogMirror                           True        6053
+Microsoft-Exchange-ESE/Operational                                         True       34509
+Microsoft-Exchange-DxStoreHA/Validation                                    True           0
+Microsoft-Exchange-DxStoreHA/Server                                        True          45
+Microsoft-Exchange-DxStoreHA/Performance                                   True           0
+Microsoft-Exchange-DxStoreHA/General                                       True           0
+Microsoft-Exchange-DxStoreHA/Execution                                     True           0
+Microsoft-Exchange-Compliance/DiscoveryLogs                                True         163
+Microsoft-Exchange-Compliance/DarRuntimeLogs                               True          73
+Microsoft-Exchange-Compliance/Analytics                                    True           0
+Microsoft-Exchange-ActiveMonitoring/ResponderResult                        True      941344
+Microsoft-Exchange-ActiveMonitoring/ResponderDefinition                    True       13175
+Microsoft-Exchange-ActiveMonitoring/ProbeResult                            True      491775
+Microsoft-Exchange-ActiveMonitoring/ProbeDefinition                        True        6954
+Microsoft-Exchange-ActiveMonitoring/MonitorResult                          True      690490
+Microsoft-Exchange-ActiveMonitoring/MonitorDefinition                      True       18034
+Microsoft-Exchange-ActiveMonitoring/MaintenanceResult                      True      138649
+Microsoft-Exchange-ActiveMonitoring/MaintenanceDefinition                  True        8233
 
 
+PS C:\WINDOWS\system32>
+====================================================================Last new msg
 [PS] C:\WINDOWS\system32>Get-ManagementRoleAssignment -RoleAssignee "Organization Management" | Where-Object {$_.Role -like "*Audit*"} | Format-Table Role,RoleAssigneeName,AssignmentMethod
 
 Role                 RoleAssigneeName        AssignmentMethod
