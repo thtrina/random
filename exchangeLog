@@ -22,15 +22,6 @@ Name                CommandType Source
 Write-AdminAuditLog    Function dc3pmexapp01.ftbco.ftn.com
 
 
-[PS] C:\WINDOWS\system32>Get-Command -Verb Search | Select_object Name
-Select_object : The term 'Select_object' is not recognized as the name of a cmdlet, function, script file, or operable
-program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
-At line:1 char:28
-+ Get-Command -Verb Search | Select_object Name
-+                            ~~~~~~~~~~~~~
-    + CategoryInfo          : ObjectNotFound: (Select_object:String) [], CommandNotFoundException
-    + FullyQualifiedErrorId : CommandNotFoundException
-
 [PS] C:\WINDOWS\system32>Get-Command -Verb Search | Select-object Name
 
 Name
