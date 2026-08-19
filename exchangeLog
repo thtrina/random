@@ -1,1 +1,52 @@
 Get-AdminAuditLogConfig | Format-List AdminAuditLogEnabled,AdminAuditLogCmdlets,AdminAuditLogParameters,AdminAuditLogAgeLimit
+
+====================new ------------
+[PS] C:\WINDOWS\system32>Get-Command Get-ExchangeServer
+
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Function        Get-ExchangeServer                                 1.0        dc3pmexapp01.ftbco.ftn.com
+
+
+[PS] C:\WINDOWS\system32>Get-Command *AdminAudit* -ErrorAction SilentlyContinue
+
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Function        Write-AdminAuditLog                                1.0        dc3pmexapp01.ftbco.ftn.com
+
+
+[PS] C:\WINDOWS\system32>Get-ExchangeServer | Format-List Name,Edition,AdminDisplayVersion
+
+
+Name                : DC3PMEXAPP01
+Edition             : Standard
+AdminDisplayVersion : Version 15.2 (Build 2562.17)
+
+Name                : DC3PMEXAPP02
+Edition             : Standard
+AdminDisplayVersion : Version 15.2 (Build 2562.17)
+
+Name                : DC4PMEXAPP02
+Edition             : Standard
+AdminDisplayVersion : Version 15.2 (Build 2562.17)
+
+Name                : DC4PMEXAPP01
+Edition             : Standard
+AdminDisplayVersion : Version 15.2 (Build 2562.17)
+
+Name                : DC3PMEXAPP03
+Edition             : StandardEvaluation
+AdminDisplayVersion : Version 15.2 (Build 2562.17)
+
+Name                : DC3PMEXAPP04
+Edition             : StandardEvaluation
+AdminDisplayVersion : Version 15.2 (Build 2562.17)
+
+Name                : DC4PMEXAPP04
+Edition             : StandardEvaluation
+AdminDisplayVersion : Version 15.2 (Build 2562.17)
+
+Name                : DC4PMEXAPP03
+Edition             : StandardEvaluation
+AdminDisplayVersion : Version 15.2 (Build 2562.17)
+
