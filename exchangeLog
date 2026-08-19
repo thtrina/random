@@ -1,3 +1,62 @@
+
+[PS] C:\WINDOWS\system32>Get-ChildItem "C:\Program Files\Microsoft\Exchange Server\V15\bin" -Recurse -ErrorAction SilentlyContinue | Where-Object {$_.Name -match "AdminAudit"} | Select-Object FullName
+[PS] C:\WINDOWS\system32>Get-Command *Audit* | Select-Object Name,Source
+
+Name                       Source
+----                       ------
+Get-UnifiedAuditSetting    dc3pmexapp01.ftbco.ftn.com
+Set-UnifiedAuditSetting    dc3pmexapp01.ftbco.ftn.com
+Start-AuditAssistant       dc3pmexapp01.ftbco.ftn.com
+Write-AdminAuditLog        dc3pmexapp01.ftbco.ftn.com
+Backup-AuditPolicy         SecurityCmdlets
+Restore-AuditPolicy        SecurityCmdlets
+Set-LapsADAuditing         LAPS
+auditpol.exe               C:\WINDOWS\system32\auditpol.exe
+ComplianceAuditService.exe D:\Program Files\Microsoft\Exchange Server\V15\bin\ComplianceAuditService.exe
+
+
+[PS] C:\WINDOWS\system32>Get-Command *Log* | Where-Object {$_.Name -like "*Audit*"} | Select-Object Name,CommandType,Source
+
+Name                CommandType Source
+----                ----------- ------
+Write-AdminAuditLog    Function dc3pmexapp01.ftbco.ftn.com
+
+
+[PS] C:\WINDOWS\system32>Get-Command -Verb Search | Select_object Name
+Select_object : The term 'Select_object' is not recognized as the name of a cmdlet, function, script file, or operable
+program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:28
++ Get-Command -Verb Search | Select_object Name
++                            ~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Select_object:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+[PS] C:\WINDOWS\system32>Get-Command -Verb Search | Select-object Name
+
+Name
+----
+Search-MessageTrackingReport
+Search-ADAccount
+
+
+[PS] C:\WINDOWS\system32>Get-Command *Audit* | Select-Object Name,Source
+
+Name                       Source
+----                       ------
+Get-UnifiedAuditSetting    dc3pmexapp01.ftbco.ftn.com
+Set-UnifiedAuditSetting    dc3pmexapp01.ftbco.ftn.com
+Start-AuditAssistant       dc3pmexapp01.ftbco.ftn.com
+Write-AdminAuditLog        dc3pmexapp01.ftbco.ftn.com
+Backup-AuditPolicy         SecurityCmdlets
+Restore-AuditPolicy        SecurityCmdlets
+Set-LapsADAuditing         LAPS
+auditpol.exe               C:\WINDOWS\system32\auditpol.exe
+ComplianceAuditService.exe D:\Program Files\Microsoft\Exchange Server\V15\bin\ComplianceAuditService.exe
+
+
+[PS] C:\WINDOWS\system32>
+
+=================================================New =====================================================================================
 [PS] C:\WINDOWS\system32>$session.CommandNames | Where-Object {$_ -like "*Audit*"}
 [PS] C:\WINDOWS\system32>Get-PSSessionConfiguration | Where-Object {$_.Name -eq "Microsoft.Exchange"} | Format-List Name,Permission,Enabled,PSVersion,RunAsUser
 Get-PSSessionConfiguration : Access is denied. To run this cmdlet, start Windows PowerShell with the "Run as administrator" option.
