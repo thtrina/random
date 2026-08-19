@@ -1,6 +1,6 @@
 
 
-
+[PS] C:\WINDOWS\system32>Get-UnifiedAuditSetting | Format-List *
 cmdlet Get-UnifiedAuditSetting at command pipeline position 1
 Supply values for the following parameters:
 Identity:
