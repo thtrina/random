@@ -1,4 +1,12 @@
 
+
+
+cmdlet Get-UnifiedAuditSetting at command pipeline position 1
+Supply values for the following parameters:
+Identity:
+
+
+-------------------------------------------------------------------------------------------------
 [PS] C:\WINDOWS\system32>Get-ChildItem "C:\Program Files\Microsoft\Exchange Server\V15\bin" -Recurse -ErrorAction SilentlyContinue | Where-Object {$_.Name -match "AdminAudit"} | Select-Object FullName
 [PS] C:\WINDOWS\system32>Get-Command *Audit* | Select-Object Name,Source
 
