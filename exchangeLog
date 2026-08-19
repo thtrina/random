@@ -1,3 +1,16 @@
+[PS] C:\WINDOWS\system32>Get-ManagementRoleEntry "Audit Logs\*" | Where-Object {$_.Name -like "*Audit*"} | Select-Object Role,Name
+Get-ManagementRoleEntry : The term 'Get-ManagementRoleEntry' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is
+correct and try again.
+At line:1 char:1
++ Get-ManagementRoleEntry "Audit Logs\*" | Where-Object {$_.Name -like  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-ManagementRoleEntry:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+---------------------------------------------------------new ------------------------------------------------
+
+
+
+
 [PS] C:\WINDOWS\system32>Get-ManagementRoleAssignment -RoleAssignee $env:SA_ISC_AD_PROD | Format-Table Role,RoleAssigneeName,AssignmentMethod
 
 Role                          RoleAssigneeName                  AssignmentMethod
