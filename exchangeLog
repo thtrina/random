@@ -1,4 +1,42 @@
 
+[PS] C:\WINDOWS\system32>Get-Command Get-UnifiedAuditSetting | Format-List Name,Parameters,Source
+
+
+Name       : Get-UnifiedAuditSetting
+Parameters : {[WarningVariable, System.Management.Automation.ParameterMetadata], [OutBuffer, System.Management.Automation.ParameterMetadata], [InformationVariable,
+             System.Management.Automation.ParameterMetadata], [Verbose, System.Management.Automation.ParameterMetadata], [InformationAction,
+             System.Management.Automation.ParameterMetadata], [Debug, System.Management.Automation.ParameterMetadata], [OutVariable, System.Management.Automation.ParameterMetadata],
+             [Identity, System.Management.Automation.ParameterMetadata], [ErrorVariable, System.Management.Automation.ParameterMetadata], [PipelineVariable,
+             System.Management.Automation.ParameterMetadata], [ErrorAction, System.Management.Automation.ParameterMetadata], [WarningAction,
+             System.Management.Automation.ParameterMetadata], [AsJob, System.Management.Automation.ParameterMetadata]}
+Source     : dc3pmexapp01.ftbco.ftn.com
+
+
+
+[PS] C:\WINDOWS\system32>Get-Command Start-AuditAssistant | Format-List Name,Parameters,Source
+
+
+Name       : Start-AuditAssistant
+Parameters : {[ErrorAction, System.Management.Automation.ParameterMetadata], [Verbose, System.Management.Automation.ParameterMetadata], [FolderTimeRangeSpecifierUTC,
+             System.Management.Automation.ParameterMetadata], [InformationAction, System.Management.Automation.ParameterMetadata], [BacklogAssistant,
+             System.Management.Automation.ParameterMetadata], [WarningVariable, System.Management.Automation.ParameterMetadata], [Debug, System.Management.Automation.ParameterMetadata],
+             [PipelineVariable, System.Management.Automation.ParameterMetadata], [Confirm, System.Management.Automation.ParameterMetadata], [ErrorVariable,
+             System.Management.Automation.ParameterMetadata], [Identity, System.Management.Automation.ParameterMetadata], [OutBuffer, System.Management.Automation.ParameterMetadata],
+             [WarningAction, System.Management.Automation.ParameterMetadata], [OutVariable, System.Management.Automation.ParameterMetadata], [ExpectedFoldersCount,
+             System.Management.Automation.ParameterMetadata], [WhatIf, System.Management.Automation.ParameterMetadata]...}
+Source     : dc3pmexapp01.ftbco.ftn.com
+
+
+
+[PS] C:\WINDOWS\system32>Get-Command Write-AdminAuditLog -Syntax
+
+Write-AdminAuditLog [[-ErrorAction] <Object>] [[-OutVariable] <Object>] [[-InformationAction] <Object>] [[-WarningVariable] <Object>] [[-PipelineVariable] <Object>] [[-Comment] <Object>] [[-ErrorVariable] <Object>] [[-OutBuffer] <Object>] [[-WarningAction] <Object>] [[-DomainController] <Object>] [[-InformationVariable] <Object>] [-Confirm] [-WhatIf] [-AsJob] [-Verbose] [-Debug]
+
+[PS] C:\WINDOWS\system32>
+
+
+
+=====================================================================================================================================================================================
 Get-UnifiedAuditSetting [[-WarningVariable] <Object>] [[-OutBuffer] <Object>] [[-InformationVariable] <Object>] [[-InformationAction] <Object>] [[-OutVariable] <Object>] [[-Identity] <Object>] [[-ErrorVariable] <Object>] [[-PipelineVariable] <Object>] [[-ErrorAction] <Object>] [[-WarningAction] <Object>] [-AsJob] [-Verbose] [-Debug]
 ---------------------
 Get-UnifiedAuditSetting [[-WarningVariable] <Object>] [[-OutBuffer] <Object>] [[-InformationVariable] <Object>] [[-InformationAction] <Object>] [[-OutVariable] <Object>] [[-Identity] <Object>] [[-ErrorVariable] <Object>] [[-PipelineVariable] <Object>] [[-ErrorAction] <Object>] [[-WarningAction] <Object>] [-AsJob] [-Verbose] [-Debug]
