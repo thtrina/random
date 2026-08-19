@@ -1,0 +1,1 @@
+Get-AdminAuditLogConfig | Format-List AdminAuditLogEnabled,AdminAuditLogCmdlets,AdminAuditLogParameters,AdminAuditLogAgeLimit
