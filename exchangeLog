@@ -1,4 +1,16 @@
 
+
+
+
+
+
+Get-WinEvent -FilterHashtable @{
+    LogName = "MSExchange Management"
+    StartTime = (Get-Date).AddDays(-90)
+} |
+Where-Object { $_.Message -like "*Enable-RemoteMailbox*" } |
+Select-Object TimeCreated, Id, LevelDisplayName, Message
+.........................................................................................................
 PS C:\WINDOWS\system32> Get-WinEvent -ListLog *Exchange* | Select-Object LogName,IsEnabled,RecordCount
 
 LogName                                                               IsEnabled RecordCount
