@@ -1,3 +1,6 @@
+
+Get-UnifiedAuditSetting [[-WarningVariable] <Object>] [[-OutBuffer] <Object>] [[-InformationVariable] <Object>] [[-InformationAction] <Object>] [[-OutVariable] <Object>] [[-Identity] <Object>] [[-ErrorVariable] <Object>] [[-PipelineVariable] <Object>] [[-ErrorAction] <Object>] [[-WarningAction] <Object>] [-AsJob] [-Verbose] [-Debug]
+---------------------
 Get-UnifiedAuditSetting [[-WarningVariable] <Object>] [[-OutBuffer] <Object>] [[-InformationVariable] <Object>] [[-InformationAction] <Object>] [[-OutVariable] <Object>] [[-Identity] <Object>] [[-ErrorVariable] <Object>] [[-PipelineVariable] <Object>] [[-ErrorAction] <Object>] [[-WarningAction] <Object>] [-AsJob] [-Verbose] [-Debug]
 
 [PS] C:\WINDOWS\system32>Get-Help Get-UnifiedAuditSetting -Examples
