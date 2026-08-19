@@ -1,3 +1,19 @@
+[PS] C:\WINDOWS\system32>$session = Get-PSSession | Where-Object {$_.Name -eq "WinRM1"}
+[PS] C:\WINDOWS\system32>$session
+
+ Id Name            ComputerName    ComputerType    State         ConfigurationName     Availability
+ -- ----            ------------    ------------    -----         -----------------     ------------
+  1 WinRM1          dc3pmexapp01... RemoteMachine   Opened        Microsoft.Exchange       Available
+
+
+[PS] C:\WINDOWS\system32>Invoke-Command -Session $session { Get-Command Search-AdminAuditLog }
+The term 'Search-AdminAuditLog' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+    + CategoryInfo          : ObjectNotFound: (Search-AdminAuditLog:String) [Get-Command], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException,Microsoft.PowerShell.Commands.GetCommandCommand
+    + PSComputerName        : dc3pmexapp01.ftbco.ftn.com
+
+
+-------------------------new ------------------------
 [PS] C:\WINDOWS\system32>Invoke-Command -Session WinRM1 { Get-Command Search-AdminAuditLog }
 Invoke-Command : Cannot bind parameter 'Session'. Cannot convert the "WinRM1" value of type "System.String" to type "System.Management.Automation.Runspaces.PSSession".
 At line:1 char:25
