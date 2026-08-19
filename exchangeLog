@@ -1,3 +1,12 @@
+[PS] C:\WINDOWS\system32>Get-PSSession | Format-List Name,State,ComputerName,ConfigurationName
+
+
+Name              : WinRM1
+State             : Opened
+ComputerName      : dc3pmexapp01.ftbco.ftn.com
+ConfigurationName : Microsoft.Exchange
+
+--------------------------------------------------------New
 Get-AdminAuditLogConfig | Format-List AdminAuditLogEnabled,AdminAuditLogCmdlets,AdminAuditLogParameters,AdminAuditLogAgeLimit
 
 ====================new ------------
