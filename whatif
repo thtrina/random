@@ -1,3 +1,29 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+[PS] C:\WINDOWS\system32>write("Testing Enable-RemoteMailbox with WhatIf")
+>>
+>>     Enable-RemoteMailbox `
+>>     -Identity 00000 `
+>>     -Alias test.account `
+>>     -PrimarySmtpAddress test.account@firsthorizon.com `
+>>     -RemoteRoutingAddress test.account@firsthorizon.mail.onmicrosoft.com `
+>>     -Archive `
+>>     -Confirm:$false `
+>>     -WhatIf `
+>>     -ErrorAction Stop
+>>
+>> write("WhatIf test completed successfully.")
+Testing Enable-RemoteMailbox with WhatIf
+Parameter set cannot be resolved using the specified named parameters.
+At C:\Users\SA_ISC_AD_PROD\AppData\Roaming\Microsoft\Exchange\RemotePowerShell\dc3pmexapp01.ftbco.ftn.com\dc3pmexapp01.ftbco.ftn.com.psm1:3196 char:9
++         $steppablePipeline.End()
++         ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Enable-RemoteMailbox], ParameterBindingException
+    + FullyQualifiedErrorId : AmbiguousParameterSet,Enable-RemoteMailbox
+    + PSComputerName        : dc3pmexapp01.ftbco.ftn.com
+
+===================================why command fail
 writeToLog("Testing Enable-RemoteMailbox with WhatIf")
 
 Enable-RemoteMailbox `
