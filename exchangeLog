@@ -1,3 +1,91 @@
+----------------------------------------Need help finding the prob
+============================================================
+Time Created : 08/12/2026 09:00:22
+Event ID     : 6
+Level        : Error
+Machine      : DC3PMEXAPP01.ftbco.FTN.com
+Provider     : MSExchange CmdletLogs
+Record ID    : 54293
+------------------------------------------------------------
+Enable-RemoteMailbox
+-Identity "57975" -Alias "frank.seales" -PrimarySmtpAddress "frank.seales@firsthorizon.com" -RemoteRoutingAddress "smtp:frank.seales@firsthorizon.mail.onmicrosoft.com"
+ftbco.FTN.com/Servers/Service Accounts/SA_ISC_AD_PROD
+S-1-5-21-1718497100-374411357-7473742-295974
+S-1-5-21-1718497100-374411357-7473742-295974
+Remote-PowerShell-Unknown
+20432 w3wp#MSExchangePowerShellAppPool
+
+128
+00:00:00.0298699
+View Entire Forest: 'False', Default Scope: 'ftbco.FTN.com', Configuration Domain Controller: 'DC3PFTBCOAD05.ftbco.FTN.COM', Preferred Global Catalog: 'DC3PFTBCOAD02.ftbco.FTN.COM', Preferred Domain Controllers: '{ DC3PFTBCOAD02.ftbco.FTN.COM }'
+Microsoft.Exchange.Management.Tasks.RecipientTaskException: This task does not support recipients of this type. The specified recipient ftbco.FTN.com/Domain Users/SEALES, FRANK is of type RemoteUserMailbox. Please make sure that this recipient matches the required recipient type for this task.
+   at Microsoft.Exchange.Configuration.Tasks.Task.ThrowError(Exception exception, ErrorCategory errorCategory, Object target, String helpUrl)
+   at Microsoft.Exchange.Management.RecipientTasks.EnableRemoteMailbox.PrepareRecipientObject(ADUser& user)
+   at Microsoft.Exchange.Management.RecipientTasks.EnableRecipientObjectTask`2.PrepareDataObject()
+   at Microsoft.Exchange.Configuration.Tasks.SetTaskBase`1.InternalValidate()
+   at Microsoft.Exchange.Configuration.Tasks.RecipientObjectActionTask`2.InternalValidate()
+   at Microsoft.Exchange.Configuration.Tasks.Task.<ProcessRecord>b__91_1()
+   at Microsoft.Exchange.Configuration.Tasks.Task.InvokeRetryableFunc(String funcName, Action func, Boolean terminatePipelineIfFailed)
+5
+
+ExADDDAF
+
+
+False
+
+0 objects execution has been proxied to remote server.
+
+
+0
+ActivityId: 25d53661-0102-4ffe-b554-80f6608d96ae
+ServicePlan:;IsAdmin:True;
+
+en-US
+
+============================================================
+Time Created : 08/12/2026 09:00:22
+Event ID     : 6
+Level        : Error
+Machine      : DC3PMEXAPP01.ftbco.FTN.com
+Provider     : MSExchange CmdletLogs
+Record ID    : 54292
+------------------------------------------------------------
+Enable-RemoteMailbox
+-Identity "57975" -Alias "frank.seales" -PrimarySmtpAddress "frank.seales@firsthorizon.com" -RemoteRoutingAddress "smtp:frank.seales@firsthorizon.mail.onmicrosoft.com"
+ftbco.FTN.com/Servers/Service Accounts/SA_ISC_AD_PROD
+S-1-5-21-1718497100-374411357-7473742-295974
+S-1-5-21-1718497100-374411357-7473742-295974
+Remote-PowerShell-Unknown
+20432 w3wp#MSExchangePowerShellAppPool
+
+128
+00:00:00.0201302
+View Entire Forest: 'False', Default Scope: 'ftbco.FTN.com', Configuration Domain Controller: 'DC3PFTBCOAD05.ftbco.FTN.COM', Preferred Global Catalog: 'DC3PFTBCOAD02.ftbco.FTN.COM', Preferred Domain Controllers: '{ DC3PFTBCOAD02.ftbco.FTN.COM }'
+Microsoft.Exchange.Management.Tasks.RecipientTaskException: This task does not support recipients of this type. The specified recipient ftbco.FTN.com/Domain Users/SEALES, FRANK is of type RemoteUserMailbox. Please make sure that this recipient matches the required recipient type for this task.
+   at Microsoft.Exchange.Configuration.Tasks.Task.ThrowError(Exception exception, ErrorCategory errorCategory, Object target, String helpUrl)
+   at Microsoft.Exchange.Management.RecipientTasks.EnableRemoteMailbox.PrepareRecipientObject(ADUser& user)
+   at Microsoft.Exchange.Management.RecipientTasks.EnableRecipientObjectTask`2.PrepareDataObject()
+   at Microsoft.Exchange.Configuration.Tasks.SetTaskBase`1.InternalValidate()
+   at Microsoft.Exchange.Configuration.Tasks.RecipientObjectActionTask`2.InternalValidate()
+   at Microsoft.Exchange.Configuration.Tasks.Task.<ProcessRecord>b__91_1()
+   at Microsoft.Exchange.Configuration.Tasks.Task.InvokeRetryableFunc(String funcName, Action func, Boolean terminatePipelineIfFailed)
+5
+
+ExADDDAF
+
+
+False
+
+0 objects execution has been proxied to remote server.
+
+
+0
+ActivityId: 25d53661-0102-4ffe-b554-80f6608d96ae
+ServicePlan:;IsAdmin:True;
+
+en-US
+
+
 ---------------------error for 30 day sent to a file 
 
 New-Item -ItemType Directory -Path "D:\Katrina" -Force
