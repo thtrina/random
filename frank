@@ -6,6 +6,26 @@ Get-WinEvent -FilterHashtable @{
 } |
 Where-Object {
     $_.Message -like "*Enable-RemoteMailbox*" -and
-    $_.Message -like "*frank.seales*"
+    $_.Message -like "*brian.medalis*"
 } |
 Select-Object TimeCreated, Id, LevelDisplayName, RecordId, Message
+
+
+
+$startDate = (Get-Date).AddDays(-30)
+
+Get-WinEvent -FilterHashtable @{
+    LogName   = "MSExchange Management"
+    StartTime = $startDate
+} |
+Where-Object {    
+    $_.Message -like "*brian.medalis*"
+} |
+Select-Object TimeCreated, Id, LevelDisplayName, RecordId, Message
+
+
+
+Message          : Cmdlet failed. Cmdlet Enable-RemoteMailbox, parameters -Identity "frank.seales@firsthorizon.com" -Archive "True" -Confirm "False".
+Message          : Cmdlet failed. Cmdlet Enable-RemoteMailbox, parameters -Identity "frank.seales@firsthorizon.com" -Archive "True" -Confirm "False".
+Message          : Cmdlet failed. Cmdlet Enable-RemoteMailbox, parameters -Identity "57975" -Alias "frank.seales" -PrimarySmtpAddress "frank.seales@firsthorizon.com" -RemoteRoutingAddress
+                   "smtp:frank.seales@firsthorizon.mail.onmicrosoft.com".
