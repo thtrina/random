@@ -1,0 +1,13 @@
+writeToLog("Testing Enable-RemoteMailbox with WhatIf")
+
+Enable-RemoteMailbox `
+    -Identity $sAMAccountName `
+    -Alias $mailNickname `
+    -PrimarySmtpAddress $emailAddress `
+    -RemoteRoutingAddress $remoteAddress `
+    -Archive `
+    -Confirm:$false `
+    -WhatIf `
+    -ErrorAction Stop
+
+writeToLog("WhatIf test completed successfully.")
