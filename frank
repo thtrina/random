@@ -25,7 +25,7 @@ $results = foreach ($event in $events) {
 
 $results |
     Sort-Object TimeCreated |
-    Export-Csv "C:\Temp\Enable-RemoteMailbox-Last30Days.csv" -NoTypeInformation -Encoding UTF8
+    Export-Csv "D:\Katrina\Enable-RemoteMailbox-AND-ERROR-Last30Days.csv" -NoTypeInformation -Encoding UTF8
 
 
 ------------------------------------
