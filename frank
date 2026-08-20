@@ -1,0 +1,11 @@
+$startDate = (Get-Date).AddDays(-30)
+
+Get-WinEvent -FilterHashtable @{
+    LogName   = "MSExchange Management"
+    StartTime = $startDate
+} |
+Where-Object {
+    $_.Message -like "*Enable-RemoteMailbox*" -and
+    $_.Message -like "*frank.seales*"
+} |
+Select-Object TimeCreated, Id, LevelDisplayName, RecordId, Message
