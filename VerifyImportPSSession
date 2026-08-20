@@ -1,0 +1,22 @@
+# ------------------------------------------------------------------
+        # Import Exchange session
+        # ------------------------------------------------------------------
+
+        writeToLog(
+            "Importing Exchange PowerShell session."
+        )
+
+
+        Import-PSSession `
+///Make change here???
+            $Session `
+            -DisableNameChecking `
+            -AllowClobber `
+            -ErrorAction Stop | Out-Null
+
+
+        writeToLog(
+            "SUCCESS: Exchange PowerShell session imported."
+        )
+
+/// Or make change here?
