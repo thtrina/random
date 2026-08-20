@@ -1,3 +1,11 @@
+$out = Get-RemoteMailbox -Identity $emailAddress | Enable-RemoteMailbox -Archive -Confirm:$false   
+            <#$out = Enable-RemoteMailbox `
+                -Identity $sAMAccountName `
+                -Archive `                        
+                -ErrorAction Stop
+                #>
+
+
 +++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
