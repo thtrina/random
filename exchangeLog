@@ -1,3 +1,11 @@
+============================= Get-Command Enable-RemoteMailbox
+[PS] C:\WINDOWS\system32>Get-Command Enable-RemoteMailbox -Syntax
+
+Enable-RemoteMailbox [[-ErrorAction] <Object>] [[-PipelineVariable] <Object>] [[-PrimarySmtpAddress] <Object>] [[-DisplayName] <Object>] [[-RemoteRoutingAddress] <Object>] [[-OutVariable] <Object>] [[-InformationAction] <Object>] [[-Alias] <Object>] [[-ErrorVariable] <Object>] [[-Identity] <Object>] [[-OutBuffer] <Object>] [[-ArchiveName] <Object>] [[-WarningAction] <Object>] [[-DomainController] <Object>] [[-WarningVariable] <Object>] [[-InformationVariable] <Object>] [-WhatIf] [-Equipment] [-ACLableSyncedObjectEnabled] [-Archive] [-Room] [-Shared] [-Confirm] [-AsJob] [-Debug] [-Verbose]
+
+
+
+
 ----------------------------------------Need help finding the prob
 ============================================================
 Time Created : 08/12/2026 09:00:22
