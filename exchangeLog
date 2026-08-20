@@ -1,3 +1,401 @@
+[PS] C:\WINDOWS\system32>Get-Command Enable-RemoteMailbox | Select-Object -ExpandProperty ParameterSets
+Parameter Set Name: __AllParameterSets
+Is default parameter set: False
+
+  Parameter Name: ErrorAction
+    ParameterType = System.Object
+    Position = 0
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {ea}
+    Attributes =
+
+
+
+  Parameter Name: PipelineVariable
+    ParameterType = System.Object
+    Position = 1
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {pv}
+    Attributes =
+
+
+
+  Parameter Name: PrimarySmtpAddress
+    ParameterType = System.Object
+    Position = 2
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+  Parameter Name: DisplayName
+    ParameterType = System.Object
+    Position = 3
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+  Parameter Name: WhatIf
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {wi}
+    Attributes =
+
+
+
+
+  Parameter Name: Equipment
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+
+  Parameter Name: Debug
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {db}
+    Attributes =
+
+
+
+
+  Parameter Name: Verbose
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {vb}
+    Attributes =
+
+
+
+
+  Parameter Name: RemoteRoutingAddress
+    ParameterType = System.Object
+    Position = 4
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+  Parameter Name: OutVariable
+    ParameterType = System.Object
+    Position = 5
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {ov}
+    Attributes =
+
+
+
+  Parameter Name: InformationAction
+    ParameterType = System.Object
+    Position = 6
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {infa}
+    Attributes =
+
+
+
+  Parameter Name: ACLableSyncedObjectEnabled
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+
+  Parameter Name: Archive
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+
+  Parameter Name: Alias
+    ParameterType = System.Object
+    Position = 7
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+  Parameter Name: ErrorVariable
+    ParameterType = System.Object
+    Position = 8
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {ev}
+    Attributes =
+
+
+
+  Parameter Name: Identity
+    ParameterType = System.Object
+    Position = 9
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+  Parameter Name: OutBuffer
+    ParameterType = System.Object
+    Position = 10
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {ob}
+    Attributes =
+
+
+
+  Parameter Name: ArchiveName
+    ParameterType = System.Object
+    Position = 11
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+  Parameter Name: Room
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+
+  Parameter Name: WarningAction
+    ParameterType = System.Object
+    Position = 12
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {wa}
+    Attributes =
+
+
+
+  Parameter Name: Shared
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+
+  Parameter Name: DomainController
+    ParameterType = System.Object
+    Position = 13
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+
+  Parameter Name: Confirm
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {cf}
+    Attributes =
+
+
+
+
+  Parameter Name: WarningVariable
+    ParameterType = System.Object
+    Position = 14
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {wv}
+    Attributes =
+
+
+
+  Parameter Name: InformationVariable
+    ParameterType = System.Object
+    Position = 15
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {iv}
+    Attributes =
+
+
+
+  Parameter Name: AsJob
+    ParameterType = System.Management.Automation.SwitchParameter
+    Position = -2147483648
+    IsMandatory = False
+    IsDynamic = False
+    HelpMessage =
+    ValueFromPipeline = False
+    ValueFromPipelineByPropertyName = False
+    ValueFromRemainingArguments = False
+    Aliases = {}
+    Attributes =
+
+------------------------
+[PS] C:\WINDOWS\system32>Get-Command Enable-RemoteMailbox | Select-Object -ExpandProperty ParameterSets |
+>>     ForEach-Object {
+>>     $_.Name
+>>     $_.Parameters | Select-Object Name,IsMandatory
+>>     ""}
+
+Name                       IsMandatory
+----                       -----------
+ErrorAction                      False
+PipelineVariable                 False
+PrimarySmtpAddress               False
+DisplayName                      False
+WhatIf                           False
+Equipment                        False
+Debug                            False
+Verbose                          False
+RemoteRoutingAddress             False
+OutVariable                      False
+InformationAction                False
+ACLableSyncedObjectEnabled       False
+Archive                          False
+Alias                            False
+ErrorVariable                    False
+Identity                         False
+OutBuffer                        False
+ArchiveName                      False
+Room                             False
+WarningAction                    False
+Shared                           False
+DomainController                 False
+Confirm                          False
+WarningVariable                  False
+InformationVariable              False
+AsJob                            False
 ============================= Get-Command Enable-RemoteMailbox
 [PS] C:\WINDOWS\system32>Get-Command Enable-RemoteMailbox -Syntax
 
