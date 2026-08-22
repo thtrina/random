@@ -1,0 +1,125 @@
+Enable-remotemailbox $sAMAccountName -alias $mailNickname -Primarysmtpaddress $emailAddress -Remoteroutingaddress $remoteAddress
+
+Get-RemoteMailbox -Identity $emailAddress | Enable-RemoteMailbox -Archive -Confirm:$false
+
+Get-remotemailbox $emailAddress | set-remotemailbox -EmailAddressPolicyEnabled $True
+
+
+
+# ------------------------------------------------------------------
+        # Create remote mailbox
+        # ------------------------------------------------------------------
+
+        writeToLog(
+            "======================================================"
+        )
+
+        writeToLog(
+            "Starting Remote Mailbox Creation"
+        )
+
+        writeToLog(
+            "EmployeeID: $sAMAccountName"
+        )
+
+        writeToLog(
+            "Identity: $sAMAccountName"
+        )
+
+        writeToLog(
+            "Alias: $mailNickname"
+        )
+
+        writeToLog(
+            "Primary SMTP: $emailAddress"
+        )
+
+        writeToLog(
+            "Remote Routing Address: $remoteAddress"
+        )
+
+        #writeToLog("Archive: ENABLED")
+
+        writeToLog(
+            "======================================================"
+        )
+
+
+        $out = $null
+
+        $err = $null
+
+         $out = Get-RemoteMailbox -Identity $emailAddress | Set-RemoteMailbox -EmailAddressPolicyEnabled $True -ErrorAction Stop
+
+        <#
+        $out = Enable-RemoteMailbox `
+            -Identity $sAMAccountName `
+            -Alias $mailNickname `
+            -PrimarySmtpAddress $emailAddress `
+            -RemoteRoutingAddress $remoteAddress `            
+            -Confirm:$false `
+            -ErrorAction Stop
+            #>
+
+        $mailboxCreated = $true
+
+
+        writeToLog("SUCCESS: RemoteMailbox created.")
+
+
+        if ($out) {
+
+            writeToLog(
+                "Exchange command output:"
+            )
+
+            writeToLog(
+                $out | Out-String
+            )
+
+        }
+
+        #-------------------------------------------------------------------
+        # Enable archive separately
+        #-------------------------------------------------------------------
+
+        writeToLog("Enabling archive mailbox.")
+            $out = Get-RemoteMailbox -Identity $emailAddress | Enable-RemoteMailbox -Archive -Confirm:$false -ErrorAction Stop
+            <#$out = Enable-RemoteMailbox `
+                -Identity $sAMAccountName `
+                -Archive `                        
+                -ErrorAction Stop
+                #>
+
+          writeToLog("SUCCESS: Archive mailbox enabled.")  
+
+        # ------------------------------------------------------------------
+        # Verify remote mailbox
+        # ------------------------------------------------------------------
+
+        writeToLog(
+            "------------------------------------------------------"
+        )
+
+        writeToLog(
+            "Verifying Remote Mailbox"
+        )
+
+        writeToLog(
+            "------------------------------------------------------"
+        )
+
+
+        $checkMailbox = Get-RemoteMailbox -Identity $emailAddress -ErrorAction Stop
+
+
+        if (-not $checkMailbox) {
+
+            throw "Get-RemoteMailbox did not return a mailbox."
+
+        }
+
+
+        writeToLog(
+            "SUCCESS: Remote mailbox was found."
+        )
