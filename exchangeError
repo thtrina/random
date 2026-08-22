@@ -1,0 +1,4 @@
++ CategoryInfo          : NotSpecified: (:) [Get-RemoteMailbox], ManagementObjectNotFoundException
+    + FullyQualifiedErrorId : [Server=DC3PMEXAPP01,RequestId=d065df2d-52ac-4218-ab25-91fc0f609a88,TimeStamp=8/22/2026 9:05:11 AM] [FailureCategory=Cmdlet-ManagementObjectNotFoundException] AA414BB6,Microsoft.E
+   xchange.Management.RecipientTasks.GetRemoteMailbox
+    + PSComputerName        : dc3pmexapp01.ftbco.ftn.com
