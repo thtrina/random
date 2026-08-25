@@ -1,4 +1,28 @@
+$maxRetries = 6
+$retry = 0
+$found = $false
 
+while (-not $found -and $retry -lt $maxRetries) {
+
+    try {
+
+        $user = Get-ADUser `
+            -Identity $sAMAccountName `
+            -ErrorAction Stop
+
+        $found = $true
+    }
+    catch {
+
+        $retry++
+
+        Start-Sleep -Seconds 10
+    }
+}
+
+if (-not $found) {
+    throw "User $sAMAccountName was not found after waiting for AD replication."
+}
 https://community.sailpoint.com/t5/IdentityIQ-Articles/How-to-Avoid-Replication-Issues-With-the-Active-Directory/ta-p/152717
 
 
