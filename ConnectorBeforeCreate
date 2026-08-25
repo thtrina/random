@@ -1,3 +1,8 @@
+
+https://community.sailpoint.com/t5/IdentityIQ-Articles/How-to-Avoid-Replication-Issues-With-the-Active-Directory/ta-p/152717
+
+
+
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule   language="beanshell"  name="MyRule-Rule-ConnectorBeforeCreate-ActiveDirectory" type="ConnectorBeforeCreate">
