@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule   language="beanshell"  name="MyRule-Rule-ConnectorBeforeCreate-ActiveDirectory" type="ConnectorBeforeCreate">
+  <Attributes>
+    <Map>
+      <entry key="ObjectOrientedScript" value="true"/>
+      <entry key="extension" value=".ps1"/>
+      <entry key="program" value="Powershell.exe"/>
+      <entry key="timeout" value="25"/>
+    </Map>
+  </Attributes>
+  <Source>
+function out-errorLog($level, $msg) {
+    $outFile = "beforeCreateLog.txt"
+    $now = get-date -Format "MM.dd.yyyy HH:mm:ss"
+    Out-File $outFile -InputObject "$now : $level : $msg" -Append
+}
+out-errorLog "INFO" "Starting ConnectorBeforeCreate Rule"
+
+# Refer to SailPoint class library Requires PowerShell v2 installed on the system.
+Add-type -path utils.dll
+# Read the environment variables
+$sReader = New-Object System.IO.StringReader([System.String]$env:Request);
+# Form the xml reader object
+$xmlReader = [System.xml.XmlTextReader]([SailPoint.Utils.xml.XmlUtil]::getReader($sReader));
+
+# Get the SailPoint Request object
+$requestObject = New-Object SailPoint.Utils.objects.AccountRequest($xmlReader);
+$requestObjectXml=$requestObject.toXml();
+out-errorLog "INFO" "Request Object: [$requestObjectXml]"
+
+# Get a domain controller from domain
+$domain="mycompany.com";
+out-errorLog "INFO" "Getting a donmain controller from domain [$domain]"
+$targetdomaindc = Get-ADDomainController -DomainName $domain -Discover;
+
+$hostname=$targetdomaindc.HostName[0];
+
+out-errorLog "INFO" "Domain Controller returned [$hostname]";
+
+# Add a preferredServer attribute to request
+$attrPreferredServer = New-Object SailPoint.Utils.objects.AttributeRequest;
+$attrPreferredServer.Name = "preferredServer";
+$attrPreferredServer.value= $hostname;
+$attrPreferredServer.Operation = "Add";
+$requestObject.AttributeRequests.Add($attrPreferredServer);
+
+# Add a DomainController attribute to request
+$attrDomainController = New-Object SailPoint.Utils.objects.AttributeRequest;
+$attrDomainController.Name = "DomainController";
+$attrDomainController.value= $hostname;
+$attrDomainController.Operation = "Add";
+
+$requestObject.AttributeRequests.Add($attrDomainController);
+$ModifiedRequestObjectXml=$requestObject.toXml();
+out-errorLog "INFO" "Modified Request Object: [$ModifiedRequestObjectXml]";
+
+
+$requestObject.toxml()|out-file $args[0];
+
+</Source>
+</Rule>
