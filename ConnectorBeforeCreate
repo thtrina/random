@@ -1,53 +1,103 @@
-
 import sailpoint.object.AccountRequest;
 import sailpoint.object.AttributeRequest;
+import sailpoint.tools.GeneralException;
 
+import java.util.Date;
 import java.util.List;
+
+// ---------------------------------------------------------------
+// Logging helper
+// ---------------------------------------------------------------
+
+void outErrorLog(String level, String msg) {
+
+    System.out.println(
+        new Date() + " : " + level + " : " + msg
+    );
+}
+
 
 // ---------------------------------------------------------------
 // Start ConnectorBeforeCreate Rule
 // ---------------------------------------------------------------
 
-System.out.println("Starting ConnectorBeforeCreate Rule");
+outErrorLog(
+    "INFO",
+    "Starting ConnectorBeforeCreate Rule"
+);
+
 
 // ---------------------------------------------------------------
-// Get the AccountRequest
+// Get the SailPoint AccountRequest
 // ---------------------------------------------------------------
 
-// The actual template receives the request through:
-// $env:Request
-//
-// In Java/BeanShell, conceptually:
-// AccountRequest requestObject = ...;
+// In a native IdentityIQ BeanShell rule,
+// the AccountRequest is available directly.
 
 AccountRequest requestObject = accountRequest;
 
 
 // ---------------------------------------------------------------
-// Get the Domain Controller
+// Log the original request
 // ---------------------------------------------------------------
 
-// Your PowerShell currently does:
-//
-// $domain = "mycompany.com";
-//
-// $targetdomaindc = Get-ADDomainController
-//     -DomainName $domain
-//     -Discover;
-//
-// $hostname = $targetdomaindc.HostName;
+if (requestObject != null) {
+
+    outErrorLog(
+        "INFO",
+        "Request Object: [" + requestObject.toXml() + "]"
+    );
+
+} else {
+
+    outErrorLog(
+        "ERROR",
+        "AccountRequest is null"
+    );
+
+    return;
+}
+
+
+// ---------------------------------------------------------------
+// Specify the Domain
+// ---------------------------------------------------------------
 
 String domain = "mycompany.com";
 
-String hostname = "DC3PMEXAPP01.mycompany.com";
-
-System.out.println(
-    "Using Domain Controller [" + hostname + "]"
+outErrorLog(
+    "INFO",
+    "Getting a domain controller from domain [" + domain + "]"
 );
 
 
 // ---------------------------------------------------------------
-// Add preferredServer directly to AccountRequest
+// Get Domain Controller
+// ---------------------------------------------------------------
+//
+// IMPORTANT:
+// This is where your original PowerShell did:
+//
+// Get-ADDomainController
+//     -DomainName $domain
+//     -Discover
+//
+// Native BeanShell/Java does not have the PowerShell
+// Get-ADDomainController cmdlet.
+//
+// If you want a specific DC, simply specify it here.
+// ---------------------------------------------------------------
+
+String hostname = "DC3PMEXAPP01.mycompany.com";
+
+outErrorLog(
+    "INFO",
+    "Domain Controller returned [" + hostname + "]"
+);
+
+
+// ---------------------------------------------------------------
+// Add preferredServer attribute
 // ---------------------------------------------------------------
 
 try {
@@ -57,39 +107,79 @@ try {
         hostname
     );
 
-    System.out.println(
+    outErrorLog(
+        "INFO",
         "Added preferredServer [" + hostname + "]"
     );
 
 }
 catch (Exception e) {
 
-    System.out.println(
-        "ERROR adding preferredServer: "
+    outErrorLog(
+        "ERROR",
+        "Error adding preferredServer: " + e.getMessage()
+    );
+}
+
+
+// ---------------------------------------------------------------
+// Add DomainController attribute
+// ---------------------------------------------------------------
+
+try {
+
+    AttributeRequest attrDomainController =
+        new AttributeRequest();
+
+    attrDomainController.setName(
+        "DomainController"
+    );
+
+    attrDomainController.setValue(
+        hostname
+    );
+
+    attrDomainController.setOperation(
+        AttributeRequest.Operation.Add
+    );
+
+    requestObject.add(
+        attrDomainController
+    );
+
+    outErrorLog(
+        "INFO",
+        "Added DomainController [" + hostname + "]"
+    );
+
+}
+catch (Exception e) {
+
+    outErrorLog(
+        "ERROR",
+        "Error adding DomainController: "
         + e.getMessage()
     );
 }
 
 
 // ---------------------------------------------------------------
-// If you also want DomainController
+// Log modified request
 // ---------------------------------------------------------------
 
-AttributeRequest attrDomainController =
-    new AttributeRequest();
+String modifiedRequestObjectXml =
+    requestObject.toXml();
 
-attrDomainController.setName("DomainController");
-
-attrDomainController.setValue(hostname);
-
-// Depending on your SailPoint version/API,
-// this would use the appropriate operation value.
-
-requestObject.add(attrDomainController);
+outErrorLog(
+    "INFO",
+    "Modified Request Object: ["
+    + modifiedRequestObjectXml
+    + "]"
+);
 
 
 // ---------------------------------------------------------------
-// Return the modified AccountRequest
+// Return modified AccountRequest
 // ---------------------------------------------------------------
 
 return requestObject;
