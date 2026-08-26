@@ -1,3 +1,99 @@
+
+import sailpoint.object.AccountRequest;
+import sailpoint.object.AttributeRequest;
+
+import java.util.List;
+
+// ---------------------------------------------------------------
+// Start ConnectorBeforeCreate Rule
+// ---------------------------------------------------------------
+
+System.out.println("Starting ConnectorBeforeCreate Rule");
+
+// ---------------------------------------------------------------
+// Get the AccountRequest
+// ---------------------------------------------------------------
+
+// The actual template receives the request through:
+// $env:Request
+//
+// In Java/BeanShell, conceptually:
+// AccountRequest requestObject = ...;
+
+AccountRequest requestObject = accountRequest;
+
+
+// ---------------------------------------------------------------
+// Get the Domain Controller
+// ---------------------------------------------------------------
+
+// Your PowerShell currently does:
+//
+// $domain = "mycompany.com";
+//
+// $targetdomaindc = Get-ADDomainController
+//     -DomainName $domain
+//     -Discover;
+//
+// $hostname = $targetdomaindc.HostName;
+
+String domain = "mycompany.com";
+
+String hostname = "DC3PMEXAPP01.mycompany.com";
+
+System.out.println(
+    "Using Domain Controller [" + hostname + "]"
+);
+
+
+// ---------------------------------------------------------------
+// Add preferredServer directly to AccountRequest
+// ---------------------------------------------------------------
+
+try {
+
+    requestObject.addAttribute(
+        "preferredServer",
+        hostname
+    );
+
+    System.out.println(
+        "Added preferredServer [" + hostname + "]"
+    );
+
+}
+catch (Exception e) {
+
+    System.out.println(
+        "ERROR adding preferredServer: "
+        + e.getMessage()
+    );
+}
+
+
+// ---------------------------------------------------------------
+// If you also want DomainController
+// ---------------------------------------------------------------
+
+AttributeRequest attrDomainController =
+    new AttributeRequest();
+
+attrDomainController.setName("DomainController");
+
+attrDomainController.setValue(hostname);
+
+// Depending on your SailPoint version/API,
+// this would use the appropriate operation value.
+
+requestObject.add(attrDomainController);
+
+
+// ---------------------------------------------------------------
+// Return the modified AccountRequest
+// ---------------------------------------------------------------
+
+return requestObject;
+====================================================java code of the template
 $maxRetries = 6
 $retry = 0
 $found = $false
