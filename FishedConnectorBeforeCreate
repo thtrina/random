@@ -1,4 +1,24 @@
 
+--------------------------------another error
+
+==============================================================
+ERROR:: args[0] is NULL or EMPTY
+ERROR:: Modified request cannot be written back to IQService
+==============================================================
+ERROR OCCURRED IN BEFORE SCRIPT
+Item = []
+Message = [The IQService output file argument args[0] is null or empty.]
+Script = [c:\TestScript.ps1:.ps1]
+Line Number = [221]
+Line = [        throw "The IQService output file argument args[0] is null or empty."
+]
+Position = [At c:\TestScript.ps1:221 char:9
++         throw "The IQService output file argument args[0] is null or  ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+Stack Trace = [at <ScriptBlock>, c:\TestScript.ps1:: line 221
+at <ScriptBlock>, <No file>: line 1
+at <ScriptBlock>, c:\Script_8f069579-e834e1d28efc.ps1: line 53]
+==============================================================
 
 --------------------why this error
 Stack Trace = [at <ScriptBlock>, c:\TestScript.ps1: line 118
