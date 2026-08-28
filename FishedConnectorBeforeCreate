@@ -1,0 +1,205 @@
+###############################################################################################################################
+# SETUP
+# Instructions (for each IQService host that could run the script):
+#   - Update the path to Utils.dll (can be an unqualified path like "Utils.dll" since script is copied to IQService folder for execution)
+#   - Make sure Utils.dll is in the specified folder on each IQService host
+#   - Be sure the account that runs IQService has appropriate permissions to create directories and set permissions on them
+#   - Be sure to set the "run as" account for the IQService in Windows Service to the above-specified account instead of just the "logged on" user
+#   - Set a proper location for the $logFile variable
+#   - Set the $enableDebug flag to $true or $false to toggle debug mode
+###############################################################################################################################
+
+#param ([Parameter(Mandatory=$true)][System.String]$Request)
+
+#include SailPoint library
+#Add-Type -Path "D:\IQService-842\Utils.dll"
+
+#import AD cmdlets
+#Import-Module activeDirectory
+LogToFile("START:: Set Log File")
+#log file info
+#$logDate = Get-Date -UFormat "%Y%m%d%"
+$logDate = Get-Date -UFormat "%Y%m%d_%H%M%S"
+#$logFile = "D:\IQService-8424\ISC_Rule_Directory\Logs\TestADBeforeCreateScript_$logDate.log"
+$logFile = "D:\IQService-8424\ISC_Rule_Directory\Before_Create_Rule\TestADBeforeCreateScript_$logDate.log"
+
+#$logFile = "c:\SailPoint\Scripts\Logs\SampleSourceBeforeCreateScript_$logDate.log"
+$enableDebug = $true
+
+LogToFile("COMPLETE:: Set Log File")
+
+###############################################################################################################################
+# HELPER FUNCTIONS
+###############################################################################################################################
+LogToFile("START:: Helper Functions")
+# ------------------------------------------------------------------
+# Create log directory if it does not exist
+# ------------------------------------------------------------------
+
+if (-not (Test-Path $logFile)) {
+
+    New-Item `
+        -Path $logFile `
+        -ItemType Directory `
+        -Force | Out-Null
+}
+#save logging files to a separate txt file
+function LogToFile([String] $info) {
+    $info | Out-File $logFile -Append
+}
+
+#include SailPoint library
+#Add-Type -Path "D:\IQService-842\Utils.dll"
+#Add-Type -Path "D:\IQService-8424\IQService-Instance2-Secondary\Utils.dll"
+
+LogToFile("COMPLETE:: Helper Functions-LogDirectory")
+
+
+#if we have a non-null account request, get our value; otherwise return nothing
+function Get-AttributeValueFromAccountRequest([sailpoint.Utils.objects.AccountRequest] $request, [String] $targetAttribute) {
+    $value = $null;
+
+    if ($request) {
+        foreach ($attrib in $request.AttributeRequests) {
+            if ($attrib.Name -eq $targetAttribute) {
+                $value = $attrib.Value;
+                break;
+            }
+        }
+    } else {
+        LogToFile("Account request object was null");
+    }
+    return $value;
+}
+
+
+###############################################################################################################################
+# BODY
+###############################################################################################################################
+try {
+LogToFile("START:: BODY")
+if($enableDebug) {
+    LogToFile("Entering beforeScript")
+}
+
+#Import-Module ActiveDirectory
+
+Add-type -path "D:\IQService-8424\IQService-Instance2-Secondary\Utils.dll"
+    ##########################
+    # Begin SailPoint protected code -- do not modify this code block
+    #
+        $sReader = New-Object System.IO.StringReader([System.String]$env:Request);
+        $xmlReader = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sReader));
+        $requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader);
+
+        #debug line for testing
+        if($enableDebug) {
+            LogToFile("Request object contents:")
+            LogToFile($requestObject | Out-String)
+        }
+    #
+    # End SailPoint protected code
+    ##########################
+    LogToFile("COMPLETE:: BODY")
+
+    ##########################
+    # Begin Client-provided code
+    LogToFile("START:: Client-provided code")
+
+    #get the necessary info we need from the accountRequest object
+    $nativeIdentity = $requestObject.nativeIdentity
+    LogToFile("nativeIdentity:: $nativeIdentity")
+    LogToFile("INFO:: Raw Request: [$env:Request]")
+    LogToFile("INFO:: Request Length: [$($env:Request.Length)]")
+
+    ## Get the SailPoint Request object
+    $requestAsString = $env:Request
+
+    LogToFile "================================================"
+    LogToFile "Raw Request: [$requestAsString]"
+    LogToFile "Request Length: [$($requestAsString.Length)]"
+
+    try {
+
+    $stringReader = New-Object System.IO.StringReader($requestAsString)
+
+    $xmlReader = New-Object System.Xml.XmlTextReader($stringReader)
+
+    $xmlReader.MoveToContent()
+
+    LogToFile "Reader NodeType: [$($xmlReader.NodeType)]"
+    LogToFile "Reader Name: [$($xmlReader.Name)]"
+
+    if ($xmlReader.Name -ne "AccountRequest") {
+
+        throw "Expected AccountRequest element but found [$($xmlReader.Name)]"
+    }
+
+    LogToFile "Creating SailPoint AccountRequest object"
+
+    $requestObject = New-Object `
+        SailPoint.Utils.objects.AccountRequest($xmlReader)
+
+    LogToFile "AccountRequest object created successfully"
+
+    $requestObjectXml = $requestObject.toXml()
+
+    LogToFile "Request Object: [$requestObjectXml]"
+}
+catch {
+
+    LogToFile "ERROR - Failed to create AccountRequest"
+    LogToFile "ERROR - Message: [$($_.Exception.Message)]"
+    LogToFile "ERROR - StackTrace: [$($_.ScriptStackTrace)]"
+
+    throw
+}
+
+    <#
+    $requestObject = New-Object SailPoint.Utils.objects.AccountRequest($xmlReader);
+    $requestObjectXml=$requestObject.toXml();
+    out-errorLog "INFO" "Request Object: [$requestObjectXml]"
+    #>
+
+    # Get a domain controller from domain
+    #$domain="mycompany.com";
+    #out-errorLog "INFO" "Getting a donmain controller from domain [$domain]"
+    #$targetdomaindc = Get-ADDomainController -DomainName $domain -Discover;
+
+    $hostname="DC3PFTBCOAD01"
+    LogToFile("INFO:: Domain Controller returned [$hostname]")
+  
+    # Add a preferredServer attribute to request
+    $attrPreferredServer = New-Object SailPoint.Utils.objects.AttributeRequest;
+    $attrPreferredServer.Name = "preferredServer";
+    $attrPreferredServer.value= $hostname;
+    $attrPreferredServer.Operation = "Add";
+    $requestObject.AttributeRequests.Add($attrPreferredServer);
+
+    # Add a DomainController attribute to request
+    $attrDomainController = New-Object SailPoint.Utils.objects.AttributeRequest;
+    $attrDomainController.Name = "DomainController";
+    $attrDomainController.value= $hostname;
+    $attrDomainController.Operation = "Add";
+
+    $requestObject.AttributeRequests.Add($attrDomainController);
+    $ModifiedRequestObjectXml=$requestObject.toXml();
+    LogToFile("INFO:: Modified Request Object: [$ModifiedRequestObjectXml]");
+
+
+
+    $requestObject.toxml()|out-file $args[0];
+
+    
+    if($enableDebug) {
+        LogToFile("Exiting beforeScript")
+    }
+
+    #
+    # End Client-provided code
+}
+catch {
+    $ErrorMessage = $_.Exception.Message
+   $ErrorItem = $_.Exception.ItemName
+   LogToFile("Error: Item = $ErrorItem -> Message = $ErrorMessage")
+}
