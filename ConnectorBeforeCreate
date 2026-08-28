@@ -1,3 +1,47 @@
+## Get the SailPoint Request object
+
+$requestAsString = $env:Request
+
+LogToFile "================================================"
+LogToFile "Raw Request: [$requestAsString]"
+LogToFile "Request Length: [$($requestAsString.Length)]"
+
+try {
+
+    $stringReader = New-Object System.IO.StringReader($requestAsString)
+
+    $xmlReader = New-Object System.Xml.XmlTextReader($stringReader)
+
+    $xmlReader.MoveToContent()
+
+    LogToFile "Reader NodeType: [$($xmlReader.NodeType)]"
+    LogToFile "Reader Name: [$($xmlReader.Name)]"
+
+    if ($xmlReader.Name -ne "AccountRequest") {
+
+        throw "Expected AccountRequest element but found [$($xmlReader.Name)]"
+    }
+
+    LogToFile "Creating SailPoint AccountRequest object"
+
+    $requestObject = New-Object `
+        SailPoint.Utils.objects.AccountRequest($xmlReader)
+
+    LogToFile "AccountRequest object created successfully"
+
+    $requestObjectXml = $requestObject.toXml()
+
+    LogToFile "Request Object: [$requestObjectXml]"
+}
+catch {
+
+    LogToFile "ERROR - Failed to create AccountRequest"
+    LogToFile "ERROR - Message: [$($_.Exception.Message)]"
+    LogToFile "ERROR - StackTrace: [$($_.ScriptStackTrace)]"
+
+    throw
+}
+------------------------------------------------------------
 nativeIdentity:: CN=ACCOUNTT13\, TEST,OU=Domain Users,DC=company,DC=local
 Error: Item =  -> Message = Exception calling ".ctor" with "1" argument(s): "AccountRequest element not found. Instead found []"
 
