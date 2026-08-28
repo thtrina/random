@@ -1,3 +1,13 @@
+Error: Item =  -> Message = Cannot bind argument to parameter 'FilePath' because it is null.
+''''
+catch {
+    $ErrorMessage = $_.Exception.Message
+   $ErrorItem = $_.Exception.ItemName
+   LogToFile("Error: Item = $ErrorItem -> Message = $ErrorMessage")
+}
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ## Get the SailPoint Request object
 
 $requestAsString = $env:Request
