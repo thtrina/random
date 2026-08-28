@@ -1,3 +1,13 @@
+
+
+--------------------why this error
+Stack Trace = [at <ScriptBlock>, c:\TestScript.ps1: line 118
+at <ScriptBlock>, <No file>: line 12]
+
+
+
+
+
 ###############################################################################################################################
 # SETUP
 # Instructions (for each IQService host that could run the script):
