@@ -1,6 +1,6 @@
 
 
-In the TestScipt we created, This last line is important to make sure the IQService uses this new request when it tries to provsion. So the new temp file is created, it just doesn't inlcude the new access request
+In the TestScipt we created, This last line is important to make sure the IQService uses this new request when it tries to provsion. So the new temp file is created, it just doesn't inlcude the new access request but maybe it's not suppoe to
 $requestObject.toxml()|out-file $args[0];
 And the next file after_create don't include the new domain controller attributes
 ----------------------------------------File is created but accessReq is not incuded
