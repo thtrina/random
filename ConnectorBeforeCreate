@@ -1,4 +1,12 @@
+nativeIdentity:: CN=ACCOUNTT13\, TEST,OU=Domain Users,DC=company,DC=local
+Error: Item =  -> Message = Exception calling ".ctor" with "1" argument(s): "AccountRequest element not found. Instead found []"
 
+    ## Get the SailPoint Request object
+    $requestObject = New-Object SailPoint.Utils.objects.AccountRequest($xmlReader);
+    $requestObjectXml=$requestObject.toXml();
+    out-errorLog "INFO" "Request Object: [$requestObjectXml]"
+
+====================================================================================
 $logDate = Get-Date -UFormat "%Y%m%d"
 $logFile = "c:\Logs\ConnectorBeforeCreate_$logDate.log"
 $command = "c:\After_Create_Rule\AD_FTBCO_AfterCreate.ps1"
