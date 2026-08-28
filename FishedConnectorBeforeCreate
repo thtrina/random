@@ -1,4 +1,68 @@
 
+
+----------------------------------------File is created but accessReq is not incuded
+
+$logDate = Get-Date -UFormat "%Y%m%d"
+$logFile = "C:\ConnectorAfterCreate_$logDate.log"
+$command = "C:\AD_AfterCreate.ps1"
+
+"In script" | out-file $logFile -append
+
+$enableDebug = $true
+
+#Logging Helper functions
+function LogToFile([String] $info) {
+    $info | Out-File $logFile -Append
+}
+
+#====================-------Get the request object-------====================
+Try{
+    if($enableDebug) {
+        LogToFile("Entering SailPoint rule")
+    }
+
+    if($enableDebug) {
+        LogToFile("Loading Utils.dll")
+    }
+    Add-type -path "c:\IQService\Utils.dll";
+
+
+    # Read the environment variables
+    $sReader = New-Object System.IO.StringReader([System.String]$env:Request);
+    if($enableDebug) {
+        LogToFile("Finished reading the environment variables")
+    }
+
+    # Form the xml reader object
+    $xmlReader = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sReader));
+    if($enableDebug) {
+        LogToFile("Finished forming the xml object")
+    }
+
+    # Create SailPoint Request object
+    $requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader);
+    $requestAsString = $env:Request
+    if($enableDebug) {
+        LogToFile("Request as XML object is: $requestAsString")
+    }
+
+    # Call the client script   
+    if($enableDebug) {
+        LogToFile("Calling the client script")
+    }
+     # $command = -join ($command, " -requestString '$requestAsString'")
+     Invoke-Expression $command
+
+}Catch{
+ $ErrorMessage = $_.Exception.Message
+   $ErrorItem = $_.Exception.ItemName
+   LogToFile("Error: Item = $ErrorItem -> Message = $ErrorMessage")
+}
+
+if($enableDebug) {
+    LogToFile("Exiting SailPoint rule")
+}
+
 --------------------------------another error
 
 ==============================================================
