@@ -1,3 +1,6 @@
+
+
+Get-Process mmc -ErrorAction SilentlyContinue | Select-Object Id,MainWindowTitle,Responding
 -------------------------
 Get-WinEvent -FilterHashtable @{
     LogName='Application'
