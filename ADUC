@@ -1,3 +1,12 @@
+-------------------------
+Get-WinEvent -FilterHashtable @{
+    LogName='Application'
+    StartTime=(Get-Date).AddMinutes(-10)
+} | Where-Object {
+    $_.ProviderName -match 'Application Error|Windows Error Reporting'
+} | Select-Object TimeCreated, ProviderName, Id, Message | Format-List
+
+-------------------------
 PS C:\WINDOWS\system32> Test-Path "$env:windir\System32\dsa.msc"
 True
 PS C:\WINDOWS\system32> Start-Process "$env:windir\System32\dsa.msc"
