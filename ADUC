@@ -1,0 +1,22 @@
+PS C:\WINDOWS\system32> Test-Path "$env:windir\System32\dsa.msc"
+True
+PS C:\WINDOWS\system32> Start-Process "$env:windir\System32\dsa.msc"
+PS C:\WINDOWS\system32> Get-Process mmc -ErrorAction SilentlyContinue
+
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+    506      51    29496      68392      12.06  47592   1 mmc
+
+
+PS C:\WINDOWS\system32> mmc.exe
+PS C:\WINDOWS\system32> Test-Path "$env:windir\System32\dsa.msc"
+True
+PS C:\WINDOWS\system32> Get-Process mmc -ErrorAction SilentlyContinue
+
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+    399      37    13908      17396       1.14  21232   1 mmc
+
+
+PS C:\WINDOWS\system32> mmc.exe
+PS C:\WINDOWS\system32>
