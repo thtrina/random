@@ -1,0 +1,40 @@
+====================================================
+           AI RECORDING - DEFINITION
+====================================================
+
+Teams:
+[ ] Recording
+[ ] Transcription
+[ ] AI Summary
+[ ] Copilot
+[ ] Other: ______________________
+
+Webex:
+[ ] Recording
+[ ] Transcription
+[ ] AI Assistant
+[ ] AI Summary
+[ ] Other: ______________________
+
+Eligibility:
+_______________________________________________
+
+Exclusions:
+_______________________________________________
+
+Approval:
+[ ] Automatic
+[ ] Manager
+[ ] Application Owner
+[ ] Security
+[ ] Other
+
+Provisioning:
+[ ] Entra Group
+[ ] License
+[ ] Teams Policy
+[ ] Webex Group
+[ ] Webex API
+[ ] Microsoft Graph
+[ ] Other
+====================================================
