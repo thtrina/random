@@ -1,0 +1,809 @@
+# ------------------------------------------------------------------
+# Log directory
+# ------------------------------------------------------------------
+
+Function writeToLog() {
+    param([string]$message)
+    Add-Content ($(Get-Date -format "yyyy-MM-dd HH:mm:ss") + " : $($gs) : v$($version) : afterCreate : $($message)") -Path $logFile
+}
+
+"========== AD_AfterCreate START ==========" | Out-File $logFile
+
+"Args.Count = $($args.Count)" | Out-File $logFile -Append
+
+for ($i = 0; $i -lt $args.Count; $i++) {
+    "args[$i] = [$($args[$i])]" | Out-File $logFile -Append
+}
+
+"env:Request = [$env:Request]" | Out-File $logFile -Append
+# ------------------------------------------------------------------
+# SailPoint Utils.dll
+# ------------------------------------------------------------------
+
+Add-Type -Path "Utils.dll"
+
+
+# ------------------------------------------------------------------
+# Create log directory if it does not exist
+# ------------------------------------------------------------------
+
+if (-not (Test-Path $logDirectory)) {
+
+    New-Item `
+        -Path $logDirectory `
+        -ItemType Directory `
+        -Force | Out-Null
+}
+
+
+# ------------------------------------------------------------------
+# Debug setting
+#
+# Set to $true while testing if you want the complete AccountRequest
+# written to the log.
+#
+# Set to $false for normal production operation.
+# ------------------------------------------------------------------
+
+$enableDebug = $true
+
+
+# ------------------------------------------------------------------
+# Script version
+# ------------------------------------------------------------------
+
+$version = "0"
+
+
+# ------------------------------------------------------------------
+# Variables populated after AccountRequest is parsed
+# ------------------------------------------------------------------
+
+$sAMAccountName = $null
+$logFile = $null
+
+
+###############################################################################################################################
+# HELPER FUNCTIONS
+###############################################################################################################################
+
+
+# ------------------------------------------------------------------
+# Write to employee-specific log
+# ------------------------------------------------------------------
+
+function writeToLog {
+
+    param(
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
+        [string]$message
+    )
+
+
+    # --------------------------------------------------------------
+    # If sAMAccountName has not been identified yet, use a temporary
+    # log file.
+    # --------------------------------------------------------------
+
+    if ([string]::IsNullOrWhiteSpace($script:logFile)) {
+
+        $currentLogFile = Join-Path `
+            $script:logDirectory `
+            "UNKNOWN_EMPLOYEE_SetADPass.log"
+
+    }
+    else {
+
+        $currentLogFile = $script:logFile
+
+    }
+
+
+    # --------------------------------------------------------------
+    # Timestamp
+    # --------------------------------------------------------------
+
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+
+    # --------------------------------------------------------------
+    # Log message
+    # --------------------------------------------------------------
+
+    $logMessage = "$timestamp : v$($script:version) : $message"
+
+
+    Add-Content `
+        -Path $currentLogFile `
+        -Value $logMessage
+}
+
+
+# ------------------------------------------------------------------
+# Create employee-specific log file
+# ------------------------------------------------------------------
+
+function Set-EmployeeLogFile {
+
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$EmployeeID
+    )
+
+    # Remove characters that are not valid in Windows filenames
+    $safeEmployeeID = $EmployeeID -replace '[\\/:*?"<>|]', '_'
+                                                                                                                                                                    
+    # Get current date in yyyy-MM-dd format
+    $logDate = Get-Date -Format "yyyy-MM-dd"
+
+    # Build employee-specific log filename
+    #
+    # Example:
+    # 2026-08-14.afterprovisioning.TEST123.txt
+    #
+    $logFileName = "$logDate.afterprovisioning.setAdPass.$safeEmployeeID.txt"
+
+    # Build complete path
+    $script:logFile = Join-Path `
+        $script:logDirectory `
+        $logFileName
+
+    writeToLog("======================================================")
+    writeToLog("Starting After Create provisioning Set AD Password script")
+    writeToLog("EmployeeID / sAMAccountName: $EmployeeID")
+    writeToLog("Log File: $($script:logFile)")
+    writeToLog("======================================================")
+}
+# ------------------------------------------------------------------
+# Get attribute value from SailPoint AccountRequest
+# ------------------------------------------------------------------
+
+function Get-AttributeValueFromAccountRequest {
+
+    param(
+        [SailPoint.Utils.objects.AccountRequest]$request,
+        [string]$targetAttribute
+    )
+
+
+    $value = $null
+
+
+    if ($request) {
+
+        foreach ($attrib in $request.AttributeRequests) {
+
+            if ($attrib.Name -eq $targetAttribute) {
+
+                $value = $attrib.Value
+
+                break
+            }
+        }
+
+    }
+    else {
+
+        writeToLog("ERROR: Account request object was null.")
+
+    }
+
+
+    return $value
+}
+
+
+###############################################################################################################################
+# BODY
+###############################################################################################################################
+
+if ($enableDebug) {
+
+    writeToLog("Entering After Create script")
+}
+
+
+# ------------------------------------------------------------------
+# Active Directory module
+# ------------------------------------------------------------------
+
+Import-Module ActiveDirectory
+
+try {
+
+
+    ###########################################################################################################################
+    # BEGIN SAILPOINT PROTECTED CODE
+    #
+    # DO NOT MODIFY THIS CODE BLOCK
+    ###########################################################################################################################
+
+    $sReader = New-Object System.IO.StringReader(
+        [System.String]$env:Request
+    )
+
+
+    $xmlReader = [System.xml.XmlTextReader](
+        [sailpoint.utils.xml.XmlUtil]::getReader($sReader)
+    )
+
+
+    $requestObject = New-Object `
+        SailPoint.Utils.objects.AccountRequest($xmlReader)
+
+
+    # --------------------------------------------------------------
+    # Debug - write complete AccountRequest if enabled
+    # --------------------------------------------------------------
+
+    if ($enableDebug) {
+
+        writeToLog("Request object contents:")
+
+        writeToLog(
+            $requestObject | Out-String
+        )
+
+    }
+
+
+    ###########################################################################################################################
+    # END SAILPOINT PROTECTED CODE
+    ###########################################################################################################################
+
+
+
+    ###########################################################################################################################
+    # CLIENT CODE
+    ###########################################################################################################################
+
+
+    writeToLog("AccountRequest successfully parsed.")
+
+
+    # ------------------------------------------------------------------
+    # Get sAMAccountName FIRST
+    #
+    # sAMAccountName is also our employeeID and log identifier.
+    # ------------------------------------------------------------------
+
+    $sAMAccountName = Get-AttributeValueFromAccountRequest `
+        $requestObject `
+        "sAMAccountName"
+
+
+    # ------------------------------------------------------------------
+    # sAMAccountName is required
+    # ------------------------------------------------------------------
+
+    if ([string]::IsNullOrWhiteSpace($sAMAccountName)) {
+
+        writeToLog("ERROR: sAMAccountName was not found in AccountRequest.")
+
+        throw "sAMAccountName is required."
+
+    }
+
+
+    # ------------------------------------------------------------------
+    # Create employee-specific log
+    # ------------------------------------------------------------------
+
+    Set-EmployeeLogFile `
+        -EmployeeID $sAMAccountName
+    writeToLog("sAMAccountName successfully identified: $sAMAccountName")
+    writeToLog("EmployeeID: $sAMAccountName")
+
+
+    # ------------------------------------------------------------------
+    # Get remaining AccountRequest attributes
+    # ------------------------------------------------------------------
+
+    $nativeIdentity = $requestObject.NativeIdentity
+
+    $mailNickname = Get-AttributeValueFromAccountRequest `
+        $requestObject `
+        "mailNickname"
+
+
+    $manager = Get-AttributeValueFromAccountRequest `
+        $requestObject `
+        "Manager"
+
+
+    $mail = Get-AttributeValueFromAccountRequest `
+        $requestObject `
+        "mail"
+
+
+    $displayName = Get-AttributeValueFromAccountRequest `
+        $requestObject `
+        "displayName"
+
+
+    $rclo = Get-AttributeValueFromAccountRequest `
+        $requestObject `
+        "physicalDeliveryOfficeName"
+
+
+    # ------------------------------------------------------------------
+    # Log AccountRequest information
+    # ------------------------------------------------------------------
+
+    writeToLog("------------------------------------------------------")
+    writeToLog("AccountRequest Information")
+    writeToLog("------------------------------------------------------")
+
+    writeToLog("EmployeeID: $sAMAccountName")
+
+    writeToLog("sAMAccountName: $sAMAccountName")
+
+    writeToLog("NativeIdentity: $nativeIdentity")
+
+    writeToLog("mailNickname: $mailNickname")
+
+    writeToLog("mail: $mail")
+
+    writeToLog("displayName: $displayName")
+
+    writeToLog("Manager: $manager")
+
+    writeToLog("rclo: $rclo")
+
+
+    # ------------------------------------------------------------------
+    # Build email addresses
+    # ------------------------------------------------------------------
+
+    #$emailAddress = "$($mailNickname)@company.com"    
+
+    #--------------------------------------------------------------
+    #------------------Testing per Mitch Jones 8.24.2028
+
+    #$emailAddress = "$($mailNickname)@company-com.info"
+    #$remoteAddress = "$($mailNickname)@company-com.info.mail.onmicrosoft.com"
+
+    writeToLog("emailAddress: $emailAddress")
+
+   
+
+
+
+    ###########################################################################################################################
+    # ACCOUNT VALIDATION
+    ###########################################################################################################################    
+    
+	
+	writeToLog("------------------------------------------------------")
+    
+    writeToLog("NativeIdentity: $nativeIdentity")
+
+    writeToLog("------------------------------------------------------")
+
+
+    if ($nativeIdentity -notlike "*OU=Domain Users*") {
+
+        writeToLog("WARNING: This is not a Domain Users account.")
+
+        writeToLog("Set-ADAccountPassword processing will not continue.")
+
+        return
+
+    }
+
+    writeToLog("Account is a Domain User.")
+
+    
+
+
+    ###########################################################################################################################
+    # PASSWORD SETUP
+    ###########################################################################################################################
+
+
+    writeToLog("------------------------------------------------------")
+
+    writeToLog("Starting password setup")
+
+    writeToLog("------------------------------------------------------")
+
+
+    writeToLog("Waiting 120 seconds before password setup.")
+
+
+    Start-Sleep -Seconds 120
+
+
+    writeToLog("Password wait completed.")
+
+
+
+    # ------------------------------------------------------------------
+    # Generate password
+    # ------------------------------------------------------------------
+
+    writeToLog("Generating password.")
+
+    $plain = New-CompliantPassword -Length 15
+
+    $pass = ConvertTo-SecureString `
+        $plain `
+        -AsPlainText `
+        -Force
+
+
+    writeToLog("Password generated successfully.")
+
+
+
+    # ------------------------------------------------------------------
+    # Set AD password
+    # ------------------------------------------------------------------
+
+    try {
+        writeToLog("Setting password for AD account: $sAMAccountName")
+        Set-ADAccountPassword -Identity $nativeIdentity -NewPassword $pass -Confirm:$false -ErrorAction Stop
+
+        writeToLog("SUCCESS: AD password was set.")
+    }
+    catch {
+        writeToLog("ERROR: Failed to set AD password.")
+        writeToLog("ERROR: $($_.Exception.Message)")
+        throw
+    }
+
+
+
+    ###########################################################################################################################
+    # GET MANAGER
+    ###########################################################################################################################
+
+
+    writeToLog("------------------------------------------------------")
+
+    writeToLog("Getting manager information")
+
+    writeToLog("------------------------------------------------------")
+
+
+    try {
+        $managerDn = (Get-ADUser -Identity $nativeIdentity -Properties Manager -ErrorAction Stop).Manager
+
+
+        writeToLog("Manager DN: $managerDn")
+
+
+        if ($managerDn) {
+
+            $managerObject = Get-ADUser `
+                -Identity $managerDn `
+                -Properties mail,displayName `
+                -ErrorAction Stop
+
+            $managerMail = $managerObject.mail
+
+            $managerDisplayName = $managerObject.displayName
+
+
+            writeToLog("Manager email: $managerMail")
+
+
+            writeToLog("Manager displayName: $managerDisplayName")
+
+        }
+        else {
+
+
+            writeToLog("WARNING: Manager is empty.")
+
+            $managerMail = $null
+            $managerDisplayName = $null
+
+        }
+
+    }
+    catch {
+
+        writeToLog("ERROR: Unable to retrieve manager information.")
+        writeToLog("ERROR: $($_.Exception.Message)")
+        throw
+
+    }
+
+
+
+    ###########################################################################################################################
+    # EMAIL NOTIFICATION
+    ###########################################################################################################################
+
+    writeToLog("------------------------------------------------------")
+
+    writeToLog("Preparing notification email")
+
+    writeToLog("------------------------------------------------------")
+
+
+    writeToLog("EmployeeID: $sAMAccountName")
+    writeToLog("Employee email: $emailAddress")
+    writeToLog("Manager email: $managerMail")
+    writeToLog("Manager name: $managerDisplayName")
+    writeToLog("rclo: $rclo")
+
+
+
+    # ------------------------------------------------------------------
+    # Email variables
+    # ------------------------------------------------------------------
+
+    $smtpServer = ".company.com"
+    $from = "devteam@company.com"
+
+    if ($rclo -match '(?i)^((H|R)[0-9]{3}|OFSH|OFSI)$') {
+
+   writeToLog("Setting mail body and params for remote new hire")
+
+    $body = @"
+	    
+"@
+
+		
+        $to = "devteam@company.com"
+
+        $tofinal = @($to) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+
+		$subject = "Sandbox-Active Directory account password for remote new hire $displayName"
+
+
+		$splat = @{
+        UseSsl     = $true
+        SMTPServer = $smtpServer
+        From       = $from
+        To         = $tofinal
+        Subject    = $subject
+        Body       = $body
+        BodyAsHtml = $true
+    }
+
+
+    writeToLog("Email type: Remote New Hire")
+    writeToLog("Email recipient: $to")
+    writeToLog("Email subject: $subject")
+    writeToLog("Sending email")
+
+
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+
+    if (-not [string]::IsNullOrWhiteSpace($to)) {
+
+        try {
+
+            Send-MailMessage @splat
+
+            writeToLog("SUCCESS: Password set and email sent to $to for account $nativeIdentity.")
+
+        }
+        catch {
+
+            writeToLog("ERROR: Failed to send remote new hire email.")
+            writeToLog("ERROR: $($_.Exception.Message)")
+            throw
+        }
+
+    }
+    else {
+
+        writeToLog(
+            "WARNING: Manager email is null or empty. Email not sent."
+        )
+
+    }
+
+}
+elseif ($sAMAccountName -like "sa_*") {    
+
+    # If this account was a service account, execute this section
+    # otherwise it is skipped.
+
+    writeToLog("Setting mail body and params for service account")
+
+    $body = @"
+
+		
+"@
+
+    $to = $mail
+
+
+    $subject = "Sandbox Active Directory account password for service account $sAMAccountName"
+
+
+    $splat = @{
+        UseSsl     = $true
+        SMTPServer = $smtpServer
+        From       = $from
+        To         = $to
+        Subject    = $subject
+        Body       = $body
+        BodyAsHtml = $true
+    }
+
+
+    writeToLog("Email type: Service Account")
+    writeToLog("Email recipient: $to")
+    writeToLog("Email subject: $subject")
+    writeToLog("Sending email")
+
+
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+
+    if (-not [string]::IsNullOrWhiteSpace($to)) {
+
+        try {
+
+            Send-MailMessage @splat
+
+            writeToLog("SUCCESS: Password set and email sent to $to for account $nativeIdentity.")
+
+        }
+        catch {
+
+            writeToLog("ERROR: Failed to send service account email.")
+            writeToLog("ERROR: $($_.Exception.Message)")
+            throw
+        }
+
+    }
+    else {
+
+        writeToLog("WARNING: Manager email is null or empty. Email not sent.")
+
+    }
+
+}
+
+
+###############################################################################################################################
+# STANDARD NEW HIRE
+###############################################################################################################################
+
+else {
+
+    writeToLog("Setting mail body and params for new hire")
+
+    $body = @"
+
+		
+"@
+
+
+    
+		 $to = $managerMail		 
+         $to = "devteam@company.com"
+
+
+
+		$tofinal = @($to) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+
+
+		$subject = "Sandbox Active Directory account password for your new hire $displayName"
+
+
+		$splat = @{
+        UseSsl     = $true
+        SMTPServer = $smtpServer
+        From       = $from
+        To         = $tofinal
+        Subject    = $subject
+        Body       = $body
+        BodyAsHtml = $true
+    }
+
+
+    writeToLog("Email type: Standard New Hire")
+    writeToLog("Email recipient: $to")
+    writeToLog("Email subject: $subject")
+    writeToLog("Sending email")
+
+
+    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+
+    if ($tofinal) {
+
+        try {
+
+            Send-MailMessage @splat
+
+            writeToLog("SUCCESS: Password set and email sent to manager's email $to for account $nativeIdentity.")
+
+        }
+        catch {
+
+            writeToLog("ERROR: Failed to send standard new hire email.")
+
+            writeToLog("ERROR: $($_.Exception.Message)")
+
+            throw
+        }
+
+    }
+    else {
+
+        writeToLog("WARNING: Recipient list is empty. Email not sent.")
+
+    }
+
+}
+
+
+###############################################################################################################################
+# EMAIL PROCESSING COMPLETE
+###############################################################################################################################
+
+writeToLog("------------------------------------------------------")
+writeToLog("Email notification processing completed")
+writeToLog("------------------------------------------------------")
+
+
+
+    ###########################################################################################################################
+    # FINAL SUCCESS
+    ###########################################################################################################################
+
+
+    writeToLog("======================================================")
+    writeToLog("AFTER CREATE PROVISIONING COMPLETED SUCCESSFULLY")
+    writeToLog("EmployeeID: $sAMAccountName")
+    writeToLog("sAMAccountName: $sAMAccountName")
+    writeToLog("Mailbox Created: $mailboxCreated")
+    writeToLog("Mailbox Verified: $mailboxVerified")
+
+    writeToLog("======================================================")
+
+
+
+    ###########################################################################################################################
+    # END CLIENT CODE
+    ###########################################################################################################################
+
+
+}
+catch {
+
+
+    ############################################################################################################################
+    # FINAL ERROR HANDLING
+    ############################################################################################################################
+
+
+    $ErrorMessage = $_.Exception.Message
+
+    $ErrorItem = $_.Exception.ItemName
+
+
+    writeToLog("======================================================")
+
+
+    writeToLog("AFTER CREATE PROVISIONING FAILED")
+    writeToLog("EmployeeID / sAMAccountName: $sAMAccountName")
+    writeToLog("Error Item: $ErrorItem")
+    writeToLog("Error Message: $ErrorMessage")
+
+    writeToLog("======================================================")
+
+}
+
+
+
+###############################################################################################################################
+# EXIT
+###############################################################################################################################
+
+if ($enableDebug) {
+
+    writeToLog("Exiting After Create script")
+
+}
