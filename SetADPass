@@ -1,3 +1,137 @@
+
+
+
+
+
+
+
+
+catch {
+
+
+    ############################################################################################################################
+    # FINAL ERROR HANDLING
+    ############################################################################################################################
+
+    $ErrorMessage = $_.Exception.Message
+    $ErrorItem = $_.Exception.ItemName
+
+
+    ############################################################################################################################
+    # LOG ERROR
+    ############################################################################################################################
+
+    writeToLog("======================================================")
+    writeToLog("AFTER CREATE PROVISIONING FAILED")
+    writeToLog("EmployeeID / sAMAccountName: $sAMAccountName")
+    writeToLog("Error Item: $ErrorItem")
+    writeToLog("Error Message: $ErrorMessage")
+    writeToLog("======================================================")
+
+
+    ############################################################################################################################
+    # SEND ERROR NOTIFICATION EMAIL
+    ############################################################################################################################
+
+    writeToLog("Preparing provisioning failure notification email")
+
+
+    $errorSubject = "ERROR - Active Directory account provisioning failed for $sAMAccountName"
+
+
+    $errorBody = @"
+<html>
+<body>
+
+<p><b>Active Directory account provisioning failed.</b></p>
+
+<table>
+<tr>
+<td><b>EmployeeID / sAMAccountName:</b></td>
+<td>$sAMAccountName</td>
+</tr>
+
+<tr>
+<td><b>Native Identity:</b></td>
+<td>$nativeIdentity</td>
+</tr>
+
+<tr>
+<td><b>Display Name:</b></td>
+<td>$displayName</td>
+</tr>
+
+<tr>
+<td><b>Error Item:</b></td>
+<td>$ErrorItem</td>
+</tr>
+
+<tr>
+<td><b>Error Message:</b></td>
+<td>$ErrorMessage</td>
+</tr>
+
+</table>
+
+<p>
+Please review the After Create provisioning log for additional details.
+</p>
+
+</body>
+</html>
+"@
+
+
+    $errorSplat = @{
+        UseSsl     = $true
+        SMTPServer = $smtpServer
+        From       = $from
+        To         = $errorEmailTo
+        Subject    = $errorSubject
+        Body       = $errorBody
+        BodyAsHtml = $true
+    }
+
+
+    ############################################################################################################################
+    # SEND ERROR EMAIL
+    ############################################################################################################################
+
+    try {
+
+        writeToLog("Error email recipient(s): $($errorEmailTo -join ', ')")
+        writeToLog("Error email subject: $errorSubject")
+        writeToLog("Sending provisioning failure notification email")
+
+
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+
+        Send-MailMessage @errorSplat -ErrorAction Stop
+
+
+        writeToLog("SUCCESS: Provisioning failure notification email sent.")
+
+    }
+    catch {
+
+        # Do NOT throw here.
+        # The provisioning error has already been logged.
+        # Throwing here could replace the original provisioning error
+        # with an email/SMPP error.
+
+        writeToLog("ERROR: Failed to send provisioning failure notification email.")
+        writeToLog("ERROR: $($_.Exception.Message)")
+
+    }
+
+
+    ############################################################################################################################
+    # END FINAL ERROR HANDLING
+    ############################################################################################################################
+
+}
+===================================================================================================================
 # ------------------------------------------------------------------
 # Log directory
 # ------------------------------------------------------------------
