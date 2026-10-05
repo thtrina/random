@@ -2,9 +2,24 @@
 
 
 
+# --------------------------------------------------------------
+# SAFETY CHECK: Run only for newly created accounts
+# --------------------------------------------------------------
+
+$operation = [string]$requestObject.Operation
+
+writeToLog("AccountRequest operation: [$operation]")
+
+if ($operation -ine "Create") {
+    writeToLog("SKIPPED: Operation is not Create. No password changes or emails will be processed.")
+    return
+}
+
+writeToLog("CONFIRMED: Create operation detected. Continuing AfterCreate processing.")
 
 
 
+==================================================================add only for create account end
 
 catch {
 
