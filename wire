@@ -142,6 +142,7 @@ Current Request Body:
 {"changes":[{"attribute":"webMtsUserType","value":"Branch"},{"attribute":"webMtsBankLocationRole","value":"*/*/RPI/"},{"attribute":"webMtsDefaultBankLocation","value":"FHB/MTRANS"},{"attribute":"webMtsPin","value.$":"$.trigger.attributes.PHNAUT"}],"op":"replace"}
 
 Fix suggestion #1
+Error: Unable to parse input as JSON, please ensure it is syntactically correct. (type: Error Parsing Input, retryable: false): invalid character ',' after top-level value
 [
   {
     "op": "replace",
@@ -164,6 +165,33 @@ Fix suggestion #1
     "value": "REPLACE_WITH_RESOLVED_PHNAUT_VALUE"
   }
 ]
+{
+  "authenticationType": "OAuth",
+  "basicAuthPassword": null,
+  "basicAuthUserName": null,
+  "csvRequestBody": null,
+  "formRequestBody": null,
+  "headerAuthName": null,
+  "headerAuthValue": null,
+  "jsonRequestBody": "{\n    \"op\": \"replace\",\n    \"path\": \"/attributes/webMtsUserType\",\n    \"value\": \"Branch\"\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/attributes/webMtsBankLocationRole\",\n    \"value\": \"*/*/RPI/\"\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/attributes/webMtsDefaultBankLocation\",\n    \"value\": \"FHB/MTRANS\"\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/attributes/webMtsPin\",\n    \"value\": \"REPLACE_WITH_RESOLVED_PHNAUT_VALUE\"\n  }",
+  "method": "patch",
+  "oAuthClientId": "7b8844ac40874e9a8110ba3fdb69f62d",
+  "oAuthClientSecret": "$.secrets.dbca4726-5402-43dc-b070-24da2a6d686d",
+  "oAuthCredentialLocation": "oAuthInHeader",
+  "oAuthScope": null,
+  "oAuthTokenUrl": "https://firsthorizon-sb.api.identitynow.com/oauth/token",
+  "requestContentType": "json",
+  "requestHeaders": {
+    "Accept": "application/json",
+    "Content-Type": "application/json-patch+json"
+  },
+  "sensitiveRequestHeaders": null,
+  "textRequestBody": null,
+  "url": null,
+  "url.$": "$.concat('https://firsthorizon-sb.api.identitynow.com/v3/accounts/', $.trigger.attributes.input.account.id)",
+  "urlParams": null,
+  "xmlRequestBody": null
+}
 ------------------------------------------------------------------------------------------------------------------------Testing WF End --------------------------------------------------------------------------------------------------------------------------
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
