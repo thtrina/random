@@ -140,6 +140,30 @@ $.concat('https://firsthorizon-sb.api.identitynow.com/v3/accounts/', $.trigger.a
 
 Current Request Body:
 {"changes":[{"attribute":"webMtsUserType","value":"Branch"},{"attribute":"webMtsBankLocationRole","value":"*/*/RPI/"},{"attribute":"webMtsDefaultBankLocation","value":"FHB/MTRANS"},{"attribute":"webMtsPin","value.$":"$.trigger.attributes.PHNAUT"}],"op":"replace"}
+
+Fix suggestion #1
+[
+  {
+    "op": "replace",
+    "path": "/attributes/webMtsUserType",
+    "value": "Branch"
+  },
+  {
+    "op": "replace",
+    "path": "/attributes/webMtsBankLocationRole",
+    "value": "*/*/RPI/"
+  },
+  {
+    "op": "replace",
+    "path": "/attributes/webMtsDefaultBankLocation",
+    "value": "FHB/MTRANS"
+  },
+  {
+    "op": "replace",
+    "path": "/attributes/webMtsPin",
+    "value": "REPLACE_WITH_RESOLVED_PHNAUT_VALUE"
+  }
+]
 ------------------------------------------------------------------------------------------------------------------------Testing WF End --------------------------------------------------------------------------------------------------------------------------
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
