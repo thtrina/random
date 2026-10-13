@@ -1,4 +1,138 @@
-
+------------------------------------------------------------------------------------------------------------------------Testing Workflow Start -------------------------------------------------------------------------------------------------------------
+Error: 
+[
+  {
+    "timestamp": "2026-10-13T18:05:20.671523619Z",
+    "attributes": {
+      "input": {
+        "account": {
+          "attributes": {
+            "created": "2026-10-08T16:48:33.597Z",
+            "displayName": "John Doe",
+            "email": "John.Doe@gmail.com",
+            "employeeNumber": "38464",
+            "firstname": "John",
+            "lastname": "Doe"
+          },
+          "correlated": true,
+          "hasEntitlements": true,
+          "id": "8a7b0a7c778347cfa173afb9ad3ec33f",
+          "isMachine": false,
+          "name": "Doe, John",
+          "nativeIdentity": "Doe, John",
+          "origin": "New Source",
+          "uuid": "8a7b0a7c778347cfa173afb9ad3ec33f"
+        },
+        "event": {
+          "cause": "AGGREGATION",
+          "type": "ACCOUNT_CREATED_V2"
+        },
+        "identity": {
+          "email": "John.Doe@gmail.com",
+          "id": "976e7b61448c4238be638d194a4594ef",
+          "name": "John.Doe"
+        },
+        "source": {
+          "alias": "AD",
+          "id": "bc53e64488874138806bcb5f146ef181",
+          "name": "New Source",
+          "owner": {
+            "id": "owner-123",
+            "name": "Source Owner"
+          }
+        }
+      }
+    },
+    "type": "WorkflowExecutionStarted"
+  },
+  {
+    "timestamp": "2026-10-13T18:05:20.762127033Z",
+    "attributes": {
+      "displayName": "Update Account Attributes",
+      "input": {
+        "authenticationType": "OAuth",
+        "basicAuthPassword": null,
+        "basicAuthUserName": null,
+        "csvRequestBody": null,
+        "formRequestBody": null,
+        "headerAuthName": null,
+        "headerAuthValue": null,
+        "jsonRequestBody": {
+          "changes": [
+            {
+              "attribute": "webMtsUserType",
+              "value": "Branch"
+            },
+            {
+              "attribute": "webMtsBankLocationRole",
+              "value": "*/*/RPI/"
+            },
+            {
+              "attribute": "webMtsDefaultBankLocation",
+              "value": "FHB/MTRANS"
+            },
+            {
+              "attribute": "webMtsPin",
+              "value.$": "$.trigger.attributes.PHNAUT"
+            }
+          ],
+          "op": "replace"
+        },
+        "method": "patch",
+        "oAuthClientId": "oAuthClientId",
+        "oAuthClientSecret": "oAuthClientSecret",
+        "oAuthCredentialLocation": "oAuthInHeader",
+        "oAuthScope": null,
+        "oAuthTokenUrl": "companyURL/oauth/token",
+        "requestContentType": "json",
+        "requestHeaders": {
+          "Accept": "application/json",
+          "Content-Type": "multipart/form-data"
+        },
+        "sensitiveRequestHeaders": null,
+        "textRequestBody": null,
+        "url": null,
+        "url.$": "$.concat('companyURL/v3/accounts/', $.trigger.id)",
+        "urlParams": null,
+        "xmlRequestBody": null
+      },
+      "stepName": "hTTPRequest",
+      "task": "sp:http",
+      "technicalName": "HTTP Request"
+    },
+    "type": "ActivityTaskScheduled"
+  },
+  {
+    "timestamp": "2026-10-13T18:05:20.762239514Z",
+    "attributes": {
+      "attempts": 1,
+      "displayName": "Update Account Attributes",
+      "stepName": "hTTPRequest",
+      "task": "sp:http",
+      "technicalName": "HTTP Request"
+    },
+    "type": "ActivityTaskStarted"
+  },
+  {
+    "timestamp": "2026-10-13T18:05:21.135819906Z",
+    "attributes": {
+      "displayName": "Update Account Attributes",
+      "error": "external http invalid request configuration: non-HTTPS URLs are not supported, please use HTTPS (provided URL: , scheme: )",
+      "stepName": "hTTPRequest",
+      "task": "sp:http",
+      "technicalName": "HTTP Request"
+    },
+    "type": "ActivityTaskFailed"
+  },
+  {
+    "timestamp": "2026-10-13T18:05:21.172236094Z",
+    "attributes": {
+      "error": "task failed: activity error (type: sp:external:http:v2, scheduledEventID: 7, startedEventID: 8, identity: 1@sp-workflow-worker-stg-uswest2-idn-stg01-usw2-5f86467b96-m69bc@sp-workflow-engine): external http invalid request configuration: non-HTTPS URLs are not supported, please use HTTPS (provided URL: , scheme: ) (type: HTTP Response Returned a Client Error, retryable: false): external http invalid request configuration: non-HTTPS URLs are not supported, please use HTTPS (provided URL: , scheme: ) (type: wrapError, retryable: true): external http invalid request configuration (type: WorkflowFailure, retryable: false): task failed: activity error (type: sp:external:http:v2, scheduledEventID: 7, startedEventID: 8, identity: 1@sp-workflow-worker-stg-uswest2-idn-stg01-usw2-5f86467b96-m69bc@sp-workflow-engine): external http invalid request configuration: non-HTTPS URLs are not supported, please use HTTPS (provided URL: , scheme: ) (type: HTTP Response Returned a Client Error, retryable: false): external http invalid request configuration: non-HTTPS URLs are not supported, please use HTTPS (provided URL: , scheme: ) (type: wrapError, retryable: true): external http invalid request configuration"
+    },
+    "type": "WorkflowExecutionFailed"
+  }
+]
+------------------------------------------------------------------------------------------------------------------------Testing WF End --------------------------------------------------------------------------------------------------------------------------
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
