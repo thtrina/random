@@ -132,6 +132,14 @@ Error:
     "type": "WorkflowExecutionFailed"
   }
 ]
+
+Fix suggestion #1 - 
+$.concat('https://firsthorizon-sb.api.identitynow.com/v3/accounts/', $.trigger.id)
+TO:
+$.concat('https://firsthorizon-sb.api.identitynow.com/v3/accounts/', $.trigger.attributes.input.account.id)
+
+Current Request Body:
+{"changes":[{"attribute":"webMtsUserType","value":"Branch"},{"attribute":"webMtsBankLocationRole","value":"*/*/RPI/"},{"attribute":"webMtsDefaultBankLocation","value":"FHB/MTRANS"},{"attribute":"webMtsPin","value.$":"$.trigger.attributes.PHNAUT"}],"op":"replace"}
 ------------------------------------------------------------------------------------------------------------------------Testing WF End --------------------------------------------------------------------------------------------------------------------------
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
