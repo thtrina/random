@@ -179,7 +179,7 @@ Error: Unable to parse input as JSON, please ensure it is syntactically correct.
   "oAuthClientSecret": "$.secrets.dbca4726-5402-43dc-b070-24da2a6d686d",
   "oAuthCredentialLocation": "oAuthInHeader",
   "oAuthScope": null,
-  "oAuthTokenUrl": "https://firsthorizon-sb.api.identitynow.com/oauth/token",
+  "oAuthTokenUrl": "https://mycompanyURL/oauth/token",
   "requestContentType": "json",
   "requestHeaders": {
     "Accept": "application/json",
@@ -188,7 +188,7 @@ Error: Unable to parse input as JSON, please ensure it is syntactically correct.
   "sensitiveRequestHeaders": null,
   "textRequestBody": null,
   "url": null,
-  "url.$": "$.concat('https://firsthorizon-sb.api.identitynow.com/v3/accounts/', $.trigger.attributes.input.account.id)",
+  "url.$": "$.concat('mycompanyURL/v3/accounts/', $.trigger.attributes.input.account.id)",
   "urlParams": null,
   "xmlRequestBody": null
 }
