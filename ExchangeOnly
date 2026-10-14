@@ -1,4 +1,15 @@
 
+
+try {
+        writeToLog("Sending failure notification email to: $($errorEmailTo -join ', ')")
+        Send-MailMessage @errorSplat
+        writeToLog("SUCCESS: Failure notification email sent.")
+    }
+    catch {
+        $emailErrorMessage = $_.Exception.Message
+        writeToLog("ERROR: Failed to send failure notification email: $emailErrorMessage")
+    }
+........................................................................................................................................................................................................................................................................
 # ------------------------------------------------------------------
 # set logging
 # ------------------------------------------------------------------
