@@ -1,4 +1,42 @@
+# SEND ERROR NOTIFICATION EMAIL
+# ------------------------------------------------------------------
+# SEND ERROR NOTIFICATION EMAIL
+# ------------------------------------------------------------------
 
+if ($enableFailureEmail) {
+
+    writeToLog("Failure email notifications are ENABLED.")
+
+    try {
+        Send-MailMessage @errorSplat -ErrorAction Stop
+
+        writeToLog("SUCCESS: Failure notification email sent.")
+    }
+    catch {
+        writeToLog(
+            "ERROR: Failed to send notification email. $($_.Exception.Message)"
+        )
+    }
+
+}
+else {
+    writeToLog(
+        "Failure email notifications are DISABLED. Email was not sent."
+    )
+}
+
+-------------------------------------------------------------------------------AND ---------------------------->>>>>>>>>
+writeToLog("Failure email notifications enabled: $enableFailureEmail") 
+
+Place this near your existing $enableDebug setting.
+# ------------------------------------------------------------------
+# Email Notification Setting
+# ------------------------------------------------------------------
+# Production = $true
+# Sandbox    = $false
+
+$enableFailureEmail = $true
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
 try {
         writeToLog("Sending failure notification email to: $($errorEmailTo -join ', ')")
