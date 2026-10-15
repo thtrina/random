@@ -1,5 +1,42 @@
+############################################################################################################################
+    # SEND ERROR EMAIL
+    ############################################################################################################################
+
+     if ($enableFailureEmail) {
+
+        writeToLog("Failure email notifications are ENABLED.")
+    
+    try {
+
+        #writeToLog("SMTP Server: [$smtpServer]")
+        #writeToLog("From: [$from]")
+        writeToLog("Error email recipient(s): $($errorEmailTo -join ', ')")
+        writeToLog("Error email subject: $errorSubject")
+        writeToLog("Sending Set-ADAccountPassword provisioning failure notification email")
 
 
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+
+
+        Send-MailMessage @Splat -ErrorAction Stop
+
+
+        writeToLog("SUCCESS: Set-ADAccountPassword Provisioning failure notification email sent.")
+
+    }
+    catch {
+
+        writeToLog("ERROR: Failed to send Set-ADAccountPassword provisioning failure notification email.")
+        writeToLog("ERROR: $($_.Exception.Message)")
+
+    }
+    else {
+            writeToLog("Failure email notifications are DISABLED. Email was not sent.")
+    }
+}
+
+
+]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 2026-10-15 13:54:56 : v0 : ======================================================
 2026-10-15 13:54:56 : v0 : AFTER CREATE Set-ADAccountPassword PROVISIONING COMPLETED SUCCESSFULLY
 2026-10-15 13:54:56 : v0 : EmployeeID: 08016
