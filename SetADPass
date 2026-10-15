@@ -1,5 +1,15 @@
 
 
+2026-10-15 13:54:56 : v0 : ======================================================
+2026-10-15 13:54:56 : v0 : AFTER CREATE Set-ADAccountPassword PROVISIONING COMPLETED SUCCESSFULLY
+2026-10-15 13:54:56 : v0 : EmployeeID: 08016
+2026-10-15 13:54:56 : v0 : ======================================================
+2026-10-15 13:54:56 : v0 : Failure email notifications are ENABLED.
+2026-10-15 13:54:56 : v0 : Error email recipient(s): 
+2026-10-15 13:54:56 : v0 : Error email subject: 
+2026-10-15 13:54:56 : v0 : Sending Set-ADAccountPassword provisioning failure notification email
+2026-10-15 13:54:56 : v0 : ERROR: Failed to send Set-ADAccountPassword provisioning failure notification email.
+2026-10-15 13:54:56 : v0 : ERROR: Cannot validate argument on parameter 'To'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again.
 
 
 # --------------------------------------------------------------
