@@ -1,27 +1,24 @@
 ############################################################################################################################
-    # SEND ERROR EMAIL
-    ############################################################################################################################
+# SEND ERROR EMAIL
+############################################################################################################################
 
-     if ($enableFailureEmail) {
+if ($enableFailureEmail) {
 
-        writeToLog("Failure email notifications are ENABLED.")
-    
+    writeToLog("Failure email notifications are ENABLED.")
+
     try {
 
-        #writeToLog("SMTP Server: [$smtpServer]")
-        #writeToLog("From: [$from]")
+        # Log the failure email configuration
         writeToLog("Error email recipient(s): $($errorEmailTo -join ', ')")
         writeToLog("Error email subject: $errorSubject")
         writeToLog("Sending Set-ADAccountPassword provisioning failure notification email")
 
-
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
 
+        # IMPORTANT: Use the failure email splat, not the success email splat
+        Send-MailMessage @errorSplat -ErrorAction Stop
 
-        Send-MailMessage @Splat -ErrorAction Stop
-
-
-        writeToLog("SUCCESS: Set-ADAccountPassword Provisioning failure notification email sent.")
+        writeToLog("SUCCESS: Set-ADAccountPassword provisioning failure notification email sent.")
 
     }
     catch {
@@ -30,9 +27,12 @@
         writeToLog("ERROR: $($_.Exception.Message)")
 
     }
-    else {
-            writeToLog("Failure email notifications are DISABLED. Email was not sent.")
-    }
+
+}
+else {
+
+    writeToLog("Failure email notifications are DISABLED. Email was not sent.")
+
 }
 
 
