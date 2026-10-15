@@ -1,0 +1,139 @@
+
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="SampleSource AfterCreate" type="ConnectorAfterCreate">
+  <Attributes>
+    <Map>
+      <entry key="ObjectOrientedScript" value="true" />
+      <entry key="disabled" value="false" />
+      <entry key="extension" value=".ps1" />
+      <entry key="program" value="powershell.exe" />
+      <entry key="timeout" value="300" />
+    </Map>
+  </Attributes>
+  <Description>
+    ConnectorAfterCreate launcher that executes two PowerShell scripts
+    in sequence. Script 2 runs even if script 1 fails.
+  </Description>
+  <Source>
+<![CDATA[
+
+$logDate = Get-Date -UFormat "%Y%m%d"
+$logFile = "C:\SailPoint\Scripts\Logs\ConnectorAfterCreate_$logDate.log"
+
+$script1 = "C:\SailPoint\Scripts\SampleSource-AfterCreate.ps1"
+$script2 = "C:\SailPoint\Scripts\SampleSource-AfterCreate2.ps1"
+
+$enableDebug = $false
+$ErrorActionPreference = "Stop"
+
+#====================-------Helper functions-------====================
+
+function LogToFile([String] $info) {
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    "$timestamp - $info" | Out-File -FilePath $logFile -Append
+}
+
+#====================-------Main processing-------====================
+
+try {
+
+    # Ensure the log directory exists
+    $logDirectory = Split-Path -Path $logFile -Parent
+
+    if (-not (Test-Path -LiteralPath $logDirectory)) {
+        New-Item -Path $logDirectory -ItemType Directory -Force |
+            Out-Null
+    }
+
+    if ($enableDebug) {
+        LogToFile "Entering ConnectorAfterCreate rule."
+    }
+
+    # Read the SailPoint request
+    Add-Type -Path "utils.dll"
+
+    $sReader = New-Object System.IO.StringReader(
+        [System.String]$env:Request
+    )
+
+    $xmlReader = [System.Xml.XmlTextReader](
+        [SailPoint.Utils.xml.XmlUtil]::getReader($sReader)
+    )
+
+    $requestObject = New-Object SailPoint.Utils.Objects.AccountRequest(
+        $xmlReader
+    )
+
+    $requestAsString = $env:Request
+
+    if ([string]::IsNullOrWhiteSpace($requestAsString)) {
+        throw "SailPoint request is empty."
+    }
+
+    if ($enableDebug) {
+        LogToFile "Request received successfully."
+    }
+
+}
+catch {
+    LogToFile "ERROR preparing request: $($_.Exception.Message)"
+    throw
+}
+
+# Track failures independently so both scripts are attempted
+$script1Failed = $false
+$script2Failed = $false
+
+#====================-------Run Script 1-------====================
+
+try {
+    LogToFile "Starting script 1: $script1"
+
+    if (-not (Test-Path -LiteralPath $script1 -PathType Leaf)) {
+        throw "Script 1 not found: $script1"
+    }
+
+    & $script1 -requestString $requestAsString
+
+    LogToFile "Script 1 completed successfully."
+}
+catch {
+    $script1Failed = $true
+    LogToFile "ERROR in script 1: $($_.Exception.Message)"
+}
+
+#====================-------Run Script 2-------====================
+
+try {
+    LogToFile "Starting script 2: $script2"
+
+    if (-not (Test-Path -LiteralPath $script2 -PathType Leaf)) {
+        throw "Script 2 not found: $script2"
+    }
+
+    & $script2 -requestString $requestAsString
+
+    LogToFile "Script 2 completed successfully."
+}
+catch {
+    $script2Failed = $true
+    LogToFile "ERROR in script 2: $($_.Exception.Message)"
+}
+
+#====================-------Final result-------====================
+
+if ($script1Failed -or $script2Failed) {
+    LogToFile "Completed with errors. Script1Failed=$script1Failed; Script2Failed=$script2Failed"
+}
+else {
+    LogToFile "Both PowerShell scripts completed successfully."
+}
+
+if ($enableDebug) {
+    LogToFile "Exiting ConnectorAfterCreate rule."
+}
+
+]]>
+  </Source>
+</Rule>
