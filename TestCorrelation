@@ -1,0 +1,90 @@
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class TestCorrelation {
+
+    public static void main(String[] args) {
+
+        // TEST 1 - Privileged account
+        testAccount(
+            "TEST 1 - Privileged aa. Account",
+            "aa.john.smith@company.com",
+            "Member",
+            "john.smith@company.com"
+        );
+
+        // TEST 2 - Guest account
+        testAccount(
+            "TEST 2 - Guest Account",
+            "john_external.com#EXT#@company.onmicrosoft.com",
+            "Guest",
+            "john.smith@company.com"
+        );
+
+        // TEST 3 - Regular account
+        testAccount(
+            "TEST 3 - Regular Entra Account",
+            "john.smith@company.com",
+            "Member",
+            "john.smith@company.com"
+        );
+
+        // TEST 4 - Guest with missing mail
+        testAccount(
+            "TEST 4 - Guest Missing Mail",
+            "guest#EXT#@company.onmicrosoft.com",
+            "Guest",
+            null
+        );
+
+        // TEST 5 - Privileged account uppercase
+        testAccount(
+            "TEST 5 - Uppercase AA Prefix",
+            "AA.jane.doe@company.com",
+            "Member",
+            "jane.doe@company.com"
+        );
+    }
+
+    public static void testAccount(
+            String testName,
+            String upn,
+            String userType,
+            String mail) {
+
+        Map<String, String> account = new HashMap<>();
+
+        account.put("userPrincipalName", upn);
+        account.put("userType", userType);
+        account.put("mail", mail);
+
+        System.out.println("\n==========================");
+        System.out.println(testName);
+        System.out.println("==========================");
+
+        System.out.println("UPN: " + upn);
+        System.out.println("User Type: " + userType);
+        System.out.println("Mail: " + mail);
+
+        Map<String, String> result =
+            EntraCorrelationRule.correlate(account);
+
+        if (result != null) {
+
+            System.out.println("Correlation Result: MATCH");
+            System.out.println(
+                "Identity Attribute: " +
+                result.get("identityAttributeName"));
+
+            System.out.println(
+                "Identity Value: " +
+                result.get("identityAttributeValue"));
+
+        } else {
+
+            System.out.println(
+                "Correlation Result: NO CUSTOM MATCH");
+        }
+    }
+}
