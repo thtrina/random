@@ -1,0 +1,439 @@
+
+no, this a new source
+Since this is a new Microsoft Entra ID Direct Connection source in SailPoint ISC, you have an opportunity to configure it specifically for admin accounts before onboarding it for access requests.
+
+My recommendation is to investigate account filtering at the source level first.
+
+Ideally, the source would aggregate only accounts matching:
+
+admin.*
+For example:
+
+admin.john paul — Include
+
+admin.peter pan — Include
+
+john.paul — Exclude
+
+peter.pan — Exclude
+
+If the Entra Direct Connection connector supports an account aggregation filter on the relevant attribute, this could prevent regular accounts from appearing as selectable accounts from that source.
+
+However, I haven't verified that the Entra Direct Connection connector supports prefix-based account filtering, so I wouldn't assume you can simply enter admin.* in its configuration. That syntax is illustrative, not a confirmed SailPoint filter.
+
+Also, filtering aggregated accounts is not the same as enforcing which accounts can receive access. You would still need to consider provisioning behavior.
+
+What I need to know
+Since you're configuring a new source, are you planning to:
+
+1. Aggregate only the admin. accounts from Microsoft Entra ID into ISC?
+
+2. Aggregate all Entra accounts into ISC, but allow access requests only for admin. accounts?
+
+If you choose 1, we can focus specifically on the Microsoft Entra Direct Connection source's account aggregation settings and whether SailPoint supports the required filtering.
+
+but if someone request access to one of the entra group/role/or entitlement I only want the aa.account eligible to request those or request is denied prohibited
+Now I understand your requirement. You're not simply trying to filter accounts during aggregation.
+
+You want to enforce an account-level access request restriction in SailPoint ISC for your new Microsoft Entra ID Direct Connection source.
+
+For example, if someone requests an Entra group, role, or entitlement:
+
+Target account
+
+Expected result
+
+aa.john.paul
+
+Allow
+
+aa.peter.pan
+
+Allow
+
+john.paul
+
+Deny — prohibited
+
+admin.john.paul
+
+Deny — prohibited
+
+svc.john.paul
+
+Deny — prohibited
+
+I'm using aa. as your required prefix based on your latest message.
+
+Your desired rule is:
+
+if (accountName != null &&
+    accountName.toLowerCase().startsWith("aa.")) {
+    // Allow request to proceed
+} else {
+    // Reject request: prohibited account
+}
+
+The question is where ISC can enforce that rule, because a matching condition alone won't stop an access request.
+
+Recommended solution: Access Request Approval Workflow
+SailPoint supports an Access Request Submitted trigger and a Deny Access Request workflow action. These provide a possible way to enforce your restriction before provisioning. 
+
+SailPoint Identity Services
++1
+
+The proposed process would be:
+
+User requests Entra group, role, or entitlement
+
+Access Request Submitted workflow
+
+Identify the target source and selected account
+
+Does account name start with aa.?
+
+YES
+
+Continue approval process
+
+NO
+
+Deny — prohibited account
+
+Important: We need to verify that the workflow trigger exposes the selected target account, not just the requesting identity. We also need to confirm the denial action is connected to the correct approval ID. I would not deploy this as a security control until those two points are tested.
+
+Documentation: SailPoint Workflow Actions.
+
+One question before we build it
+Will your new Entra source contain both regular accounts and aa. accounts, or only aa. accounts?
+
+If it contains both, I'll focus on building the workflow validation so a regular account cannot receive the requested entitlement, even if someone selects it in Request Center.
+
+only aa
+Since your new Microsoft Entra ID Direct Connection source will contain only aa. accounts, the configuration is much simpler.
+
+My recommendation: Restrict the source to aa. accounts during aggregation, then use that source for requesting Entra groups, roles, and entitlements.
+
+For example:
+
+Account
+
+Aggregated into new source
+
+Eligible for access
+
+aa.john.paul
+
+Yes
+
+Yes
+
+aa.peter.pan
+
+Yes
+
+Yes
+
+john.paul
+
+No
+
+No
+
+admin.john.paul
+
+No
+
+No
+
+If the source truly contains only aa. accounts, there is no need to build a separate access request workflow just to distinguish between regular and admin accounts.
+
+However, we still need to make sure ISC doesn't create or select an unintended account when processing a request.
+
+What I would configure
+Configure the Entra source to aggregate only aa. accounts, if its connector supports that filtering.
+
+Correlate those accounts to the correct ISC identities.
+
+Enable access requests for the appropriate Entra entitlements or access profiles.
+
+Require approval for privileged access.
+
+Test an access request for an identity with an aa. account and one without.
+
+One important security consideration: SailPoint documents that when an identity has no account on a requested source, an access request can initiate account creation. Therefore, having only aa. accounts aggregated does not automatically guarantee that requests for identities without those accounts will be prohibited. 
+
+SailPoint Identity Services
++1
+
+For your requirement, we must verify that account creation is blocked for those requests.
+
+My next question
+Does this new Microsoft Entra source have account creation/provisioning enabled, or will it only manage group and role memberships for existing aa. accounts?
+
+That determines whether we can rely on the existing account population or need an additional enforcement control.
+
+not yet but yes if we can get the access request for only aa. account worked out
+Great. Since you're still setting up the new source, I found a supported SailPoint configuration that we can start with.
+
+The Microsoft Entra Direct Connection connector supports User Filters to limit which accounts are aggregated. 
+
+SailPoint Documentation
+
+Step 1 — Configure the account filter
+Navigate to:
+
+Admin → Connections → Sources → Your Entra Source → Aggregation Settings → Filter Settings
+
+In User Filters, try:
+
+startswith(userPrincipalName,'aa.')
+This assumes the aa. prefix is at the beginning of the Entra userPrincipalName, such as aa.john.paul@company.com.
+
+If the prefix is instead in the Entra displayName, use:
+
+startswith(displayName,'aa.')
+Save the configuration and run an account aggregation.
+
+Step 2 — Verify the accounts
+After aggregation, check the Accounts tab.
+
+Account
+
+Expected result
+
+aa.john.paul@company.com
+
+Included
+
+aa.peter.pan@company.com
+
+Included
+
+john.paul@company.com
+
+Excluded
+
+Step 3 — Configure access requests
+Once the source contains only the aa. accounts, configure the appropriate groups or roles as requestable entitlements or include them in requestable access profiles.
+
+ISC will use the accounts associated with that source when processing access requests. 
+
+SailPoint Identity Services
+
+Step 4 — Prevent unauthorized account creation
+This is the important part.
+
+Aggregation filtering alone is not sufficient to prohibit access requests for identities without an aa. account. ISC can initiate account creation when a requested identity has no account on the source. 
+
+SailPoint Identity Services
+
+Before enabling production provisioning, we need to establish a supported control that prevents account creation for identities without an authorized aa. account. Otherwise, the source filter only limits visibility, not provisioning authorization.
+
+One thing I want to confirm
+Is the aa. prefix part of the actual Entra userPrincipalName?
+
+For example:
+
+aa.john.paul@company.com
+
+Or is it part of the displayName or another account attribute?
+
+Once we identify that attribute, we can configure the correct filter and then address the account-creation restriction.
+
+yes aa. prefix part of the actual Entra userPrincipalName
+
+Perfect. Since the aa. prefix is part of the actual Microsoft Entra userPrincipalName (UPN), we can use that attribute to identify the authorized accounts.
+
+For your new SailPoint ISC Microsoft Entra Direct Connection source, the proposed filter is:
+
+startsWith(userPrincipalName,'aa.')
+This is an OData-style filter expression. We still need to confirm the exact syntax supported by your connector's User Filters configuration.
+
+Your intended results are:
+
+Entra UPN
+
+Expected aggregation
+
+aa.john.paul@company.com
+
+Include
+
+aa.peter.pan@company.com
+
+Include
+
+john.paul@company.com
+
+Exclude
+
+admin.john.paul@company.com
+
+Exclude
+
+Important: Your security requirement has two parts: aggregate only aa. accounts, and prevent access requests from creating or provisioning to an unauthorized account. The first control does not automatically enforce the second.
+
+Confirmed SailPoint configuration
+SailPoint documents User Filters for the Microsoft Entra connector, including prefix matching. 
+
+SailPoint Documentation
++1
+
+In your source, navigate to the aggregation settings and enter:
+
+startswith(userPrincipalName,'aa.')
+Then save and run account aggregation. Verify that only aa. accounts appear in the source.
+
+Next, create your requestable access profiles under Admin → Access Model → Access Profiles and configure their approvals. 
+
+SailPoint Identity Services
+
+Critical test before enabling provisioning
+SailPoint confirms that an access request can automatically initiate account creation if the identity doesn't already have an account on the source. 
+
+SailPoint Identity Services
+
+I would test these two scenarios:
+
+Identity with aa. account: Request an Entra group and verify that it is assigned to the existing aa. account.
+
+Identity without aa. account: Request the same group and verify that the request is denied or otherwise blocked before any account is created.
+
+If the second request initiates account creation, we will need an additional preventative control. The aggregation filter alone cannot meet your prohibition requirement.
+
+The next step I'd recommend is configuring the User Filter and running your first aggregation. Once that's successful, we can work through the access request configuration and account-creation restriction using the actual behavior of your source.
+
+Official reference: Microsoft Entra ID — Aggregation and Filter Settings.
+
+the requirments changed to not only aa. account to also include other accounts too. How does that change the plan on restricting access requests
+This changes the plan significantly because we can no longer rely on filtering the Microsoft Entra source to include only aa. accounts.
+
+With your new requirement, I would separate account aggregation from access request eligibility.
+
+For example, suppose the new Entra Direct Connection source contains:
+
+Entra account
+
+Aggregate into ISC
+
+Eligible for restricted access requests
+
+aa.john.paul@company.com
+
+Yes
+
+Yes
+
+aa.peter.pan@company.com
+
+Yes
+
+Yes
+
+john.paul@company.com
+
+Yes
+
+No
+
+peter.pan@company.com
+
+Yes
+
+No
+
+svc.application@company.com
+
+Yes
+
+No
+
+This assumes the requirement is still that only aa. accounts may receive the restricted groups, roles, or entitlements, even though other accounts must exist in the source.
+
+The important change: We need to enforce the restriction during access request processing, not during aggregation.
+
+Updated plan
+I would now use a request-time approval workflow for the restricted access items, rather than an aa.-only aggregation filter.
+
+Entra Direct Connection source
+
+Aggregate aa. and other required accounts
+
+User submits access request
+
+Selects target account
+
+Validation workflow
+
+Check selected account's UPN against allowed prefixes
+
+Authorized account
+
+Continue approval
+
+Unauthorized account
+
+Deny request
+
+SailPoint supports workflow-based approval policies using the Access Request Submitted trigger. 
+
+SailPoint Identity Services
++1
+ However, we must verify that the selected target account ID is available to the workflow and can be validated before approval. Otherwise, this design cannot reliably enforce your requirement.
+
+Also, SailPoint explicitly states that Multiple Account Options do not apply to access requests, so that configuration will not solve the problem. 
+
+SailPoint Identity Services
+
+What changes from the original plan?
+Configuration
+
+Original plan
+
+Updated plan
+
+Source aggregation
+
+Only aa.
+
+All required accounts
+
+Account correlation
+
+aa. accounts
+
+All relevant accounts
+
+Requestable entitlements
+
+Entra groups/roles
+
+Same
+
+Account restriction
+
+Source filter
+
+Request-time validation
+
+Unauthorized requests
+
+Not selectable if absent
+
+Must be explicitly denied
+
+If hiding unauthorized accounts from the dropdown remains mandatory, a workflow alone will not achieve that. It can potentially deny requests after submission, but the native Request Center may still show those accounts.
+
+One important question
+When you say the source must include other accounts, are those additional accounts also going to be eligible for the same Entra access requests?
+
+For example, are you now allowing both aa.john.paul@company.com and svc.application@company.com to receive requested access, while prohibiting john.paul@company.com?
+
+Or must only aa. accounts receive the restricted access, even though the source aggregates all accounts?
+
+That distinction determines whether we build an allowlist of account prefixes or a single aa. validation rule.
+
+
+
+
