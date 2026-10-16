@@ -1,0 +1,50 @@
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class EntraCorrelationRule {
+
+    public static Map<String, String> correlate(
+            Map<String, String> account) {
+
+        Map<String, String> returnMap = new HashMap<>();
+
+        String upn = account.get("userPrincipalName");
+        String userType = account.get("userType");
+        String mail = account.get("mail");
+
+        // Privileged aa. accounts
+        if (upn != null &&
+            upn.toLowerCase(java.util.Locale.ROOT)
+               .startsWith("aa.")) {
+
+            String identityKey = upn.substring(3);
+
+            returnMap.put(
+                "identityAttributeName", "email");
+
+            returnMap.put(
+                "identityAttributeValue", identityKey);
+
+            return returnMap;
+        }
+
+        // Entra Guest accounts
+        if ("Guest".equalsIgnoreCase(userType)) {
+
+            if (mail != null && mail.length() > 0) {
+
+                returnMap.put(
+                    "identityAttributeName", "email");
+
+                returnMap.put(
+                    "identityAttributeValue", mail);
+
+                return returnMap;
+            }
+        }
+
+        // No custom correlation match
+        return null;
+    }
+}
