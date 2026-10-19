@@ -1,4 +1,82 @@
 
+
+================================================================================ updated rule temp for bad data in sandbox
+
+
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+
+<Rule language="beanshell"
+      name="Entra Custom Account Correlation"
+      type="Correlation">
+
+  <Description>
+    Correlate only Entra privileged aa. accounts.
+    Normalize test email domains before correlation.
+  </Description>
+
+  <Source><![CDATA[
+
+    import java.util.HashMap;
+    import java.util.Map;
+    import java.util.Locale;
+
+    Map returnMap = new HashMap();
+
+    // Retrieve Entra UPN
+    String upn =
+        account.getStringAttribute("userPrincipalName");
+
+    // Only process aa. accounts
+    if (upn == null ||
+        !upn.trim().toLowerCase(Locale.ENGLISH)
+            .startsWith("aa.")) {
+
+        return null;
+    }
+
+    // Normalize UPN
+    String normalizedUpn =
+        upn.trim().toLowerCase(Locale.ENGLISH);
+
+    // Remove aa. prefix
+    String correlationEmail =
+        normalizedUpn.substring(3);
+
+    // Replace test domain with identity email domain
+    String testDomain = "@differentformat.com";
+    String identityDomain = "@mycompany.com";
+
+    if (correlationEmail.endsWith(testDomain)) {
+
+        correlationEmail =
+            correlationEmail.substring(
+                0,
+                correlationEmail.length() -
+                    testDomain.length()
+            ) + identityDomain;
+    }
+
+    // Correlate using ISC identity email
+    returnMap.put(
+        "identityAttributeName",
+        "email"
+    );
+
+    returnMap.put(
+        "identityAttributeValue",
+        correlationEmail
+    );
+
+    return returnMap;
+
+  ]]></Source>
+
+</Rule>
+
+====================================================================================================end update 
+
+
 import java.util.HashMap;
 import java.util.Map;
 
