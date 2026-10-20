@@ -1,0 +1,114 @@
+
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+
+<Rule language="beanshell"
+      name="Entra AA Account Before Provisioning"
+      type="BeforeProvisioning">
+
+  <Description>
+    Restrict Entra provisioning to existing aa. accounts.
+    Block account creation and unauthorized entitlement additions.
+  </Description>
+
+  <Source><![CDATA[
+
+    import sailpoint.object.ProvisioningPlan;
+    import sailpoint.object.ProvisioningPlan.AccountRequest;
+    import sailpoint.object.ProvisioningPlan.AttributeRequest;
+    import sailpoint.tools.GeneralException;
+
+    import java.util.List;
+    import java.util.Locale;
+
+    if (plan == null ||
+        plan.getAccountRequests() == null) {
+
+        throw new GeneralException(
+            "Entra validation failed: Missing provisioning plan.");
+    }
+
+    List accountRequests = plan.getAccountRequests();
+
+    for (Object obj : accountRequests) {
+
+        AccountRequest req = (AccountRequest) obj;
+
+        if (req == null) {
+            continue;
+        }
+
+        AccountRequest.Operation op = req.getOperation();
+
+        String nativeIdentity = req.getNativeIdentity();
+
+        // Block all account creation
+        if (AccountRequest.Operation.Create.equals(op)) {
+
+            throw new GeneralException(
+                "Entra provisioning denied: " +
+                "New account creation is not authorized.");
+        }
+
+        // Validate existing account modifications
+        if (AccountRequest.Operation.Modify.equals(op)) {
+
+            boolean hasAddOperation = false;
+
+            List attributes = req.getAttributeRequests();
+
+            if (attributes != null) {
+
+                for (Object attrObj : attributes) {
+
+                    AttributeRequest attr =
+                        (AttributeRequest) attrObj;
+
+                    if (attr != null &&
+                        ProvisioningPlan.Operation.Add.equals(
+                            attr.getOperation())) {
+
+                        hasAddOperation = true;
+                        break;
+                    }
+                }
+            }
+
+            // No entitlement Add operation:
+            // allow removals and other modifications
+            if (!hasAddOperation) {
+                continue;
+            }
+
+            // Fail if target account is missing
+            if (nativeIdentity == null ||
+                nativeIdentity.trim().length() == 0) {
+
+                throw new GeneralException(
+                    "Entra provisioning denied: " +
+                    "Missing target account UPN.");
+            }
+
+            String upn =
+                nativeIdentity.trim()
+                    .toLowerCase(Locale.ENGLISH);
+
+            // Allow only aa. privileged accounts
+            if (!upn.startsWith("aa.")) {
+
+                throw new GeneralException(
+                    "Entra provisioning denied: " +
+                    "Only aa. privileged accounts may " +
+                    "receive new entitlements. Target: " +
+                    nativeIdentity);
+            }
+
+            log.info(
+                "Entra AA validation passed for account: " +
+                nativeIdentity);
+        }
+    }
+
+  ]]></Source>
+
+</Rule>
