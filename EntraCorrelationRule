@@ -1,5 +1,9 @@
 
-
+Entitlement type	Meaning	Purpose
+group	Standard Microsoft Entra group membership	Assign an account directly to a group
+azureADActiveGroup	Active PIM group assignment	Assign active group membership through PIM
+azureADEligibleGroup	Eligible PIM group assignment	Make an account eligible to activate group membership
+azureEligibleRole	Eligible PIM role assignment	Eligibility for an Entra directory role, not a group
 ================================================================================ updated rule temp for bad data in sandbox
 
 
