@@ -1,0 +1,23 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        System.out.println(email);
+    }
+
+String email = "Test.Account@mycompany.com";
+
+    Map<> returnMap = new HashMap<>();
+String email = account.getStringAttribute("email");
+
+if (email != null && !email.trim().isEmpty()) {
+    
+	String email = email.toLowerCase();    
+   // returnMap.put("email", email);
+}
+
+return email;
+
+
+}
